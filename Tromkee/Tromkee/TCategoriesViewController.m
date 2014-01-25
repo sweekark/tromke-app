@@ -11,7 +11,7 @@
 #import "TCategoryStickersViewController.h"
 
 #define IMAGE @"Image"
-#define DISPLAY_NAME @"display_name"
+#define NAME @"name"
 #define SORTBY @"sort_no"
 
 @interface TCategoriesViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
@@ -81,7 +81,7 @@
         }
     }];
     
-    cell.categoryTitle.text = category[DISPLAY_NAME];
+    cell.categoryTitle.text = category[NAME];
     
     return cell;
 }

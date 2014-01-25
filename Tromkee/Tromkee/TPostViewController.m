@@ -7,6 +7,7 @@
 //
 
 #import "TPostViewController.h"
+#import "TCircleView.h"
 
 #define IMAGE @"image"
 #define STICKER_POINTS @"postPoints"
@@ -14,6 +15,7 @@
 
 @interface TPostViewController ()
 
+@property (weak, nonatomic) IBOutlet TCircleView *circleView;
 @property (weak, nonatomic) IBOutlet UIImageView *stickerImage;
 @property (weak, nonatomic) IBOutlet UISlider *stickerSeverity;
 @property (weak, nonatomic) IBOutlet UILabel *stickerPoints;
@@ -40,9 +42,11 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    [self updateSliderColor:0.5];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
+
     PFFile *userImageFile = self.postSticker[IMAGE];
     [userImageFile getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
         if (!error) {
@@ -53,13 +57,25 @@
             });
         }
     }];
-    
+
     [super viewWillAppear:animated];
 }
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)updateStickerIntensity:(id)sender {
+    CGFloat gValue = self.stickerSeverity.value;
+    //CGFloat gHTMLValue = gValue / 255;
+    self.circleView.green = gValue;
+    [self.circleView setNeedsDisplay];
+    [self updateSliderColor:gValue];
+}
+
+-(void)updateSliderColor : (CGFloat)greenValue {
+    self.stickerSeverity.minimumTrackTintColor = self.stickerSeverity.maximumTrackTintColor = self.stickerSeverity.thumbTintColor = [UIColor colorWithRed:1.0 - greenValue green:greenValue blue:0.0 alpha:1.0];
 }
 
 - (IBAction)postSticker:(id)sender {

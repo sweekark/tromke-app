@@ -15,12 +15,10 @@
 		453CB8FA1885C5D300D7019D /* TCategoryStickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 453CB8F91885C5D300D7019D /* TCategoryStickerCell.m */; };
 		453CB8FD1885C7B700D7019D /* TCategoryStickersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 453CB8FC1885C7B700D7019D /* TCategoryStickersViewController.m */; };
 		454BDE0118890101009DC4F6 /* TPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 454BDE0018890101009DC4F6 /* TPostViewController.m */; };
-		454BDE0718890BCA009DC4F6 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 454BDE0318890BCA009DC4F6 /* FacebookSDK.framework */; };
-		454BDE0818890BCA009DC4F6 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 454BDE0418890BCA009DC4F6 /* Parse.framework */; };
-		454BDE0918890BCA009DC4F6 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 454BDE0618890BCA009DC4F6 /* Reachability.m */; };
 		455C01111879C60E00D54908 /* BackgroundLogin-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 455C010E1879C60E00D54908 /* BackgroundLogin-568h@2x.png */; };
 		455C01121879C60E00D54908 /* backgroundLogin.png in Resources */ = {isa = PBXBuildFile; fileRef = 455C010F1879C60E00D54908 /* backgroundLogin.png */; };
 		455C01131879C60E00D54908 /* backgroundLogin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 455C01101879C60E00D54908 /* backgroundLogin@2x.png */; };
+		457C8A861893B02100D6DA40 /* TCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 457C8A851893B02100D6DA40 /* TCircleView.m */; };
 		45A2E87E18764FF1009A6171 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E87D18764FF1009A6171 /* Foundation.framework */; };
 		45A2E88018764FF1009A6171 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E87F18764FF1009A6171 /* CoreGraphics.framework */; };
 		45A2E88218764FF1009A6171 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E88118764FF1009A6171 /* UIKit.framework */; };
@@ -48,6 +46,9 @@
 		45A2E8CB187650CE009A6171 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8BE187650CE009A6171 /* Security.framework */; };
 		45A2E8CC187650CE009A6171 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8BF187650CE009A6171 /* StoreKit.framework */; };
 		45A2E8CD187650CE009A6171 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8C0187650CE009A6171 /* SystemConfiguration.framework */; };
+		45E54465188F934200FF8977 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E54461188F934200FF8977 /* FacebookSDK.framework */; };
+		45E54466188F934200FF8977 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E54462188F934200FF8977 /* Parse.framework */; };
+		45E54467188F934200FF8977 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 45E54464188F934200FF8977 /* Reachability.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,13 +78,11 @@
 		453CB8FC1885C7B700D7019D /* TCategoryStickersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCategoryStickersViewController.m; sourceTree = "<group>"; };
 		454BDDFF18890101009DC4F6 /* TPostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPostViewController.h; sourceTree = "<group>"; };
 		454BDE0018890101009DC4F6 /* TPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPostViewController.m; sourceTree = "<group>"; };
-		454BDE0318890BCA009DC4F6 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
-		454BDE0418890BCA009DC4F6 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
-		454BDE0518890BCA009DC4F6 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
-		454BDE0618890BCA009DC4F6 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		455C010E1879C60E00D54908 /* BackgroundLogin-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BackgroundLogin-568h@2x.png"; sourceTree = "<group>"; };
 		455C010F1879C60E00D54908 /* backgroundLogin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backgroundLogin.png; sourceTree = "<group>"; };
 		455C01101879C60E00D54908 /* backgroundLogin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backgroundLogin@2x.png"; sourceTree = "<group>"; };
+		457C8A841893B02100D6DA40 /* TCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCircleView.h; sourceTree = "<group>"; };
+		457C8A851893B02100D6DA40 /* TCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCircleView.m; sourceTree = "<group>"; };
 		45A2E87A18764FF1009A6171 /* Tromke.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tromke.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45A2E87D18764FF1009A6171 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		45A2E87F18764FF1009A6171 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -115,6 +114,10 @@
 		45A2E8BE187650CE009A6171 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		45A2E8BF187650CE009A6171 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		45A2E8C0187650CE009A6171 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		45E54461188F934200FF8977 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
+		45E54462188F934200FF8977 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
+		45E54463188F934200FF8977 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		45E54464188F934200FF8977 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		45EA89CA187E69F500223D26 /* TConfigure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TConfigure.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -128,7 +131,7 @@
 				45A2E8C3187650CE009A6171 /* Accounts.framework in Frameworks */,
 				45A2E8CC187650CE009A6171 /* StoreKit.framework in Frameworks */,
 				45A2E8CA187650CE009A6171 /* QuartzCore.framework in Frameworks */,
-				454BDE0718890BCA009DC4F6 /* FacebookSDK.framework in Frameworks */,
+				45E54465188F934200FF8977 /* FacebookSDK.framework in Frameworks */,
 				45A2E8C7187650CE009A6171 /* libsqlite3.dylib in Frameworks */,
 				45A2E88018764FF1009A6171 /* CoreGraphics.framework in Frameworks */,
 				451AF9A61885314300811899 /* MapKit.framework in Frameworks */,
@@ -136,7 +139,7 @@
 				45A2E8C4187650CE009A6171 /* AudioToolbox.framework in Frameworks */,
 				45A2E88218764FF1009A6171 /* UIKit.framework in Frameworks */,
 				45A2E8CD187650CE009A6171 /* SystemConfiguration.framework in Frameworks */,
-				454BDE0818890BCA009DC4F6 /* Parse.framework in Frameworks */,
+				45E54466188F934200FF8977 /* Parse.framework in Frameworks */,
 				45A2E8C6187650CE009A6171 /* CoreLocation.framework in Frameworks */,
 				45A2E8C9187650CE009A6171 /* MobileCoreServices.framework in Frameworks */,
 				45A2E8C2187650CE009A6171 /* Social.framework in Frameworks */,
@@ -171,25 +174,15 @@
 				453CB8F91885C5D300D7019D /* TCategoryStickerCell.m */,
 				454BDDFF18890101009DC4F6 /* TPostViewController.h */,
 				454BDE0018890101009DC4F6 /* TPostViewController.m */,
+				457C8A841893B02100D6DA40 /* TCircleView.h */,
+				457C8A851893B02100D6DA40 /* TCircleView.m */,
 			);
 			name = Categories;
-			sourceTree = "<group>";
-		};
-		454BDE0218890BCA009DC4F6 /* External */ = {
-			isa = PBXGroup;
-			children = (
-				454BDE0318890BCA009DC4F6 /* FacebookSDK.framework */,
-				454BDE0418890BCA009DC4F6 /* Parse.framework */,
-				454BDE0518890BCA009DC4F6 /* Reachability.h */,
-				454BDE0618890BCA009DC4F6 /* Reachability.m */,
-			);
-			path = External;
 			sourceTree = "<group>";
 		};
 		45A2E87118764FF1009A6171 = {
 			isa = PBXGroup;
 			children = (
-				454BDE0218890BCA009DC4F6 /* External */,
 				45A2E88318764FF1009A6171 /* Tromkee */,
 				45A2E8A218764FF1009A6171 /* TromkeeTests */,
 				45A2E87C18764FF1009A6171 /* Frameworks */,
@@ -234,6 +227,7 @@
 		45A2E88318764FF1009A6171 /* Tromkee */ = {
 			isa = PBXGroup;
 			children = (
+				45E54460188F934200FF8977 /* External */,
 				45A2E88C18764FF1009A6171 /* TAppDelegate.h */,
 				45A2E88D18764FF1009A6171 /* TAppDelegate.m */,
 				45A2E88F18764FF1009A6171 /* Main.storyboard */,
@@ -282,6 +276,17 @@
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
+		};
+		45E54460188F934200FF8977 /* External */ = {
+			isa = PBXGroup;
+			children = (
+				45E54461188F934200FF8977 /* FacebookSDK.framework */,
+				45E54462188F934200FF8977 /* Parse.framework */,
+				45E54463188F934200FF8977 /* Reachability.h */,
+				45E54464188F934200FF8977 /* Reachability.m */,
+			);
+			path = External;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -387,12 +392,13 @@
 				45309872187DBBD0005B3B5F /* TLogInViewController.m in Sources */,
 				45A2E88A18764FF1009A6171 /* main.m in Sources */,
 				45A2E88E18764FF1009A6171 /* TAppDelegate.m in Sources */,
-				454BDE0918890BCA009DC4F6 /* Reachability.m in Sources */,
+				45E54467188F934200FF8977 /* Reachability.m in Sources */,
 				45A2E89418764FF1009A6171 /* TViewController.m in Sources */,
 				453CB8F31885B65100D7019D /* TCategoryCell.m in Sources */,
 				453AE94E188423F00099D8B0 /* TLocationUtility.m in Sources */,
 				453CB8F01885B5BE00D7019D /* TCategoriesViewController.m in Sources */,
 				453CB8FA1885C5D300D7019D /* TCategoryStickerCell.m in Sources */,
+				457C8A861893B02100D6DA40 /* TCircleView.m in Sources */,
 				454BDE0118890101009DC4F6 /* TPostViewController.m in Sources */,
 				453CB8FD1885C7B700D7019D /* TCategoryStickersViewController.m in Sources */,
 			);
@@ -524,6 +530,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/satyanarayana/Tromke/Tromkee/External,
+					"/Users/satyanarayana/Tromke/tromke-app/Tromkee/External",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tromkee/Tromke-Prefix.pch";
@@ -542,6 +549,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/satyanarayana/Tromke/Tromkee/External,
+					"/Users/satyanarayana/Tromke/tromke-app/Tromkee/External",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tromkee/Tromke-Prefix.pch";
