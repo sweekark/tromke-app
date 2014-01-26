@@ -36,7 +36,7 @@
     // Track app open.
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
-    [PFUser enableAutomaticUser];
+    //[PFUser enableAutomaticUser];
     
     // Use Reachability to monitor connectivity
     [self monitorReachability];

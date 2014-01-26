@@ -8,6 +8,7 @@
 
 #import "TPostViewController.h"
 #import "TCircleView.h"
+#import "TLogInViewController.h"
 
 #define IMAGE @"image"
 #define STICKER_POINTS @"postPoints"
@@ -79,8 +80,25 @@
 }
 
 - (IBAction)postSticker:(id)sender {
+    if ([PFUser currentUser]) {
+        NSLog(@"User available");
+    } else {
+        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You must login in order to post a sticker !!!" delegate:self cancelButtonTitle:@"Not Now" otherButtonTitles: @"Login", nil] show];
+    }
+}
+
+-(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        TLogInViewController *loginViewController = [[TLogInViewController alloc] init];
+        [loginViewController setDelegate:self];
+        loginViewController.fields = PFLogInFieldsPasswordForgotten | PFLogInFieldsFacebook | PFLogInFieldsSignUpButton | PFLogInFieldsUsernameAndPassword;
+        loginViewController.facebookPermissions = @[ @"user_about_me" ];
+        
+        [self presentViewController:loginViewController animated:YES completion:nil];
+    }
 }
 
 - (IBAction)takePicture:(id)sender {
+    
 }
 @end

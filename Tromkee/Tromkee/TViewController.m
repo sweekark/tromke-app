@@ -29,15 +29,15 @@
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-//    if (![PFUser currentUser]) {
-//        TLogInViewController *loginViewController = [[TLogInViewController alloc] init];
-//        [loginViewController setDelegate:self];
-//        loginViewController.fields = PFLogInFieldsFacebook | PFLogInFieldsSignUpButton | PFLogInFieldsUsernameAndPassword;
-//        loginViewController.facebookPermissions = @[ @"user_about_me" ];
-//        
-//        [self presentViewController:loginViewController animated:YES completion:nil];
-//        return;
-//    }
+    if (![PFUser currentUser]) {
+        TLogInViewController *loginViewController = [[TLogInViewController alloc] init];
+        [loginViewController setDelegate:self];
+        loginViewController.fields = PFLogInFieldsPasswordForgotten | PFLogInFieldsFacebook | PFLogInFieldsSignUpButton | PFLogInFieldsUsernameAndPassword;
+        loginViewController.facebookPermissions = @[ @"user_about_me" ];
+        
+        [self presentViewController:loginViewController animated:YES completion:nil];
+        return;
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -73,16 +73,16 @@
 //    NSLog(@"Signup Failed");
 //    [signUpController dismissViewControllerAnimated:YES completion:nil];
 //}
-//
-//#pragma mark - Login Delegates
-//
-//- (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
-//    
-//}
-//
-//- (void)logInViewController:(PFLogInViewController *)logInController didFailToLogInWithError:(NSError *)error {
-//    
-//}
+
+#pragma mark - Login Delegates
+
+- (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
+    [logInController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)logInViewController:(PFLogInViewController *)logInController didFailToLogInWithError:(NSError *)error {
+    [logInController dismissViewControllerAnimated:YES completion:nil];
+}
 
 
 -(void)updateUserLocation:(NSNotification*)notification {
