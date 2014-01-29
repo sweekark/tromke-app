@@ -16,6 +16,7 @@
 
 @property (weak, nonatomic) IBOutlet MKMapView *map;
 @property (weak, nonatomic) IBOutlet UIView *container;
+@property (nonatomic) BOOL firstTimeLogin;
 
 @end
 
@@ -24,12 +25,18 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.firstTimeLogin = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation:) name:TROMKE_USER_LOCATION_UPDATED object:nil];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    if (![PFUser currentUser]) {
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (![PFUser currentUser] && self.firstTimeLogin) {
+        self.firstTimeLogin = NO;
         TLogInViewController *loginViewController = [[TLogInViewController alloc] init];
         [loginViewController setDelegate:self];
         loginViewController.fields = PFLogInFieldsPasswordForgotten | PFLogInFieldsFacebook | PFLogInFieldsSignUpButton | PFLogInFieldsUsernameAndPassword;

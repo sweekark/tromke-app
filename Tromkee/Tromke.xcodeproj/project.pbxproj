@@ -527,9 +527,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/satyanarayana/Tromke/Tromkee/External,
 					"/Users/satyanarayana/Tromke/tromke-app/Tromkee/External",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -537,6 +537,7 @@
 				INFOPLIST_FILE = "Tromkee/Tromke-Info.plist";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;
+				PROVISIONING_PROFILE = "0B26FAEB-BBFE-47F1-9484-F103AA482979";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -546,9 +547,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/satyanarayana/Tromke/Tromkee/External,
 					"/Users/satyanarayana/Tromke/tromke-app/Tromkee/External",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -556,6 +557,7 @@
 				INFOPLIST_FILE = "Tromkee/Tromke-Info.plist";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;
+				PROVISIONING_PROFILE = "0B26FAEB-BBFE-47F1-9484-F103AA482979";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

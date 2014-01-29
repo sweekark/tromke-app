@@ -14,11 +14,14 @@
 #define NAME @"name"
 #define SORTBY @"sort_no"
 
-@interface TCategoriesViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface TCategoriesViewController () <UICollectionViewDataSource, UICollectionViewDelegate, TStickersDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *categoriesView;
 @property (nonatomic, strong) NSArray* allCategories;
 @property (nonatomic, strong) TCategoryStickersViewController* stickersVC;
+@property (nonatomic) BOOL isStickersShowing;
+@property (nonatomic) int currentSelectedItem;
+@property (nonatomic, strong) UINavigationController* navController;
 
 @end
 
@@ -35,6 +38,8 @@
 
 - (void)viewDidLoad
 {
+    self.currentSelectedItem = -1;
+    self.isStickersShowing = NO;
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     PFQuery* categoriesQuery = [PFQuery queryWithClassName:@"category"];
@@ -52,6 +57,11 @@
             });
         }
     }];
+}
+
+-(void)viewWillAppear:(BOOL)animated {
+    self.isStickersShowing = NO;
+    [super viewWillAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -88,15 +98,29 @@
 
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    self.stickersVC.category = self.allCategories[indexPath.item];
-    [self.delegate showCategoriesView];
+    if (self.currentSelectedItem == indexPath.item && !self.isStickersShowing) {
+        return;
+    }
+
+    self.currentSelectedItem = indexPath.item;
+    if (!self.isStickersShowing) {
+        self.stickersVC.category = self.allCategories[indexPath.item];
+        [self.delegate showCategoriesView];
+    } else {
+        [self.navController popToRootViewControllerAnimated:YES];
+        self.stickersVC.category = self.allCategories[indexPath.item];        
+    }
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"CategoryStickers"]) {
-        UINavigationController* navController = segue.destinationViewController;
-        self.stickersVC = [navController.viewControllers firstObject];
+        self.navController = segue.destinationViewController;
+        self.stickersVC = [self.navController.viewControllers firstObject];
+        self.stickersVC.delegate = self;
     }
 }
 
+-(void)userClickedSticker {
+    self.isStickersShowing = YES;
+}
 @end

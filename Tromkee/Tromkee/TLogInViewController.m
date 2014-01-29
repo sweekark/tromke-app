@@ -21,29 +21,18 @@
 //        self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"BackgroundLogin.png"]];
 //    }
     
-//    NSString *text = @"Sign up and start sharing your story with your friends.";
-//    CGSize textSize = [text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:18.0f] constrainedToSize:CGSizeMake( 255.0f, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
-//    UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake( ([UIScreen mainScreen].bounds.size.width - textSize.width)/2.0f, 160.0f, textSize.width, textSize.height)];
-//    [textLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:18.0f]];
-//    [textLabel setLineBreakMode:NSLineBreakByWordWrapping];
-//    [textLabel setNumberOfLines:0];
-//    [textLabel setText:text];
-//    [textLabel setTextColor:[UIColor colorWithRed:214.0f/255.0f green:206.0f/255.0f blue:191.0f/255.0f alpha:1.0f]];
-//    [textLabel setBackgroundColor:[UIColor clearColor]];
-//    [textLabel setTextAlignment:NSTextAlignmentCenter];
-//    [self.logInView addSubview:textLabel];
-    
-    [self.logInView setLogo:nil];
+//    [self.logInView setLogo:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo"]]];
+//    CGRect logoRect = self.logInView.logo.frame;
+//    logoRect.origin.y = 10;
+//    self.logInView.logo.frame = logoRect;
 
     UIButton* btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [btn setTitle:@"Skip, let me  see >>" forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(dismissAnimated:) forControlEvents:UIControlEventTouchUpInside];
-    btn.backgroundColor = [UIColor whiteColor];
-    btn.frame = CGRectMake(20, 60, 280, 50);
+    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    btn.frame = CGRectMake(20, self.view.frame.size.height - 190, 280, 15);
     [self.logInView addSubview:btn];
 
-    
-//    self.fields = PFLogInFieldsUsernameAndPassword | PFLogInFieldsFacebook;
     self.logInView.usernameField.placeholder = @"Enter your email";
 }
 

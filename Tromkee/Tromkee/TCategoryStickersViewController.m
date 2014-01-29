@@ -30,6 +30,9 @@
 }
 
 -(void)setCategory:(PFObject*)category {
+    self.stickers = nil;
+    [self.collectionView reloadData];
+    
     _category = category;
     if (self.category) {
         PFRelation* stickers = [self.category relationforKey:@"Stickers"];
@@ -83,6 +86,7 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"PostSticker"]) {
+        [self.delegate userClickedSticker];
         NSIndexPath* indxPath = [[self.collectionView indexPathsForSelectedItems] firstObject];
         TPostViewController* postVC = segue.destinationViewController;
         postVC.postSticker = self.stickers[indxPath.item];

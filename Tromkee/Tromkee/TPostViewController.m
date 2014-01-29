@@ -14,7 +14,7 @@
 #define STICKER_POINTS @"postPoints"
 #define CAMERA_POINTS @"imagePoints"
 
-@interface TPostViewController ()
+@interface TPostViewController () <PFLogInViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet TCircleView *circleView;
 @property (weak, nonatomic) IBOutlet UIImageView *stickerImage;
@@ -43,7 +43,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    [self updateSliderColor:0.5];
+    [self updateSeverityColor:0.5];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -70,12 +70,13 @@
 - (IBAction)updateStickerIntensity:(id)sender {
     CGFloat gValue = self.stickerSeverity.value;
     //CGFloat gHTMLValue = gValue / 255;
-    self.circleView.green = gValue;
-    [self.circleView setNeedsDisplay];
-    [self updateSliderColor:gValue];
+    [self updateSeverityColor:gValue];
 }
 
--(void)updateSliderColor : (CGFloat)greenValue {
+-(void)updateSeverityColor : (CGFloat)greenValue {
+    self.circleView.green = greenValue;
+    [self.circleView setNeedsDisplay];
+
     self.stickerSeverity.minimumTrackTintColor = self.stickerSeverity.maximumTrackTintColor = self.stickerSeverity.thumbTintColor = [UIColor colorWithRed:1.0 - greenValue green:greenValue blue:0.0 alpha:1.0];
 }
 

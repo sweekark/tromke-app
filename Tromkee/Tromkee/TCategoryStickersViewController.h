@@ -8,8 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol TStickersDelegate <NSObject>
+-(void)userClickedSticker;
+@end
+
 @interface TCategoryStickersViewController : UICollectionViewController
 
-@property(nonatomic, strong) PFObject* category;
+@property (nonatomic, strong) PFObject* category;
+@property (nonatomic, weak) id<TStickersDelegate> delegate;
 
 @end

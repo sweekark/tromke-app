@@ -15,7 +15,9 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+        self.backgroundColor = [UIColor clearColor];
         self.green = 0.5;
+        self.opacity = 1.0;        
     }
     return self;
 }
@@ -25,6 +27,7 @@
     self = [super initWithCoder:aDecoder];
     if (self) {
         // Initialization code
+        self.backgroundColor = [UIColor clearColor];
         self.green = 0.5;
         self.opacity = 1.0;
     }
