@@ -23,6 +23,7 @@
 @property (nonatomic) int currentSelectedItem;
 @property (nonatomic, strong) UINavigationController* navController;
 
+- (IBAction)hideCategories:(id)sender;
 @end
 
 @implementation TCategoriesViewController
@@ -123,4 +124,10 @@
 -(void)userClickedSticker {
     self.isStickersShowing = YES;
 }
+
+- (IBAction)hideCategories:(id)sender {
+    [self.delegate hideCategoriesView];
+    self.isStickersShowing = NO;
+}
+
 @end

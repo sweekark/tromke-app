@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet MKMapView *map;
 @property (weak, nonatomic) IBOutlet UIView *container;
 @property (nonatomic) BOOL firstTimeLogin;
+@property (strong, nonatomic) TCategoriesViewController* categoriesVC;
 
 @end
 
@@ -113,8 +114,8 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"Categories"]) {
-        TCategoriesViewController* categoriesVC = segue.destinationViewController;
-        categoriesVC.delegate = self;
+        self.categoriesVC = segue.destinationViewController;
+        self.categoriesVC.delegate = self;
     }
 }
 
@@ -123,11 +124,19 @@
         CGRect r = self.container.frame;
         r.origin.y = self.view.frame.size.height - r.size.height;
         self.container.frame = r;
+    } completion:^(BOOL finished) {
+        self.categoriesVC.hideButton.hidden = NO;
     }];
 }
 
 -(void)hideCategoriesView {
-    
+    [UIView animateWithDuration:1.0 animations:^{
+        CGRect r = self.container.frame;
+        r.origin.y = self.view.frame.size.height - 92;
+        self.container.frame = r;
+    } completion:^(BOOL finished) {
+        self.categoriesVC.hideButton.hidden = YES;
+    }];
 }
 
 @end

@@ -21,12 +21,12 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </mapView>
                             <containerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tA7-A4-Jfr">
-                                <rect key="frame" x="0.0" y="498" width="320" height="284"/>
+                                <rect key="frame" x="0.0" y="478" width="320" height="305"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="284" id="LJt-Iu-nx2"/>
-                                    <constraint firstAttribute="width" constant="320" id="jCN-e9-rYc"/>
+                                    <constraint firstAttribute="width" constant="320" id="gS1-K8-kvw"/>
+                                    <constraint firstAttribute="height" constant="305" id="kUl-YJ-naR"/>
                                 </constraints>
                                 <connections>
                                     <segue destination="rTm-1C-4Pa" kind="embed" identifier="Categories" id="GBz-vk-Igc"/>
@@ -35,9 +35,9 @@
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="tA7-A4-Jfr" secondAttribute="bottom" constant="-214" id="ax7-yA-RPh"/>
-                            <constraint firstAttribute="trailing" secondItem="tA7-A4-Jfr" secondAttribute="trailing" id="kVF-E7-sPR"/>
-                            <constraint firstItem="tA7-A4-Jfr" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="szW-1s-ReN"/>
+                            <constraint firstAttribute="bottom" secondItem="tA7-A4-Jfr" secondAttribute="bottom" constant="-215" id="6i8-n5-pzl"/>
+                            <constraint firstItem="tA7-A4-Jfr" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="Q2i-Rj-3v9"/>
+                            <constraint firstAttribute="trailing" secondItem="tA7-A4-Jfr" secondAttribute="trailing" id="sNx-mr-q55"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="WdL-Cf-uRp"/>
@@ -77,11 +77,11 @@
                         <viewControllerLayoutGuide type="bottom" id="wRp-m3-j3R"/>
                     </layoutGuides>
                     <view key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="AIg-Gd-qp3">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="284"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="305"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="0I5-aE-17k">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="70"/>
+                                <rect key="frame" x="0.0" y="22" width="320" height="70"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="5" minimumInteritemSpacing="5" id="jEs-R1-bYa">
@@ -125,19 +125,31 @@
                                 </connections>
                             </collectionView>
                             <containerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9Gv-By-Iiu">
-                                <rect key="frame" x="0.0" y="71" width="320" height="213"/>
+                                <rect key="frame" x="0.0" y="92" width="320" height="213"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <connections>
                                     <segue destination="GXv-BN-L2D" kind="embed" identifier="CategoryStickers" id="0vz-Yw-S3P"/>
                                 </connections>
                             </containerView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uZK-kL-ia2">
+                                <rect key="frame" x="119" y="0.0" width="81" height="22"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <state key="normal" image="Down">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="hideCategories:" destination="rTm-1C-4Pa" eventType="touchUpInside" id="3Z3-ej-jqF"/>
+                                </connections>
+                            </button>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </view>
                     <toolbarItems/>
                     <connections>
                         <outlet property="categoriesView" destination="0I5-aE-17k" id="bOi-Yv-His"/>
+                        <outlet property="hideButton" destination="uZK-kL-ia2" id="RIe-5E-oJb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ipz-uw-1QI" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -315,6 +327,7 @@
     </scenes>
     <resources>
         <image name="Camera" width="32" height="32"/>
+        <image name="Down" width="81" height="22"/>
         <image name="Placeholder" width="50" height="50"/>
         <image name="Points" width="32" height="32"/>
         <image name="Send" width="16" height="16"/>

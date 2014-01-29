@@ -18,5 +18,6 @@
 @interface TCategoriesViewController : UIViewController
 
 @property(nonatomic, weak) id<TCategoriesVCDelegate> delegate;
+@property (weak, nonatomic) IBOutlet UIButton *hideButton;
 
 @end
