@@ -326,11 +326,11 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Camera" width="32" height="32"/>
+        <image name="Camera" width="60" height="60"/>
         <image name="Down" width="81" height="22"/>
         <image name="Placeholder" width="50" height="50"/>
         <image name="Points" width="32" height="32"/>
-        <image name="Send" width="16" height="16"/>
+        <image name="Send" width="60" height="60"/>
         <image name="StickerBG" width="60" height="60"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
