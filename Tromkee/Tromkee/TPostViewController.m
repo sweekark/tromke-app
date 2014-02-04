@@ -9,19 +9,30 @@
 #import "TPostViewController.h"
 #import "TCircleView.h"
 #import "TLogInViewController.h"
+#import "TLocationUtility.h"
+#import "TAppDelegate.h"
+#import "UIImage+ResizeAdditions.h"
+#import "UIImage+RoundedCornerAdditions.h"
+#import "UIImage+AlphaAdditions.h"
+#import "MBProgressHUD.h"
+
 
 #define IMAGE @"image"
 #define STICKER_POINTS @"postPoints"
 #define CAMERA_POINTS @"imagePoints"
 
-@interface TPostViewController () <PFLogInViewControllerDelegate>
+@interface TPostViewController () <PFLogInViewControllerDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet TCircleView *circleView;
 @property (weak, nonatomic) IBOutlet UIImageView *stickerImage;
 @property (weak, nonatomic) IBOutlet UISlider *stickerSeverity;
 @property (weak, nonatomic) IBOutlet UILabel *stickerPoints;
 @property (weak, nonatomic) IBOutlet UILabel *cameraPoints;
-@property (weak, nonatomic) IBOutlet UITextField *stickerDescription;
+@property (weak, nonatomic) IBOutlet UITextView *stickerDescription;
+
+@property (nonatomic, strong) NSMutableArray* stickerImages;
+@property (nonatomic, strong) UIImagePickerController* imagePickerController;
+@property (nonatomic, strong) MBProgressHUD *hud;
 
 - (IBAction)postSticker:(id)sender;
 - (IBAction)takePicture:(id)sender;
@@ -36,13 +47,17 @@
     if (self) {
         // Custom initialization
     }
+    
     return self;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.stickerDescription.contentInset = UIEdgeInsetsMake(-4,-8,0,0);
+    self.stickerImages = [@[] mutableCopy];    
 	// Do any additional setup after loading the view.
+    self.view.backgroundColor = [UIColor colorWithRed:226/255.0f green:226/255.0f blue:226/255.0f alpha:1.0f];
     [self updateSeverityColor:0.5];
 }
 
@@ -81,26 +96,134 @@
 }
 
 - (IBAction)postSticker:(id)sender {
-    if ([PFUser currentUser]) {
-        NSLog(@"User available");
-    } else {
+    if (![PFUser currentUser]) {
         [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You must login in order to post a sticker !!!" delegate:self cancelButtonTitle:@"Not Now" otherButtonTitles: @"Login", nil] show];
+        return;
     }
+    
+    if (![self.stickerDescription.text length]) {
+        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Please enter comment to post !!!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+        return;
+    }
+    
+        NSLog(@"User available");
+        if (self.stickerImages.count) {
+            //Post image along with sticker
+            UIImage* img = self.stickerImages[0];
+            UIImage *thumbnailImage = [img thumbnailImage:86.0f transparentBorder:0.0f cornerRadius:10.0f interpolationQuality:kCGInterpolationDefault];
+            
+            NSData* imageData = UIImagePNGRepresentation(self.stickerImages[0]);
+            NSData* thumbnailData = UIImagePNGRepresentation(thumbnailImage);
+            __block PFFile* imageFile = [PFFile fileWithData:imageData];
+            __block PFFile* thumbnailFile = [PFFile fileWithData:thumbnailData];
+            [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (succeeded) {
+                    [thumbnailFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                        if (succeeded) {
+                            __block PFObject *imagesObject = [PFObject objectWithClassName:@"Image"];
+                            imagesObject[@"image"] = imageFile;
+                            imagesObject[@"thumbnail"] = thumbnailFile;
+                            [imagesObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                                if (succeeded) {
+                                    CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
+                                    
+                                    PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
+                                    stickerPost[@"data"] = self.stickerDescription.text;
+                                    stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
+                                    stickerPost[@"user"] = [PFUser currentUser];
+                                    stickerPost[@"sticker"] = self.postSticker;
+                                    PFRelation* relation = stickerPost[@"images"];
+                                    [relation addObject:imagesObject];
+                                    
+                                    [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                                        [MBProgressHUD hideHUDForView:self.view animated:YES];
+                                        if (succeeded) {
+                                            [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Sticker posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                                        } else {
+                                            NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
+                                        }
+                                    }];
+                                } else {
+                                    [MBProgressHUD hideHUDForView:self.view animated:YES];
+                                    NSLog(@"Failed with Image object Error: %@", error.localizedDescription);
+                                }
+                            }];
+                        } else {
+                            [MBProgressHUD hideHUDForView:self.view animated:YES];
+                            NSLog(@"Failed with Thumbnail Error: %@", error.localizedDescription);
+                        }
+                    }];
+                } else {
+                    [MBProgressHUD hideHUDForView:self.view animated:YES];
+                    NSLog(@"Failed with Image Error: %@", error.localizedDescription);
+                }
+            }];
+        } else {
+            //Post only content
+        }
 }
+
+
+
+
 
 -(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
-        TLogInViewController *loginViewController = [[TLogInViewController alloc] init];
-        [loginViewController setDelegate:self];
-        loginViewController.fields = PFLogInFieldsPasswordForgotten | PFLogInFieldsFacebook | PFLogInFieldsSignUpButton | PFLogInFieldsUsernameAndPassword;
-        loginViewController.facebookPermissions = @[ @"user_about_me" ];
-        
-        [self presentViewController:loginViewController animated:YES completion:nil];
+        [(TAppDelegate*)[[UIApplication sharedApplication] delegate] presentLoginViewControllerAnimated:NO];
     }
 }
 
 - (IBAction)takePicture:(id)sender {
+    if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+    {
+        [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+    } else {
+        UIActionSheet* sourceSelection = [[UIActionSheet alloc] initWithTitle:@"Select source type" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Camera", @"Photo Library", nil];
+        [sourceSelection showInView:self.view];
+    }
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+    } else {
+        [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+    }
+}
+
+- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType
+{
+    UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+    imagePickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
+    imagePickerController.sourceType = sourceType;
+    imagePickerController.delegate = self;
     
+    self.imagePickerController = imagePickerController;
+    [self presentViewController:self.imagePickerController animated:YES completion:nil];
+}
+
+#pragma mark - UIImagePickerControllerDelegate
+
+// This method is called when an image has been chosen from the library or taken from the camera.
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
+    [self.stickerImages addObject:image];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    self.imagePickerController = nil;
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [self dismissViewControllerAnimated:YES completion:NULL];
+    self.imagePickerController = nil;
+}
+
+#pragma mark - TextView methods
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    return (newLength > POSTDATA_LENGTH) ? NO : YES;
 }
 
 @end

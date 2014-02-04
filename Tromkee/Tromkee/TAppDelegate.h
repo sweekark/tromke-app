@@ -15,4 +15,6 @@
 
 @property (nonatomic, readonly) int networkStatus;
 
+- (void)presentLoginViewControllerAnimated:(BOOL)animated;
+
 @end

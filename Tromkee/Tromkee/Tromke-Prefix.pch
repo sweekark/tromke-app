@@ -15,5 +15,7 @@
     #import <Foundation/Foundation.h>
 
     #import <Parse/Parse.h>
-    #import "TConfigure.h"
+    #import "TConstants.h"
+    #import "TUtility.h"
+
 #endif

@@ -51,6 +51,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    self.view.backgroundColor = STICKERS_BG_COLOR;
 }
 
 -(void)viewWillAppear:(BOOL)animated {

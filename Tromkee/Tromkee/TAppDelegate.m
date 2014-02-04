@@ -9,14 +9,17 @@
 #import "TAppDelegate.h"
 #import <CoreLocation/CoreLocation.h>
 #import "TLocationUtility.h"
+#import "TLogInViewController.h"
+#import "MBProgressHUD.h"
 
-@interface TAppDelegate()
+@interface TAppDelegate() <PFLogInViewControllerDelegate>
 
 @property (nonatomic, strong) Reachability *hostReach;
 @property (nonatomic, strong) Reachability *internetReach;
 @property (nonatomic, strong) Reachability *wifiReach;
 
 @property (nonatomic) int networkStatus;
+@property (nonatomic, strong) MBProgressHUD *hud;
 
 @end
 
@@ -24,15 +27,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    //Using Satyam's credentials.
-    //[Parse setApplicationId:@"N0FkYQfbbqKDUVt2qykOno04N81LbctgqhyHAan8" clientKey:@"OlKJmRgLr9dLh2eWrtrXEKK3U0e3YLQokaEQLl2U"];
+    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:160/255.0f green:234/255.0f blue:242/255.0f alpha:1.0f]];
 
-    
-    // ****************************************************************************
     //Following are Tromkee's credentials
     [Parse setApplicationId:kParseApplicationID clientKey:kParseClientKey];
     [PFFacebookUtils initializeFacebook];
-    //****************************************************************************
+
     // Track app open.
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
@@ -44,10 +44,8 @@
     PFACL *defaultACL = [PFACL ACL];
     // If you would like all objects to be private by default, remove this line.
     [defaultACL setPublicReadAccess:YES];
-    
     [PFACL setDefaultACL:defaultACL withAccessForCurrentUser:YES];
 
-    // Override point for customization after application launch.
     return YES;
 }
 							
@@ -82,6 +80,11 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    return [PFFacebookUtils handleOpenURL:url];
+}
+
+
 - (void)monitorReachability {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
     
@@ -110,5 +113,101 @@
     return self.networkStatus != NotReachable;
 }
 
+#pragma mark - PFLoginViewController
+
+- (void)presentLoginViewControllerAnimated:(BOOL)animated {
+
+    TLogInViewController *loginViewController = [[TLogInViewController alloc] init];
+    [loginViewController setDelegate:self];
+    loginViewController.fields = PFLogInFieldsPasswordForgotten | PFLogInFieldsFacebook | PFLogInFieldsSignUpButton | PFLogInFieldsUsernameAndPassword;
+    loginViewController.facebookPermissions = @[ @"user_about_me" ];
+
+    [(UINavigationController *)self.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
+}
+
+- (void)presentLoginViewController {
+    [self presentLoginViewControllerAnimated:YES];
+}
+
+
+- (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
+
+    [logInController dismissViewControllerAnimated:YES completion:nil];
+    
+//    if (![self shouldProceedToMainInterface:user]) {
+//        UINavigationController* navControler = (UINavigationController *)self.window.rootViewController;
+//        self.hud = [MBProgressHUD showHUDAddedTo:navControler.presentedViewController.view animated:YES];
+//        self.hud.labelText = NSLocalizedString(@"Loading", nil);
+//        self.hud.dimBackground = YES;
+//    }
+//    
+//    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+//        if (!error) {
+//            [self facebookRequestDidLoad:result];
+//        } else {
+//            [self facebookRequestDidFailWithError:error];
+//        }
+//    }];
+}
+
+- (BOOL)shouldProceedToMainInterface:(PFUser *)user {
+    if ([TUtility userHasValidFacebookData:[PFUser currentUser]]) {
+        UINavigationController* navControler = (UINavigationController *)self.window.rootViewController;
+        [MBProgressHUD hideHUDForView:navControler.presentedViewController.view animated:YES];
+//        [self presentTabBarController];
+
+        [(UINavigationController *)self.window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+        return YES;
+    }
+    
+    return NO;
+}
+
+#pragma mark - Facebook Methods
+
+- (void)facebookRequestDidLoad:(id)result {
+    // This method is called twice - once for the user's /me profile, and a second time when obtaining their friends. We will try and handle both scenarios in a single method.
+    PFUser *user = [PFUser currentUser];
+    
+    self.hud.labelText = NSLocalizedString(@"Creating Profile", nil);
+        
+    if (user) {
+        NSString *facebookName = result[@"name"];
+        if (facebookName && [facebookName length] != 0) {
+            [user setObject:facebookName forKey:kPAPUserDisplayNameKey];
+        } else {
+            [user setObject:@"TromkeeUser" forKey:kPAPUserDisplayNameKey];
+        }
+        
+        NSString *facebookId = result[@"id"];
+        if (facebookId && [facebookId length] != 0) {
+            [user setObject:facebookId forKey:kPAPUserFacebookIDKey];
+        }
+        
+        [user saveEventually];
+    }
+}
+
+- (void)facebookRequestDidFailWithError:(NSError *)error {
+    NSLog(@"Facebook error: %@", error);
+    
+    if ([PFUser currentUser]) {
+        if ([[error userInfo][@"error"][@"type"] isEqualToString:@"OAuthException"]) {
+            NSLog(@"The Facebook token was invalidated. Logging out.");
+            [self logOut];
+        }
+    }
+}
+
+- (void)logOut {
+    // Clear all caches
+    [PFQuery clearAllCachedResults];
+    
+    // Log out
+    [PFUser logOut];
+    
+    // clear out cached data, view controllers, etc
+    [(UINavigationController *)self.window.rootViewController popToRootViewControllerAnimated:NO];
+}
 
 @end

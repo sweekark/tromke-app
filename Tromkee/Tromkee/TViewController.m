@@ -11,6 +11,7 @@
 #import "TLocationUtility.h"
 #import <MapKit/MapKit.h>
 #import "TCategoriesViewController.h"
+#import "TAppDelegate.h"
 
 @interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate>
 
@@ -18,7 +19,7 @@
 @property (weak, nonatomic) IBOutlet UIView *container;
 @property (nonatomic) BOOL firstTimeLogin;
 @property (strong, nonatomic) TCategoriesViewController* categoriesVC;
-
+@property (nonatomic) BOOL isCategoriesExpanded;
 @end
 
 @implementation TViewController
@@ -31,21 +32,19 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated {
+    if (![PFUser currentUser]) {
+        [(TAppDelegate*)[[UIApplication sharedApplication] delegate] presentLoginViewControllerAnimated:NO];
+        return;
+    }
+    
     [super viewWillAppear:animated];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    if (![PFUser currentUser] && self.firstTimeLogin) {
-        self.firstTimeLogin = NO;
-        TLogInViewController *loginViewController = [[TLogInViewController alloc] init];
-        [loginViewController setDelegate:self];
-        loginViewController.fields = PFLogInFieldsPasswordForgotten | PFLogInFieldsFacebook | PFLogInFieldsSignUpButton | PFLogInFieldsUsernameAndPassword;
-        loginViewController.facebookPermissions = @[ @"user_about_me" ];
-        
-        [self presentViewController:loginViewController animated:YES completion:nil];
-        return;
+    if (self.isCategoriesExpanded) {
+        [self showCategoriesView];
     }
+    [super viewDidAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -53,34 +52,6 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-//
-//- (IBAction)registerUser:(id)sender {
-//    TSignUpViewController* signVC = [[TSignUpViewController alloc] init];
-//    signVC.fields = PFSignUpFieldsUsernameAndPassword | PFSignUpFieldsEmail | PFSignUpFieldsSignUpButton | PFSignUpFieldsDismissButton;
-//    signVC.delegate = self;
-//    [self presentViewController:signVC animated:YES completion:nil];
-//}
-//
-//- (IBAction)authenticateUser:(id)sender {
-//    TLoginViewController* loginVC = [[TLoginViewController alloc] init];
-//    loginVC.fields = PFLogInFieldsUsernameAndPassword | PFLogInFieldsLogInButton | PFLogInFieldsFacebook | PFLogInFieldsDismissButton;
-//    loginVC.facebookPermissions = @[ @"user_about_me" ];
-//    loginVC.delegate = self;
-//    [self presentViewController:loginVC animated:YES completion:nil];
-//    
-//}
-//
-//#pragma mark - Signup Delegates
-//
-//- (void)signUpViewController:(PFSignUpViewController *)signUpController didSignUpUser:(PFUser *)user {
-//    NSLog(@"Signup Success");
-//    [signUpController dismissViewControllerAnimated:YES completion:nil];
-//}
-//
-//- (void)signUpViewController:(PFSignUpViewController *)signUpController didFailToSignUpWithError:(NSError *)error {
-//    NSLog(@"Signup Failed");
-//    [signUpController dismissViewControllerAnimated:YES completion:nil];
-//}
 
 #pragma mark - Login Delegates
 
@@ -126,6 +97,7 @@
         self.container.frame = r;
     } completion:^(BOOL finished) {
         self.categoriesVC.hideButton.hidden = NO;
+        self.isCategoriesExpanded = YES;
     }];
 }
 
@@ -136,6 +108,7 @@
         self.container.frame = r;
     } completion:^(BOOL finished) {
         self.categoriesVC.hideButton.hidden = YES;
+        self.isCategoriesExpanded = NO;
     }];
 }
 

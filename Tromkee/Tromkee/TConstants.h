@@ -1,5 +1,5 @@
 //
-//  TConfigure.h
+//  TConstants.h
 //  Tromkee
 //
 //  Created by Satyanarayana SVV on 1/9/14.
@@ -11,13 +11,16 @@
 //Google API Key
 static NSString* const kAPIKey = @"AIzaSyDoSYLeQxoHclsIKnNvDoTSrUKgupiUvO8"; // by satyam
 
-//Parse
-//Satyam
-//static NSString* applicationID = @"N0FkYQfbbqKDUVt2qykOno04N81LbctgqhyHAan8";
-//static NSString* clientKey = @"OlKJmRgLr9dLh2eWrtrXEKK3U0e3YLQokaEQLl2U";
-
 static NSString* const kParseApplicationID = @"IgOuPSL7tE4lSUYDUoqeovRPalXs7PWV61xfsIKb";
 static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVNi1T";
 
 
 #define TROMKE_USER_LOCATION_UPDATED @"TROMKE_USER_LOCATION_UPDATED"
+
+#define STICKERS_BG_COLOR [UIColor colorWithRed:240/255.0f green:242/255.0f blue:242/255.0f alpha:1.0f];
+
+#define POSTDATA_LENGTH 140
+
+static NSString* const  kPAPUserFacebookIDKey = @"facebookId";
+static NSString* const  kPAPUserDisplayNameKey = @"username";
+

@@ -19,9 +19,10 @@
 @property (weak, nonatomic) IBOutlet UICollectionView *categoriesView;
 @property (nonatomic, strong) NSArray* allCategories;
 @property (nonatomic, strong) TCategoryStickersViewController* stickersVC;
-@property (nonatomic) BOOL isStickersShowing;
 @property (nonatomic) int currentSelectedItem;
 @property (nonatomic, strong) UINavigationController* navController;
+
+@property (nonatomic) BOOL isStickersShowing;
 
 - (IBAction)hideCategories:(id)sender;
 @end
@@ -40,7 +41,6 @@
 - (void)viewDidLoad
 {
     self.currentSelectedItem = -1;
-    self.isStickersShowing = NO;
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     PFQuery* categoriesQuery = [PFQuery queryWithClassName:@"category"];
@@ -99,7 +99,7 @@
 
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.currentSelectedItem == indexPath.item && !self.isStickersShowing) {
+    if (self.currentSelectedItem == indexPath.item && self.isStickersShowing) {
         return;
     }
 
