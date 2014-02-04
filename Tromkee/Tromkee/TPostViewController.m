@@ -29,10 +29,12 @@
 @property (weak, nonatomic) IBOutlet UILabel *stickerPoints;
 @property (weak, nonatomic) IBOutlet UILabel *cameraPoints;
 @property (weak, nonatomic) IBOutlet UITextView *stickerDescription;
+@property (weak, nonatomic) IBOutlet UIView* bottomView;
 
 @property (nonatomic, strong) NSMutableArray* stickerImages;
 @property (nonatomic, strong) UIImagePickerController* imagePickerController;
 @property (nonatomic, strong) MBProgressHUD *hud;
+@property (nonatomic) BOOL isCommentEditing;
 
 - (IBAction)postSticker:(id)sender;
 - (IBAction)takePicture:(id)sender;
@@ -54,10 +56,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.stickerDescription.contentInset = UIEdgeInsetsMake(-4,-8,0,0);
+    self.stickerDescription.contentInset = UIEdgeInsetsMake(-4, 0, 0, 0);
     self.stickerImages = [@[] mutableCopy];    
 	// Do any additional setup after loading the view.
-    self.view.backgroundColor = [UIColor colorWithRed:226/255.0f green:226/255.0f blue:226/255.0f alpha:1.0f];
+    self.view.backgroundColor = STICKERS_BG_COLOR;
+    self.bottomView.backgroundColor = STICKER_POST_BOTTOM_COLOR;
+    
     [self updateSeverityColor:0.5];
 }
 
@@ -96,6 +100,10 @@
 }
 
 - (IBAction)postSticker:(id)sender {
+    if (self.isCommentEditing) {
+        [self.stickerDescription resignFirstResponder];
+    }
+    
     if (![PFUser currentUser]) {
         [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You must login in order to post a sticker !!!" delegate:self cancelButtonTitle:@"Not Now" otherButtonTitles: @"Login", nil] show];
         return;
@@ -106,61 +114,89 @@
         return;
     }
     
-        NSLog(@"User available");
-        if (self.stickerImages.count) {
-            //Post image along with sticker
-            UIImage* img = self.stickerImages[0];
-            UIImage *thumbnailImage = [img thumbnailImage:86.0f transparentBorder:0.0f cornerRadius:10.0f interpolationQuality:kCGInterpolationDefault];
-            
-            NSData* imageData = UIImagePNGRepresentation(self.stickerImages[0]);
-            NSData* thumbnailData = UIImagePNGRepresentation(thumbnailImage);
-            __block PFFile* imageFile = [PFFile fileWithData:imageData];
-            __block PFFile* thumbnailFile = [PFFile fileWithData:thumbnailData];
-            [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (succeeded) {
-                    [thumbnailFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                        if (succeeded) {
-                            __block PFObject *imagesObject = [PFObject objectWithClassName:@"Image"];
-                            imagesObject[@"image"] = imageFile;
-                            imagesObject[@"thumbnail"] = thumbnailFile;
-                            [imagesObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                                if (succeeded) {
-                                    CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
-                                    
-                                    PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
-                                    stickerPost[@"data"] = self.stickerDescription.text;
-                                    stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
-                                    stickerPost[@"user"] = [PFUser currentUser];
-                                    stickerPost[@"sticker"] = self.postSticker;
-                                    PFRelation* relation = stickerPost[@"images"];
-                                    [relation addObject:imagesObject];
-                                    
-                                    [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                                        [MBProgressHUD hideHUDForView:self.view animated:YES];
-                                        if (succeeded) {
+    NSLog(@"User available");
+    __block UIViewController* vc = [self topMostController];
+    self.hud = [MBProgressHUD showHUDAddedTo:vc.view animated:YES];
+    self.hud.labelText = @"Posting...";
+    self.hud.dimBackground = YES;
+    
+    if (self.stickerImages.count) {
+        //Post image along with sticker
+        UIImage* img = self.stickerImages[0];
+        UIImage *thumbnailImage = [img thumbnailImage:86.0f transparentBorder:0.0f cornerRadius:10.0f interpolationQuality:kCGInterpolationDefault];
+        
+        NSData* imageData = UIImagePNGRepresentation(self.stickerImages[0]);
+        NSData* thumbnailData = UIImagePNGRepresentation(thumbnailImage);
+        __block PFFile* imageFile = [PFFile fileWithData:imageData];
+        __block PFFile* thumbnailFile = [PFFile fileWithData:thumbnailData];
+        [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                [thumbnailFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    if (succeeded) {
+                        __block PFObject *imagesObject = [PFObject objectWithClassName:@"Image"];
+                        imagesObject[@"image"] = imageFile;
+                        imagesObject[@"thumbnail"] = thumbnailFile;
+                        [imagesObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                            if (succeeded) {
+                                CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
+                                
+                                PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
+                                stickerPost[@"data"] = self.stickerDescription.text;
+                                stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
+                                stickerPost[@"user"] = [PFUser currentUser];
+                                stickerPost[@"sticker"] = self.postSticker;
+                                PFRelation* relation = stickerPost[@"images"];
+                                [relation addObject:imagesObject];
+                                
+                                [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                                    [MBProgressHUD hideHUDForView:vc.view animated:YES];
+                                    if (succeeded) {
+                                        dispatch_async(dispatch_get_main_queue(), ^{
                                             [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Sticker posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-                                        } else {
-                                            NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
-                                        }
-                                    }];
-                                } else {
-                                    [MBProgressHUD hideHUDForView:self.view animated:YES];
-                                    NSLog(@"Failed with Image object Error: %@", error.localizedDescription);
-                                }
-                            }];
-                        } else {
-                            [MBProgressHUD hideHUDForView:self.view animated:YES];
-                            NSLog(@"Failed with Thumbnail Error: %@", error.localizedDescription);
-                        }
-                    }];
-                } else {
-                    [MBProgressHUD hideHUDForView:self.view animated:YES];
-                    NSLog(@"Failed with Image Error: %@", error.localizedDescription);
-                }
-            }];
-        } else {
-            //Post only content
-        }
+                                            [self.navigationController popViewControllerAnimated:YES];
+                                        });
+
+                                    } else {
+                                        NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
+                                    }
+                                }];
+                            } else {
+                                [MBProgressHUD hideHUDForView:vc.view animated:YES];
+                                NSLog(@"Failed with Image object Error: %@", error.localizedDescription);
+                            }
+                        }];
+                    } else {
+                        [MBProgressHUD hideHUDForView:vc.view animated:YES];
+                        NSLog(@"Failed with Thumbnail Error: %@", error.localizedDescription);
+                    }
+                }];
+            } else {
+                [MBProgressHUD hideHUDForView:vc.view animated:YES];
+                NSLog(@"Failed with Image Error: %@", error.localizedDescription);
+            }
+        }];
+    } else {
+        //Post only content
+        CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
+        
+        PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
+        stickerPost[@"data"] = self.stickerDescription.text;
+        stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
+        stickerPost[@"user"] = [PFUser currentUser];
+        stickerPost[@"sticker"] = self.postSticker;
+        
+        [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            [MBProgressHUD hideHUDForView:vc.view animated:YES];
+            if (succeeded) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Sticker posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                    [self.navigationController popViewControllerAnimated:YES];
+                });
+            } else {
+                NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
+            }
+        }];
+    }
 }
 
 
@@ -193,6 +229,10 @@
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType
 {
+    if (self.isCommentEditing) {
+        [self.stickerDescription resignFirstResponder];
+    }
+    
     UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
     imagePickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
     imagePickerController.sourceType = sourceType;
@@ -221,9 +261,47 @@
 
 #pragma mark - TextView methods
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    NSUInteger newLength = [textField.text length] + [string length] - range.length;
-    return (newLength > POSTDATA_LENGTH) ? NO : YES;
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+    if([text isEqualToString:@"\n"])
+    {
+        [textView resignFirstResponder];
+        return YES;
+    }
+    
+    return textView.text.length + (text.length - range.length) <= POSTDATA_LENGTH;
 }
 
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    self.isCommentEditing = YES;
+    [UIView animateWithDuration:0.35 animations:^{
+        UIViewController* vc = [self topMostController];
+        
+        CGRect r = vc.view.frame;
+        r.origin.y = -216;
+        vc.view.frame = r;
+    }];
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView {
+    self.isCommentEditing = NO;
+    [UIView animateWithDuration:0.1 animations:^{
+        UIViewController* vc = [self topMostController];
+        
+        CGRect r = vc.view.frame;
+        r.origin.y = 0;
+        vc.view.frame = r;
+    }];
+}
+
+- (UIViewController*) topMostController
+{
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    
+    return topController;
+}
 @end
