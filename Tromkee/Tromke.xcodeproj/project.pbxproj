@@ -18,6 +18,7 @@
 		455C01111879C60E00D54908 /* BackgroundLogin-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 455C010E1879C60E00D54908 /* BackgroundLogin-568h@2x.png */; };
 		455C01121879C60E00D54908 /* backgroundLogin.png in Resources */ = {isa = PBXBuildFile; fileRef = 455C010F1879C60E00D54908 /* backgroundLogin.png */; };
 		455C01131879C60E00D54908 /* backgroundLogin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 455C01101879C60E00D54908 /* backgroundLogin@2x.png */; };
+		4563F2E418A4B1EB00E8911E /* TStickerAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F2E318A4B1EB00E8911E /* TStickerAnnotation.m */; };
 		457C8A861893B02100D6DA40 /* TCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 457C8A851893B02100D6DA40 /* TCircleView.m */; };
 		45A2E87E18764FF1009A6171 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E87D18764FF1009A6171 /* Foundation.framework */; };
 		45A2E88018764FF1009A6171 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E87F18764FF1009A6171 /* CoreGraphics.framework */; };
@@ -86,6 +87,8 @@
 		455C010E1879C60E00D54908 /* BackgroundLogin-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BackgroundLogin-568h@2x.png"; sourceTree = "<group>"; };
 		455C010F1879C60E00D54908 /* backgroundLogin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backgroundLogin.png; sourceTree = "<group>"; };
 		455C01101879C60E00D54908 /* backgroundLogin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backgroundLogin@2x.png"; sourceTree = "<group>"; };
+		4563F2E218A4B1EB00E8911E /* TStickerAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TStickerAnnotation.h; sourceTree = "<group>"; };
+		4563F2E318A4B1EB00E8911E /* TStickerAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TStickerAnnotation.m; sourceTree = "<group>"; };
 		457C8A841893B02100D6DA40 /* TCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCircleView.h; sourceTree = "<group>"; };
 		457C8A851893B02100D6DA40 /* TCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCircleView.m; sourceTree = "<group>"; };
 		45A2E87A18764FF1009A6171 /* Tromke.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tromke.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -250,6 +253,8 @@
 				453AE94D188423F00099D8B0 /* TLocationUtility.m */,
 				45A2E89218764FF1009A6171 /* TViewController.h */,
 				45A2E89318764FF1009A6171 /* TViewController.m */,
+				4563F2E218A4B1EB00E8911E /* TStickerAnnotation.h */,
+				4563F2E318A4B1EB00E8911E /* TStickerAnnotation.m */,
 				453CB8F41885B65700D7019D /* Categories */,
 				45309870187DBBD0005B3B5F /* TLogInViewController.h */,
 				45309871187DBBD0005B3B5F /* TLogInViewController.m */,
@@ -445,6 +450,7 @@
 				453CB8F01885B5BE00D7019D /* TCategoriesViewController.m in Sources */,
 				45FC756018A017E10089255A /* UIImage+AlphaAdditions.m in Sources */,
 				453CB8FA1885C5D300D7019D /* TCategoryStickerCell.m in Sources */,
+				4563F2E418A4B1EB00E8911E /* TStickerAnnotation.m in Sources */,
 				457C8A861893B02100D6DA40 /* TCircleView.m in Sources */,
 				454BDE0118890101009DC4F6 /* TPostViewController.m in Sources */,
 				453CB8FD1885C7B700D7019D /* TCategoryStickersViewController.m in Sources */,

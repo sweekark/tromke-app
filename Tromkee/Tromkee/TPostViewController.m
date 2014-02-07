@@ -109,10 +109,10 @@
         return;
     }
     
-    if (![self.stickerDescription.text length]) {
-        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Please enter comment to post !!!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-        return;
-    }
+//    if (![self.stickerDescription.text length]) {
+//        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Please enter comment to post !!!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+//        return;
+//    }
     
     NSLog(@"User available");
     __block UIViewController* vc = [self topMostController];
@@ -145,6 +145,8 @@
                                 stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
                                 stickerPost[@"user"] = [PFUser currentUser];
                                 stickerPost[@"sticker"] = self.postSticker;
+                                stickerPost[@"severity"] = [NSNumber numberWithFloat:self.stickerSeverity.value];
+                                stickerPost[@"points"] = @([self.postSticker[@"postPoints"] integerValue] + [self.postSticker[@"imagePoints"] integerValue]);
                                 PFRelation* relation = stickerPost[@"images"];
                                 [relation addObject:imagesObject];
                                 
@@ -184,6 +186,8 @@
         stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
         stickerPost[@"user"] = [PFUser currentUser];
         stickerPost[@"sticker"] = self.postSticker;
+        stickerPost[@"severity"] = [NSNumber numberWithFloat:self.stickerSeverity.value];
+        stickerPost[@"points"] = self.postSticker[@"postPoints"];
         
         [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             [MBProgressHUD hideHUDForView:vc.view animated:YES];

@@ -22,6 +22,7 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 
 
 #define POSTDATA_LENGTH 140
+#define STICKER_QUERY_RADIUS 2.0
 
 static NSString* const  kPAPUserFacebookIDKey = @"facebookId";
 static NSString* const  kPAPUserDisplayNameKey = @"username";

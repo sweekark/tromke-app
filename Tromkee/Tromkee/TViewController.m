@@ -12,6 +12,7 @@
 #import <MapKit/MapKit.h>
 #import "TCategoriesViewController.h"
 #import "TAppDelegate.h"
+#import "TStickerAnnotation.h"
 
 @interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate>
 
@@ -20,6 +21,9 @@
 @property (nonatomic) BOOL firstTimeLogin;
 @property (strong, nonatomic) TCategoriesViewController* categoriesVC;
 @property (nonatomic) BOOL isCategoriesExpanded;
+
+@property (nonatomic, strong) NSArray* stickerLocations;
+
 @end
 
 @implementation TViewController
@@ -81,6 +85,8 @@
     span.longitudeDelta = 0.0144927536; //1 mile
     region.span = span;
     [self.map setRegion:region animated:YES];
+    
+    [self updateStickers];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -110,6 +116,68 @@
         self.categoriesVC.hideButton.hidden = YES;
         self.isCategoriesExpanded = NO;
     }];
+}
+
+
+-(void)updateStickers {
+    TStickerAnnotation* ann = [[TStickerAnnotation alloc] init];
+    ann.coordinate = CLLocationCoordinate2DMake(38, -122);
+    [self.map addAnnotation:ann];
+    
+    CLLocationCoordinate2D userCoordinate = [[TLocationUtility sharedInstance] getUserCoordinate];
+    PFQuery* stickersQuery = [PFQuery queryWithClassName:@"Post"];
+//    [stickersQuery whereKey:@"location" nearGeoPoint:[PFGeoPoint geoPointWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude]];
+    [stickersQuery whereKey:@"location" nearGeoPoint:[PFGeoPoint geoPointWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude] withinMiles:1000];
+    stickersQuery.limit = 15;
+    
+    __weak TViewController* weakSelf = self;
+    [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            weakSelf.stickerLocations = objects;
+            [self performSelector:@selector(updateMapWithStickers) withObject:nil afterDelay:0.5];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Error in retrieving stickers" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+            });
+        }
+
+    }];
+}
+
+-(void)updateMapWithStickers {
+    for (PFObject* sticker in self.stickerLocations) {
+//        MKPointAnnotation* point = [[MKPointAnnotation alloc] init];
+//        PFGeoPoint* geoPoint = sticker[@"location"];
+//        point.coordinate = CLLocationCoordinate2DMake(geoPoint.latitude, geoPoint.longitude);
+//        point.title = @"Sample";
+//        [self.map addAnnotation:point];
+        TStickerAnnotation *annotation = [[TStickerAnnotation alloc] initWithObject:sticker];
+        [self.map addAnnotation:annotation];
+    }
+}
+
+
+#pragma mark - MKMapViewDelegate
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+    
+    if ([annotation isKindOfClass:[MKPointAnnotation class]]) {
+        return nil;
+    }
+    
+    static NSString *GeoPointAnnotationIdentifier = @"RedPin";
+    
+    MKPinAnnotationView *annotationView = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:GeoPointAnnotationIdentifier];
+    
+    if (!annotationView) {
+        annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:GeoPointAnnotationIdentifier];
+        annotationView.pinColor = MKPinAnnotationColorGreen;
+        annotationView.canShowCallout = YES;
+        annotationView.draggable = YES;
+        annotationView.animatesDrop = YES;
+    }
+    
+    return annotationView;
 }
 
 @end
