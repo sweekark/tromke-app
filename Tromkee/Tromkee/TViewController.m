@@ -33,6 +33,7 @@
     [super viewDidLoad];
     self.firstTimeLogin = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation:) name:TROMKE_USER_LOCATION_UPDATED object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateStickers) name:TROMKEE_UPDATE_STICKERS object:nil];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -126,7 +127,6 @@
     
     CLLocationCoordinate2D userCoordinate = [[TLocationUtility sharedInstance] getUserCoordinate];
     PFQuery* stickersQuery = [PFQuery queryWithClassName:@"Post"];
-//    [stickersQuery whereKey:@"location" nearGeoPoint:[PFGeoPoint geoPointWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude]];
     [stickersQuery whereKey:@"location" nearGeoPoint:[PFGeoPoint geoPointWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude] withinMiles:STICKER_QUERY_RADIUS];
     stickersQuery.limit = 15;
     
@@ -146,16 +146,10 @@
 
 -(void)updateMapWithStickers {
     for (PFObject* sticker in self.stickerLocations) {
-//        MKPointAnnotation* point = [[MKPointAnnotation alloc] init];
-//        PFGeoPoint* geoPoint = sticker[@"location"];
-//        point.coordinate = CLLocationCoordinate2DMake(geoPoint.latitude, geoPoint.longitude);
-//        point.title = @"Sample";
-//        [self.map addAnnotation:point];
         TStickerAnnotation *annotation = [[TStickerAnnotation alloc] initWithObject:sticker];
         [self.map addAnnotation:annotation];
     }
 }
-
 
 #pragma mark - MKMapViewDelegate
 

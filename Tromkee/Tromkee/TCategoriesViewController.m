@@ -99,9 +99,9 @@
 
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.currentSelectedItem == indexPath.item && self.isStickersShowing) {
-        return;
-    }
+//    if (self.currentSelectedItem == indexPath.item && self.isStickersShowing) {
+//        return;
+//    }
 
     self.currentSelectedItem = indexPath.item;
     if (!self.isStickersShowing) {

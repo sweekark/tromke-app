@@ -35,6 +35,17 @@
                                     <segue destination="rTm-1C-4Pa" kind="embed" identifier="Categories" id="GBz-vk-Igc"/>
                                 </connections>
                             </containerView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="TopBar" translatesAutoresizingMaskIntoConstraints="NO" id="tUo-Bj-hLE">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="64"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Tromke" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vgB-Uo-kly">
+                                <rect key="frame" x="126" y="30" width="68" height="24"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -56,7 +67,7 @@
         <!--Navigation Controller-->
         <scene sceneID="4Nx-0D-IhX">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ZXd-sE-E8Y" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="ZXd-sE-E8Y" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="rtS-X7-yfp">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -339,6 +350,7 @@
         <image name="Points" width="60" height="60"/>
         <image name="Send" width="60" height="60"/>
         <image name="StickerBG" width="60" height="60"/>
+        <image name="TopBar" width="320" height="44"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
