@@ -149,15 +149,13 @@
                                 stickerPost[@"points"] = @([self.postSticker[@"postPoints"] integerValue] + [self.postSticker[@"imagePoints"] integerValue]);
                                 stickerPost[@"images"] = imagesObject;
                                 
-//                                PFRelation* relation = stickerPost[@"images"];
-//                                [relation addObject:imagesObject];
-                                
                                 [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                                     [MBProgressHUD hideHUDForView:vc.view animated:YES];
                                     if (succeeded) {
                                         dispatch_async(dispatch_get_main_queue(), ^{
                                             [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Sticker posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
                                             [self.navigationController popViewControllerAnimated:YES];
+                                            [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
                                         });
 
                                     } else {
@@ -197,6 +195,7 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Sticker posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
                     [self.navigationController popViewControllerAnimated:YES];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
                 });
             } else {
                 NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
