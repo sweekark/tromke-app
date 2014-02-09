@@ -13,9 +13,9 @@
 - (id)initWithObject:(PFObject *)aObject {
     self = [super init];
     if (self) {
-        
         PFGeoPoint *geoPoint = aObject[@"location"];
         [self setGeoPoint:geoPoint];
+        self.annotationObject = aObject;
     }
     return self;
 }

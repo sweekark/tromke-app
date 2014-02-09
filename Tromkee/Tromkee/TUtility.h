@@ -8,8 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
+typedef void (^FileHandler)(NSData *imageData, NSError *error);
+
+
 @interface TUtility : NSObject
 
 + (BOOL)userHasValidFacebookData:(PFUser *)user;
+
++ (void)getImage:(PFFile*)file withObjectID:(NSString*)objID andHandler:(FileHandler)handler;
 
 @end

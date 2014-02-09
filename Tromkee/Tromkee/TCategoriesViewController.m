@@ -49,9 +49,6 @@
         if (error) {
             NSLog(@"Error in getting categories: %@", error.localizedDescription);
         } else {
-            for (PFObject* obj in objects) {
-                NSLog(@"%@", obj);
-            }
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.allCategories = objects;
                 [self.categoriesView reloadData];

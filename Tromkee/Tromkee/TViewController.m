@@ -13,6 +13,7 @@
 #import "TCategoriesViewController.h"
 #import "TAppDelegate.h"
 #import "TStickerAnnotation.h"
+#import "TCircleView.h"
 
 @interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate>
 
@@ -33,7 +34,7 @@
     [super viewDidLoad];
     self.firstTimeLogin = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation:) name:TROMKE_USER_LOCATION_UPDATED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateStickers) name:TROMKEE_UPDATE_STICKERS object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePostedStickers) name:TROMKEE_UPDATE_STICKERS object:nil];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -87,7 +88,7 @@
     region.span = span;
     [self.map setRegion:region animated:YES];
     
-    [self updateStickers];
+    [self updatePostedStickers];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -120,21 +121,20 @@
 }
 
 
--(void)updateStickers {
-    TStickerAnnotation* ann = [[TStickerAnnotation alloc] init];
-    ann.coordinate = CLLocationCoordinate2DMake(38, -122);
-    [self.map addAnnotation:ann];
-    
+-(void)updatePostedStickers {
     CLLocationCoordinate2D userCoordinate = [[TLocationUtility sharedInstance] getUserCoordinate];
-    PFQuery* stickersQuery = [PFQuery queryWithClassName:@"Post"];
+    PFQuery* stickersQuery = [PFQuery queryWithClassName:@"StickersInLocation"];
+    [stickersQuery includeKey:@"sticker"];
+    [stickersQuery includeKey:@"images"];
     [stickersQuery whereKey:@"location" nearGeoPoint:[PFGeoPoint geoPointWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude] withinMiles:STICKER_QUERY_RADIUS];
     stickersQuery.limit = 15;
     
     __weak TViewController* weakSelf = self;
     [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error) {
+            NSLog(@"Retrieved %d stickers on map", objects.count);
             weakSelf.stickerLocations = objects;
-            [self performSelector:@selector(updateMapWithStickers) withObject:nil afterDelay:0.5];
+            [self updateMapWithStickers];
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Error in retrieving stickers" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
@@ -159,17 +159,36 @@
         return nil;
     }
     
-    static NSString *GeoPointAnnotationIdentifier = @"RedPin";
+    static NSString *annotationIdentifier = @"StickerPin";
     
-    MKPinAnnotationView *annotationView = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:GeoPointAnnotationIdentifier];
+    MKAnnotationView *annotationView = (MKAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
     
     if (!annotationView) {
-        annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:GeoPointAnnotationIdentifier];
-        annotationView.pinColor = MKPinAnnotationColorGreen;
+        annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
         annotationView.canShowCallout = YES;
-        annotationView.draggable = YES;
-        annotationView.animatesDrop = YES;
     }
+    
+    PFObject* postObj = [(TStickerAnnotation*)annotation annotationObject];
+    PFObject* stickerObj = postObj[@"sticker"];
+    PFFile* stickerImage = stickerObj[@"image"];
+    [stickerImage getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!error) {
+                TCircleView* circleView = [[TCircleView alloc] init];
+                circleView.green = [postObj[@"severity"] floatValue];
+
+                UIImageView* imgView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:imageData]];
+                
+                CGRect r = imgView.frame;
+                r.size.height = r.size.width = 60;
+                imgView.frame = r;
+                circleView.frame = r;
+                
+                [annotationView addSubview:circleView];
+                [annotationView addSubview:imgView];
+            }
+        });
+    }];
     
     return annotationView;
 }

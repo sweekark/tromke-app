@@ -140,15 +140,17 @@
                             if (succeeded) {
                                 CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
                                 
-                                PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
+                                PFObject *stickerPost = [PFObject objectWithClassName:@"StickersInLocation"];
                                 stickerPost[@"data"] = self.stickerDescription.text;
                                 stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
                                 stickerPost[@"user"] = [PFUser currentUser];
                                 stickerPost[@"sticker"] = self.postSticker;
                                 stickerPost[@"severity"] = [NSNumber numberWithFloat:self.stickerSeverity.value];
                                 stickerPost[@"points"] = @([self.postSticker[@"postPoints"] integerValue] + [self.postSticker[@"imagePoints"] integerValue]);
-                                PFRelation* relation = stickerPost[@"images"];
-                                [relation addObject:imagesObject];
+                                stickerPost[@"images"] = imagesObject;
+                                
+//                                PFRelation* relation = stickerPost[@"images"];
+//                                [relation addObject:imagesObject];
                                 
                                 [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                                     [MBProgressHUD hideHUDForView:vc.view animated:YES];
@@ -181,7 +183,7 @@
         //Post only content
         CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
         
-        PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
+        PFObject *stickerPost = [PFObject objectWithClassName:@"StickersInLocation"];
         stickerPost[@"data"] = self.stickerDescription.text;
         stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
         stickerPost[@"user"] = [PFUser currentUser];
