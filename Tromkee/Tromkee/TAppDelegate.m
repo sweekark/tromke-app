@@ -134,34 +134,23 @@
 - (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
 
     [logInController dismissViewControllerAnimated:YES completion:nil];
-    
-//    if (![self shouldProceedToMainInterface:user]) {
-//        UINavigationController* navControler = (UINavigationController *)self.window.rootViewController;
-//        self.hud = [MBProgressHUD showHUDAddedTo:navControler.presentedViewController.view animated:YES];
-//        self.hud.labelText = NSLocalizedString(@"Loading", nil);
-//        self.hud.dimBackground = YES;
-//    }
-//    
-//    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-//        if (!error) {
-//            [self facebookRequestDidLoad:result];
-//        } else {
-//            [self facebookRequestDidFailWithError:error];
-//        }
-//    }];
-}
-
-- (BOOL)shouldProceedToMainInterface:(PFUser *)user {
-    if ([TUtility userHasValidFacebookData:[PFUser currentUser]]) {
-        UINavigationController* navControler = (UINavigationController *)self.window.rootViewController;
-        [MBProgressHUD hideHUDForView:navControler.presentedViewController.view animated:YES];
-//        [self presentTabBarController];
-
-        [(UINavigationController *)self.window.rootViewController dismissViewControllerAnimated:YES completion:nil];
-        return YES;
+    if ([PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
+        [FBRequestConnection startWithGraphPath:@"me" parameters:[NSDictionary dictionaryWithObject:@"picture,id,birthday,email,name,gender,username" forKey:@"fields"] HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+            if (!error) {
+                [self facebookRequestDidLoad:result];
+            } else {
+                [self facebookRequestDidFailWithError:error];
+            }
+        }];
+        
+//        [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+//            if (!error) {
+//                [self facebookRequestDidLoad:result];
+//            } else {
+//                [self facebookRequestDidFailWithError:error];
+//            }
+//        }];
     }
-    
-    return NO;
 }
 
 #pragma mark - Facebook Methods
@@ -170,20 +159,50 @@
     // This method is called twice - once for the user's /me profile, and a second time when obtaining their friends. We will try and handle both scenarios in a single method.
     PFUser *user = [PFUser currentUser];
     
-    self.hud.labelText = NSLocalizedString(@"Creating Profile", nil);
-        
     if (user) {
+//        picture,id,birthday,email,name,gender,username
+        
         NSString *facebookName = result[@"name"];
         if (facebookName && [facebookName length] != 0) {
             [user setObject:facebookName forKey:kPAPUserDisplayNameKey];
+            NSLog(@"FB Name: %@", facebookName);
         } else {
             [user setObject:@"TromkeeUser" forKey:kPAPUserDisplayNameKey];
         }
         
         NSString *facebookId = result[@"id"];
         if (facebookId && [facebookId length] != 0) {
+            NSLog(@"FB ID: %@", facebookId);
             [user setObject:facebookId forKey:kPAPUserFacebookIDKey];
         }
+
+        NSMutableDictionary* dict = [@{} mutableCopy];
+        NSDictionary* pictureURL = result[@"picture"];
+        if (pictureURL) {
+            dict[@"picture"] = [pictureURL valueForKeyPath:@"data.url"];
+        }
+                 
+        NSString* birthday = result[@"birthday"];
+        if (birthday) {
+            dict[@"birthday"] = birthday;
+        }
+        
+        NSString* email = result [@"email"];
+        if (email) {
+            dict[@"email"] = email;
+        }
+        
+        NSString* username = result[@"username"];
+        if (username) {
+            dict[@"username"] = username;
+        }
+        
+        NSString* gender = result[@"gender"];
+        if (gender) {
+            dict[@"gender"] = gender;
+        }
+        
+        user[@"profile"] = dict;
         
         [user saveEventually];
     }

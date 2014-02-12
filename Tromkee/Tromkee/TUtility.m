@@ -10,11 +10,6 @@
 
 @implementation TUtility
 
-+ (BOOL)userHasValidFacebookData:(PFUser *)user {
-    NSString *facebookId = [user objectForKey:kPAPUserFacebookIDKey];
-    return (facebookId && facebookId.length > 0);
-}
-
 +(NSString*)getCacheLocation {
     NSArray *writablePaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     return [writablePaths firstObject];

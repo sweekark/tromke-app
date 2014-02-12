@@ -25,6 +25,9 @@
 
 @property (nonatomic, strong) NSArray* stickerLocations;
 
+- (IBAction)eyeClicked:(id)sender;
+- (IBAction)searchClicked:(id)sender;
+
 @end
 
 @implementation TViewController
@@ -193,4 +196,9 @@
     return annotationView;
 }
 
+- (IBAction)eyeClicked:(id)sender {
+}
+
+- (IBAction)searchClicked:(id)sender {
+}
 @end
