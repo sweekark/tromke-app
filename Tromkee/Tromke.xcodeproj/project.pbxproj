@@ -47,6 +47,7 @@
 		45A2E8CB187650CE009A6171 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8BE187650CE009A6171 /* Security.framework */; };
 		45A2E8CC187650CE009A6171 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8BF187650CE009A6171 /* StoreKit.framework */; };
 		45A2E8CD187650CE009A6171 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8C0187650CE009A6171 /* SystemConfiguration.framework */; };
+		45D3E6CB18ACA3ED000AD55F /* TMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D3E6CA18ACA3ED000AD55F /* TMenuViewController.m */; };
 		45E54465188F934200FF8977 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E54461188F934200FF8977 /* FacebookSDK.framework */; };
 		45E54466188F934200FF8977 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E54462188F934200FF8977 /* Parse.framework */; };
 		45E54467188F934200FF8977 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 45E54464188F934200FF8977 /* Reachability.m */; };
@@ -122,6 +123,8 @@
 		45A2E8BE187650CE009A6171 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		45A2E8BF187650CE009A6171 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		45A2E8C0187650CE009A6171 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		45D3E6C918ACA3ED000AD55F /* TMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TMenuViewController.h; sourceTree = "<group>"; };
+		45D3E6CA18ACA3ED000AD55F /* TMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TMenuViewController.m; sourceTree = "<group>"; };
 		45E54461188F934200FF8977 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		45E54462188F934200FF8977 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		45E54463188F934200FF8977 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
@@ -246,6 +249,7 @@
 			isa = PBXGroup;
 			children = (
 				45E54460188F934200FF8977 /* External */,
+				45D3E6C818ACA3D8000AD55F /* MenuDisplay */,
 				45A2E88C18764FF1009A6171 /* TAppDelegate.h */,
 				45A2E88D18764FF1009A6171 /* TAppDelegate.m */,
 				45A2E88F18764FF1009A6171 /* Main.storyboard */,
@@ -297,6 +301,15 @@
 				45A2E8A518764FF1009A6171 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		45D3E6C818ACA3D8000AD55F /* MenuDisplay */ = {
+			isa = PBXGroup;
+			children = (
+				45D3E6C918ACA3ED000AD55F /* TMenuViewController.h */,
+				45D3E6CA18ACA3ED000AD55F /* TMenuViewController.m */,
+			);
+			name = MenuDisplay;
 			sourceTree = "<group>";
 		};
 		45E54460188F934200FF8977 /* External */ = {
@@ -448,6 +461,7 @@
 				453CB8F31885B65100D7019D /* TCategoryCell.m in Sources */,
 				453AE94E188423F00099D8B0 /* TLocationUtility.m in Sources */,
 				453CB8F01885B5BE00D7019D /* TCategoriesViewController.m in Sources */,
+				45D3E6CB18ACA3ED000AD55F /* TMenuViewController.m in Sources */,
 				45FC756018A017E10089255A /* UIImage+AlphaAdditions.m in Sources */,
 				453CB8FA1885C5D300D7019D /* TCategoryStickerCell.m in Sources */,
 				4563F2E418A4B1EB00E8911E /* TStickerAnnotation.m in Sources */,
@@ -589,6 +603,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tromkee/Tromke-Prefix.pch";
 				INFOPLIST_FILE = "Tromkee/Tromke-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;
 				PROVISIONING_PROFILE = "1D1FC807-4444-49BE-80C1-06E40EF2FF3F";
@@ -609,6 +624,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tromkee/Tromke-Prefix.pch";
 				INFOPLIST_FILE = "Tromkee/Tromke-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;
 				PROVISIONING_PROFILE = "1D1FC807-4444-49BE-80C1-06E40EF2FF3F";

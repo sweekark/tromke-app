@@ -14,14 +14,20 @@
 #import "TAppDelegate.h"
 #import "TStickerAnnotation.h"
 #import "TCircleView.h"
+#import "TMenuViewController.h"
 
-@interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate>
+@interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate>
 
 @property (weak, nonatomic) IBOutlet MKMapView *map;
-@property (weak, nonatomic) IBOutlet UIView *container;
-@property (nonatomic) BOOL firstTimeLogin;
+@property (weak, nonatomic) IBOutlet UIView *categoryContainer;
+@property (weak, nonatomic) IBOutlet UIView *menuContainer;
+
 @property (strong, nonatomic) TCategoriesViewController* categoriesVC;
+
+@property (nonatomic) BOOL firstTimeLogin;
 @property (nonatomic) BOOL isCategoriesExpanded;
+@property (nonatomic) BOOL isMenuExpanded;
+
 
 @property (nonatomic, strong) NSArray* stickerLocations;
 
@@ -36,6 +42,8 @@
 {
     [super viewDidLoad];
     self.firstTimeLogin = YES;
+    self.isMenuExpanded = NO;
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation:) name:TROMKE_USER_LOCATION_UPDATED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePostedStickers) name:TROMKEE_UPDATE_STICKERS object:nil];
 }
@@ -98,14 +106,17 @@
     if ([segue.identifier isEqualToString:@"Categories"]) {
         self.categoriesVC = segue.destinationViewController;
         self.categoriesVC.delegate = self;
+    } else if ([segue.identifier isEqualToString:@"Menu"]) {
+        TMenuViewController* menuVC = segue.destinationViewController;
+        menuVC.delegate = self;
     }
 }
 
 -(void)showCategoriesView {
     [UIView animateWithDuration:1.0 animations:^{
-        CGRect r = self.container.frame;
+        CGRect r = self.categoryContainer.frame;
         r.origin.y = self.view.frame.size.height - r.size.height;
-        self.container.frame = r;
+        self.categoryContainer.frame = r;
     } completion:^(BOOL finished) {
         self.categoriesVC.hideButton.hidden = NO;
         self.isCategoriesExpanded = YES;
@@ -114,9 +125,9 @@
 
 -(void)hideCategoriesView {
     [UIView animateWithDuration:1.0 animations:^{
-        CGRect r = self.container.frame;
+        CGRect r = self.categoryContainer.frame;
         r.origin.y = self.view.frame.size.height - 92;
-        self.container.frame = r;
+        self.categoryContainer.frame = r;
     } completion:^(BOOL finished) {
         self.categoriesVC.hideButton.hidden = YES;
         self.isCategoriesExpanded = NO;
@@ -197,8 +208,32 @@
 }
 
 - (IBAction)eyeClicked:(id)sender {
+    if (self.isMenuExpanded) {
+        //hide
+        [UIView animateWithDuration:0.5 animations:^{
+            CGRect r = self.menuContainer.frame;
+            r.origin.y = -568;
+            self.menuContainer.frame = r;
+        }];
+    } else {
+        //show
+        [UIView animateWithDuration:0.5 animations:^{
+            CGRect r = self.menuContainer.frame;
+            r.origin.y = 64;
+            self.menuContainer.frame = r;
+        }];
+    }
+    self.isMenuExpanded = !self.isMenuExpanded;
 }
 
 - (IBAction)searchClicked:(id)sender {
 }
+
+#pragma mark - Menu selection
+
+-(void)userClickedMenu:(int)rowNumber {
+    NSLog(@"User clicked: %d", rowNumber);
+    [self eyeClicked:nil];
+}
+
 @end
