@@ -15,6 +15,7 @@
 #import "TStickerAnnotation.h"
 #import "TCircleView.h"
 #import "TMenuViewController.h"
+#import "TStickerAnnotationView.h"
 
 @interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate>
 
@@ -86,10 +87,10 @@
     // Creates a marker in the center of the map.
     CLLocationCoordinate2D userCoordinate = [[TLocationUtility sharedInstance] getUserCoordinate];
     
-    MKPointAnnotation* point = [[MKPointAnnotation alloc] init];
-    point.coordinate = userCoordinate;
-    point.title = @"User Location";
-    [self.map addAnnotation:point];
+//    MKPointAnnotation* point = [[MKPointAnnotation alloc] init];
+//    point.coordinate = userCoordinate;
+//    point.title = @"User Location";
+//    [self.map addAnnotation:point];
     
     MKCoordinateRegion region;
     region.center = userCoordinate;
@@ -167,18 +168,21 @@
 
 #pragma mark - MKMapViewDelegate
 
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
+    NSLog(@"Tapped annotation");
+}
+
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
-    
     if ([annotation isKindOfClass:[MKPointAnnotation class]]) {
         return nil;
     }
     
     static NSString *annotationIdentifier = @"StickerPin";
     
-    MKAnnotationView *annotationView = (MKAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
+    TStickerAnnotationView *annotationView = (TStickerAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
     
     if (!annotationView) {
-        annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
+        annotationView = [[TStickerAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
         annotationView.canShowCallout = YES;
     }
     
@@ -188,18 +192,8 @@
     [stickerImage getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (!error) {
-                TCircleView* circleView = [[TCircleView alloc] init];
-                circleView.green = [postObj[@"severity"] floatValue];
-
-                UIImageView* imgView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:imageData]];
-                
-                CGRect r = imgView.frame;
-                r.size.height = r.size.width = 60;
-                imgView.frame = r;
-                circleView.frame = r;
-                
-                [annotationView addSubview:circleView];
-                [annotationView addSubview:imgView];
+                annotationView.image = [UIImage imageWithData:imageData];
+                annotationView.stickerColor = [postObj[@"severity"] floatValue];
             }
         });
     }];

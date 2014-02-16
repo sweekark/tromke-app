@@ -47,6 +47,7 @@
 		45A2E8CB187650CE009A6171 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8BE187650CE009A6171 /* Security.framework */; };
 		45A2E8CC187650CE009A6171 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8BF187650CE009A6171 /* StoreKit.framework */; };
 		45A2E8CD187650CE009A6171 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8C0187650CE009A6171 /* SystemConfiguration.framework */; };
+		45A6AF7518B109B900D26563 /* TStickerAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 45A6AF7418B109B900D26563 /* TStickerAnnotationView.m */; };
 		45D3E6CB18ACA3ED000AD55F /* TMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D3E6CA18ACA3ED000AD55F /* TMenuViewController.m */; };
 		45E54465188F934200FF8977 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E54461188F934200FF8977 /* FacebookSDK.framework */; };
 		45E54466188F934200FF8977 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E54462188F934200FF8977 /* Parse.framework */; };
@@ -123,6 +124,8 @@
 		45A2E8BE187650CE009A6171 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		45A2E8BF187650CE009A6171 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		45A2E8C0187650CE009A6171 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		45A6AF7318B109B900D26563 /* TStickerAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TStickerAnnotationView.h; sourceTree = "<group>"; };
+		45A6AF7418B109B900D26563 /* TStickerAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TStickerAnnotationView.m; sourceTree = "<group>"; };
 		45D3E6C918ACA3ED000AD55F /* TMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TMenuViewController.h; sourceTree = "<group>"; };
 		45D3E6CA18ACA3ED000AD55F /* TMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TMenuViewController.m; sourceTree = "<group>"; };
 		45E54461188F934200FF8977 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
@@ -257,6 +260,8 @@
 				453AE94D188423F00099D8B0 /* TLocationUtility.m */,
 				45A2E89218764FF1009A6171 /* TViewController.h */,
 				45A2E89318764FF1009A6171 /* TViewController.m */,
+				45A6AF7318B109B900D26563 /* TStickerAnnotationView.h */,
+				45A6AF7418B109B900D26563 /* TStickerAnnotationView.m */,
 				4563F2E218A4B1EB00E8911E /* TStickerAnnotation.h */,
 				4563F2E318A4B1EB00E8911E /* TStickerAnnotation.m */,
 				453CB8F41885B65700D7019D /* Categories */,
@@ -464,6 +469,7 @@
 				45D3E6CB18ACA3ED000AD55F /* TMenuViewController.m in Sources */,
 				45FC756018A017E10089255A /* UIImage+AlphaAdditions.m in Sources */,
 				453CB8FA1885C5D300D7019D /* TCategoryStickerCell.m in Sources */,
+				45A6AF7518B109B900D26563 /* TStickerAnnotationView.m in Sources */,
 				4563F2E418A4B1EB00E8911E /* TStickerAnnotation.m in Sources */,
 				457C8A861893B02100D6DA40 /* TCircleView.m in Sources */,
 				454BDE0118890101009DC4F6 /* TPostViewController.m in Sources */,
