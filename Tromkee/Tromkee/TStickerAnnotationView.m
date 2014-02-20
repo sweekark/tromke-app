@@ -19,9 +19,9 @@
 
 @implementation TStickerAnnotationView
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
+-(id)initWithAnnotation:(id<MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
+
     if (self) {
         // make sure the x and y of the CGRect are half it's
         // width and height, so the callout shows when user clicks
@@ -42,12 +42,11 @@
         _imageView = imageView;
         
         [self addSubview:imageView];
-        
-        
-        
     }
+
     return self;
 }
+
 
 - (void)setImage:(UIImage *)image
 {
@@ -56,9 +55,17 @@
     _imageView.image = image;
 }
 
-- (void)stickerColor:(float)color {
+- (void)setStickerColor:(float)color {
     _circleView.green = color;
     [_circleView setNeedsDisplay];
 }
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    NSLog(@"Selected");
+}
+
+- (void)didAddSubview:(UIView *)subview {
+}
+
 
 @end

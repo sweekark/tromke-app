@@ -16,7 +16,7 @@
     if (self) {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
-        self.green = 0.5;
+        self.green = 0.0;
         self.opacity = 1.0;        
     }
     return self;
@@ -28,7 +28,7 @@
     if (self) {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
-        self.green = 0.5;
+        self.green = 0.0;
         self.opacity = 1.0;
     }
     

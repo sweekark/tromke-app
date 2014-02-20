@@ -16,6 +16,8 @@
 #import "TCircleView.h"
 #import "TMenuViewController.h"
 #import "TStickerAnnotationView.h"
+#import "TStickerCallOut.h"
+#import "TActivityViewController.h"
 
 @interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate>
 
@@ -87,10 +89,10 @@
     // Creates a marker in the center of the map.
     CLLocationCoordinate2D userCoordinate = [[TLocationUtility sharedInstance] getUserCoordinate];
     
-//    MKPointAnnotation* point = [[MKPointAnnotation alloc] init];
-//    point.coordinate = userCoordinate;
-//    point.title = @"User Location";
-//    [self.map addAnnotation:point];
+    MKPointAnnotation* point = [[MKPointAnnotation alloc] init];
+    point.coordinate = userCoordinate;
+    point.title = @"User Location";
+    [self.map addAnnotation:point];
     
     MKCoordinateRegion region;
     region.center = userCoordinate;
@@ -110,6 +112,9 @@
     } else if ([segue.identifier isEqualToString:@"Menu"]) {
         TMenuViewController* menuVC = segue.destinationViewController;
         menuVC.delegate = self;
+    } else if ([segue.identifier isEqualToString:@"Activity"]) {
+        TActivityViewController* activityVC = segue.destinationViewController;
+        activityVC.stickerObject = sender;
     }
 }
 
@@ -141,6 +146,7 @@
     PFQuery* stickersQuery = [PFQuery queryWithClassName:@"StickersInLocation"];
     [stickersQuery includeKey:@"sticker"];
     [stickersQuery includeKey:@"images"];
+    [stickersQuery includeKey:@"user"];
     [stickersQuery whereKey:@"location" nearGeoPoint:[PFGeoPoint geoPointWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude] withinMiles:STICKER_QUERY_RADIUS];
     stickersQuery.limit = 15;
     
@@ -166,10 +172,20 @@
     }
 }
 
+
 #pragma mark - MKMapViewDelegate
 
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
+    TStickerAnnotation* annotation = view.annotation;
+    [self performSegueWithIdentifier:@"Activity" sender:annotation.annotationObject];
+}
+
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
-    NSLog(@"Tapped annotation");
+    NSLog(@"Clicked Annotation");
+//    if ([view isKindOfClass:[TStickerAnnotationView class]]) {
+//        TStickerCallOut* callOut = [self.storyboard instantiateViewControllerWithIdentifier:@"CALLOUT"];
+//        [view addSubview:callOut.view];
+//    }
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
@@ -184,6 +200,8 @@
     if (!annotationView) {
         annotationView = [[TStickerAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
         annotationView.canShowCallout = YES;
+
+        annotationView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
     }
     
     PFObject* postObj = [(TStickerAnnotation*)annotation annotationObject];
