@@ -8,11 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void (^FileHandler)(NSData *imageData, NSError *error);
-
-
 @interface TUtility : NSObject
 
-+ (void)getImage:(PFFile*)file withObjectID:(NSString*)objID andHandler:(FileHandler)handler;
++ (void)processFacebookProfilePictureData:(NSData *)data;
 
 @end

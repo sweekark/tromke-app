@@ -8,9 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-//Google API Key
-static NSString* const kAPIKey = @"AIzaSyDoSYLeQxoHclsIKnNvDoTSrUKgupiUvO8"; // by satyam
-
 static NSString* const kParseApplicationID = @"IgOuPSL7tE4lSUYDUoqeovRPalXs7PWV61xfsIKb";
 static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVNi1T";
 
@@ -23,8 +20,22 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 
 
 #define POSTDATA_LENGTH 140
-#define STICKER_QUERY_RADIUS 2.0
+#define STICKER_QUERY_RADIUS 50.0 //In miles
 
-static NSString* const  kPAPUserFacebookIDKey = @"facebookId";
-static NSString* const  kPAPUserDisplayNameKey = @"username";
+//FACEBOOK
+#define FACEBOOK_ID_KEY @"facebookId"
+#define FACEBOOK_DISPLAYNAME @"username"
+#define FACEBOOK_SMALLPIC_KEY @"profilePictureSmall"
+#define FACEBOOK_MEDIUMPIC_KEY @"profilePictureMedium"
+
+
+//ACTIVITY
+#define THANKS @"THANKS"
+#define FOLLOWS @"FOLLOWS"
+#define COMMENT @"COMMENT"
+#define IMAGE_COMMENT @"IMAGE_COMMENT"
+#define IMAGE_ONLY @"IMAGE"
+
+
+
 

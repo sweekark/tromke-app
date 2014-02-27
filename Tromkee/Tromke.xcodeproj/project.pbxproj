@@ -51,7 +51,6 @@
 		45A2E8CD187650CE009A6171 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8C0187650CE009A6171 /* SystemConfiguration.framework */; };
 		45A6AF7518B109B900D26563 /* TStickerAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 45A6AF7418B109B900D26563 /* TStickerAnnotationView.m */; };
 		45D3E6CB18ACA3ED000AD55F /* TMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D3E6CA18ACA3ED000AD55F /* TMenuViewController.m */; };
-		45D9AB1918B11D9E006B1BBE /* TStickerCallOut.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D9AB1818B11D9E006B1BBE /* TStickerCallOut.m */; };
 		45E54465188F934200FF8977 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E54461188F934200FF8977 /* FacebookSDK.framework */; };
 		45E54466188F934200FF8977 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E54462188F934200FF8977 /* Parse.framework */; };
 		45E54467188F934200FF8977 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 45E54464188F934200FF8977 /* Reachability.m */; };
@@ -135,8 +134,6 @@
 		45A6AF7418B109B900D26563 /* TStickerAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TStickerAnnotationView.m; sourceTree = "<group>"; };
 		45D3E6C918ACA3ED000AD55F /* TMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TMenuViewController.h; sourceTree = "<group>"; };
 		45D3E6CA18ACA3ED000AD55F /* TMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TMenuViewController.m; sourceTree = "<group>"; };
-		45D9AB1718B11D9E006B1BBE /* TStickerCallOut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TStickerCallOut.h; sourceTree = "<group>"; };
-		45D9AB1818B11D9E006B1BBE /* TStickerCallOut.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TStickerCallOut.m; sourceTree = "<group>"; };
 		45E54461188F934200FF8977 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		45E54462188F934200FF8977 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		45E54463188F934200FF8977 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
@@ -213,6 +210,17 @@
 			name = Categories;
 			sourceTree = "<group>";
 		};
+		4563729218BA6E84001ABAC4 /* Activity */ = {
+			isa = PBXGroup;
+			children = (
+				450544B418B284A500529015 /* TActivityViewController.h */,
+				450544B518B284A500529015 /* TActivityViewController.m */,
+				450544B718B284B600529015 /* TActivityCell.h */,
+				450544B818B284B600529015 /* TActivityCell.m */,
+			);
+			name = Activity;
+			sourceTree = "<group>";
+		};
 		45A2E87118764FF1009A6171 = {
 			isa = PBXGroup;
 			children = (
@@ -267,10 +275,7 @@
 				45A2E88F18764FF1009A6171 /* Main.storyboard */,
 				453AE94C188423F00099D8B0 /* TLocationUtility.h */,
 				453AE94D188423F00099D8B0 /* TLocationUtility.m */,
-				450544B418B284A500529015 /* TActivityViewController.h */,
-				450544B518B284A500529015 /* TActivityViewController.m */,
-				450544B718B284B600529015 /* TActivityCell.h */,
-				450544B818B284B600529015 /* TActivityCell.m */,
+				4563729218BA6E84001ABAC4 /* Activity */,
 				45A6AF7618B117DA00D26563 /* HomeVIew */,
 				453CB8F41885B65700D7019D /* Categories */,
 				45309870187DBBD0005B3B5F /* TLogInViewController.h */,
@@ -323,8 +328,6 @@
 				45A2E89318764FF1009A6171 /* TViewController.m */,
 				45A6AF7318B109B900D26563 /* TStickerAnnotationView.h */,
 				45A6AF7418B109B900D26563 /* TStickerAnnotationView.m */,
-				45D9AB1718B11D9E006B1BBE /* TStickerCallOut.h */,
-				45D9AB1818B11D9E006B1BBE /* TStickerCallOut.m */,
 				4563F2E218A4B1EB00E8911E /* TStickerAnnotation.h */,
 				4563F2E318A4B1EB00E8911E /* TStickerAnnotation.m */,
 			);
@@ -480,7 +483,6 @@
 			files = (
 				45309872187DBBD0005B3B5F /* TLogInViewController.m in Sources */,
 				45FC756118A017E10089255A /* UIImage+ResizeAdditions.m in Sources */,
-				45D9AB1918B11D9E006B1BBE /* TStickerCallOut.m in Sources */,
 				45A2E88A18764FF1009A6171 /* main.m in Sources */,
 				45F53E26189D6EB100C7C42A /* TUtility.m in Sources */,
 				450544B918B284B600529015 /* TActivityCell.m in Sources */,

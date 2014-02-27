@@ -13,5 +13,7 @@
 @property (nonatomic, weak) IBOutlet UIImageView* personImage;
 @property (nonatomic, weak) IBOutlet UILabel* personName;
 @property (nonatomic, weak) IBOutlet UILabel* comment;
+@property (nonatomic, weak) IBOutlet PFImageView* commentImage;
+@property (nonatomic, weak) IBOutlet UILabel* updatedTime;
 
 @end

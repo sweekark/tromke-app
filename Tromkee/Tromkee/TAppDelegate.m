@@ -12,7 +12,9 @@
 #import "TLogInViewController.h"
 #import "MBProgressHUD.h"
 
-@interface TAppDelegate() <PFLogInViewControllerDelegate>
+@interface TAppDelegate() <PFLogInViewControllerDelegate> {
+    NSMutableData *_data;
+}
 
 @property (nonatomic, strong) Reachability *hostReach;
 @property (nonatomic, strong) Reachability *internetReach;
@@ -157,14 +159,6 @@
                 [self facebookRequestDidFailWithError:error];
             }
         }];
-        
-//        [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-//            if (!error) {
-//                [self facebookRequestDidLoad:result];
-//            } else {
-//                [self facebookRequestDidFailWithError:error];
-//            }
-//        }];
     }
 }
 
@@ -179,16 +173,16 @@
         
         NSString *facebookName = result[@"name"];
         if (facebookName && [facebookName length] != 0) {
-            [user setObject:facebookName forKey:kPAPUserDisplayNameKey];
+            [user setObject:facebookName forKey:FACEBOOK_DISPLAYNAME];
             NSLog(@"FB Name: %@", facebookName);
         } else {
-            [user setObject:@"TromkeeUser" forKey:kPAPUserDisplayNameKey];
+            [user setObject:@"TromkeeUser" forKey:FACEBOOK_DISPLAYNAME];
         }
         
         NSString *facebookId = result[@"id"];
         if (facebookId && [facebookId length] != 0) {
             NSLog(@"FB ID: %@", facebookId);
-            [user setObject:facebookId forKey:kPAPUserFacebookIDKey];
+            [user setObject:facebookId forKey:FACEBOOK_ID_KEY];
         }
 
         NSMutableDictionary* dict = [@{} mutableCopy];
@@ -221,6 +215,10 @@
         
         [user saveEventually];
     }
+    
+    NSURL *profilePictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", [[PFUser currentUser] objectForKey:FACEBOOK_ID_KEY]]];
+    NSURLRequest *profilePictureURLRequest = [NSURLRequest requestWithURL:profilePictureURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f]; // Facebook profile picture cache policy: Expires in 2 weeks
+    [NSURLConnection connectionWithRequest:profilePictureURLRequest delegate:self];
 }
 
 - (void)facebookRequestDidFailWithError:(NSError *)error {
@@ -233,6 +231,21 @@
         }
     }
 }
+
+#pragma mark - NSURLConnectionDataDelegate
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    _data = [[NSMutableData alloc] init];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    [_data appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    [TUtility processFacebookProfilePictureData:_data];
+}
+
 
 - (void)logOut {
     // Clear all caches

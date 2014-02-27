@@ -36,6 +36,8 @@
 @property (nonatomic, strong) MBProgressHUD *hud;
 @property (nonatomic) BOOL isCommentEditing;
 
+@property (nonatomic, assign) UIBackgroundTaskIdentifier fileUploadBackgroundTaskId;
+
 - (IBAction)postSticker:(id)sender;
 - (IBAction)takePicture:(id)sender;
 
@@ -63,6 +65,7 @@
     self.bottomView.backgroundColor = STICKER_POST_BOTTOM_COLOR;
     
     [self updateSeverityColor:0.5];
+    self.fileUploadBackgroundTaskId = UIBackgroundTaskInvalid;
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -116,16 +119,23 @@
     
     NSLog(@"User available");
     __block UIViewController* vc = [self topMostController];
-    self.hud = [MBProgressHUD showHUDAddedTo:vc.view animated:YES];
-    self.hud.labelText = @"Posting...";
-    self.hud.dimBackground = YES;
-    
+//    self.hud = [MBProgressHUD showHUDAddedTo:vc.view animated:YES];
+//    self.hud.labelText = @"Posting...";
+//    self.hud.dimBackground = YES;
+
     if (self.stickerImages.count) {
+        
+        self.fileUploadBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+            [[UIApplication sharedApplication] endBackgroundTask:self.fileUploadBackgroundTaskId];
+        }];
+        
+        NSLog(@"Requested background expiration task with id %lu for Anypic photo upload", (unsigned long)self.fileUploadBackgroundTaskId);
+
         //Post image along with sticker
-        UIImage* img = self.stickerImages[0];
+        UIImage *img = [self.stickerImages[0] resizedImageWithContentMode:UIViewContentModeScaleAspectFit bounds:CGSizeMake(560.0f, 560.0f) interpolationQuality:kCGInterpolationHigh];
         UIImage *thumbnailImage = [img thumbnailImage:86.0f transparentBorder:0.0f cornerRadius:10.0f interpolationQuality:kCGInterpolationDefault];
         
-        NSData* imageData = UIImagePNGRepresentation(self.stickerImages[0]);
+        NSData *imageData = UIImageJPEGRepresentation(img, 0.8f);
         NSData* thumbnailData = UIImagePNGRepresentation(thumbnailImage);
         __block PFFile* imageFile = [PFFile fileWithData:imageData];
         __block PFFile* thumbnailFile = [PFFile fileWithData:thumbnailData];
@@ -172,7 +182,10 @@
                         NSLog(@"Failed with Thumbnail Error: %@", error.localizedDescription);
                     }
                 }];
+                
+                [[UIApplication sharedApplication] endBackgroundTask:self.fileUploadBackgroundTaskId];
             } else {
+                [[UIApplication sharedApplication] endBackgroundTask:self.fileUploadBackgroundTaskId];
                 [MBProgressHUD hideHUDForView:vc.view animated:YES];
                 NSLog(@"Failed with Image Error: %@", error.localizedDescription);
             }
@@ -253,7 +266,8 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
-    [self.stickerImages addObject:image];
+//    [self.stickerImages addObject:image];
+    [self.stickerImages insertObject:image atIndex:0];
     [self dismissViewControllerAnimated:YES completion:nil];
     self.imagePickerController = nil;
 }

@@ -15,7 +15,6 @@
     if (self) {
         PFGeoPoint *geoPoint = aObject[@"location"];
         [self setGeoPoint:geoPoint];
-        self.title = aObject[@"data"];
         self.annotationObject = aObject;
     }
     return self;

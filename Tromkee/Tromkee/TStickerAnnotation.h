@@ -17,6 +17,5 @@
 @property (nonatomic, strong) PFObject* annotationObject;
 @property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
 @property (nonatomic, strong) TStickerAnnotationView* calloutAnnotation;
-@property (nonatomic, copy) NSString* title;
 
 @end

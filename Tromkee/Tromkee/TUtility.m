@@ -7,44 +7,59 @@
 //
 
 #import "TUtility.h"
+#import "UIImage+ResizeAdditions.h"
 
 @implementation TUtility
 
-+(NSString*)getCacheLocation {
-    NSArray *writablePaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    return [writablePaths firstObject];
-}
+#pragma mark Facebook
 
-+(NSString*)prepareFilePathWithObjectID:(NSString*)objID {
-    NSString* fNameToSave = [NSString stringWithFormat:@"%@.png", objID];
-    return [[self getCacheLocation] stringByAppendingPathComponent:fNameToSave];
-}
-
-+ (void)getImage:(PFFile*)file withObjectID:(NSString*)objID andHandler:(FileHandler)handler {
-    NSData* fileData = [self getImageWithObjectID:objID];
-    if (fileData) {
-        handler(fileData, nil);
-    } else {
-        [file getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
-            [self saveImage:imageData withObjectID:objID];
-            handler(imageData, error);
-        }];
-    }
-}
-
-+ (NSData*)getImageWithObjectID:(NSString*)objID {
-    NSString* fNameToSave = [self prepareFilePathWithObjectID:objID];
-    if ([[NSFileManager defaultManager]  fileExistsAtPath:fNameToSave]) {
-        return [NSData dataWithContentsOfFile:fNameToSave];
++ (void)processFacebookProfilePictureData:(NSData *)newProfilePictureData {
+    if (newProfilePictureData.length == 0) {
+        return;
     }
     
-    return nil;
-}
-
-+ (void)saveImage:(NSData*)fileData withObjectID:(NSString*)objID {
-    NSString* fNameToSave = [self prepareFilePathWithObjectID:objID];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:fNameToSave]) {
-        [fileData writeToFile:fNameToSave atomically:YES];
+    // The user's Facebook profile picture is cached to disk. Check if the cached profile picture data matches the incoming profile picture. If it does, avoid uploading this data to Parse.
+    
+    NSURL *cachesDirectoryURL = [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject]; // iOS Caches directory
+    
+    NSURL *profilePictureCacheURL = [cachesDirectoryURL URLByAppendingPathComponent:@"FacebookProfilePicture.jpg"];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[profilePictureCacheURL path]]) {
+        // We have a cached Facebook profile picture
+        
+        NSData *oldProfilePictureData = [NSData dataWithContentsOfFile:[profilePictureCacheURL path]];
+        
+        if ([oldProfilePictureData isEqualToData:newProfilePictureData]) {
+            return;
+        }
+    }
+    
+    UIImage *image = [UIImage imageWithData:newProfilePictureData];
+    
+    UIImage *mediumImage = [image thumbnailImage:280 transparentBorder:0 cornerRadius:0 interpolationQuality:kCGInterpolationHigh];
+    UIImage *smallRoundedImage = [image thumbnailImage:64 transparentBorder:0 cornerRadius:9 interpolationQuality:kCGInterpolationLow];
+    
+    NSData *mediumImageData = UIImageJPEGRepresentation(mediumImage, 0.5); // using JPEG for larger pictures
+    NSData *smallRoundedImageData = UIImagePNGRepresentation(smallRoundedImage);
+    
+    if (mediumImageData.length > 0) {
+        PFFile *fileMediumImage = [PFFile fileWithData:mediumImageData];
+        [fileMediumImage saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (!error) {
+                [[PFUser currentUser] setObject:fileMediumImage forKey:FACEBOOK_MEDIUMPIC_KEY];
+                [[PFUser currentUser] saveEventually];
+            }
+        }];
+    }
+    
+    if (smallRoundedImageData.length > 0) {
+        PFFile *fileSmallRoundedImage = [PFFile fileWithData:smallRoundedImageData];
+        [fileSmallRoundedImage saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (!error) {
+                [[PFUser currentUser] setObject:fileSmallRoundedImage forKey:FACEBOOK_SMALLPIC_KEY];
+                [[PFUser currentUser] saveEventually];
+            }
+        }];
     }
 }
 
