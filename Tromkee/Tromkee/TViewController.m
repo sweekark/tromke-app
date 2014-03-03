@@ -202,10 +202,10 @@
 
 -(void)updatePostedStickers {
 //    CLLocationCoordinate2D userCoordinate = [[TLocationUtility sharedInstance] getUserCoordinate];
-    PFQuery* stickersQuery = [PFQuery queryWithClassName:@"StickersInLocation"];
+    PFQuery* stickersQuery = [PFQuery queryWithClassName:@"Post"];
     [stickersQuery includeKey:@"sticker"];
     [stickersQuery includeKey:@"images"];
-    [stickersQuery includeKey:@"user"];
+    [stickersQuery includeKey:@"fromUser"];
     [stickersQuery whereKey:@"location" nearGeoPoint:[PFGeoPoint geoPointWithLatitude:self.currentMapLocation.latitude longitude:self.currentMapLocation.longitude] withinMiles:STICKER_QUERY_RADIUS];
     stickersQuery.limit = 15;
     
@@ -256,6 +256,23 @@
 -(void)userClickedMenu:(int)rowNumber {
     NSLog(@"User clicked: %d", rowNumber);
     [self eyeClicked:nil];
+    switch (rowNumber) {
+        case MenuItemNearMe:
+            break;
+        case MenuItemChooseMyRoute:
+            break;
+        case MenuItemChats:
+            break;
+        case MenuItemProfile:
+            [self performSegueWithIdentifier:PROFILE sender:nil];
+            break;
+        case MenuItemTopTromers:
+            break;
+        case MenuItemSettings:
+            break;
+        default:
+            break;
+    }
 }
 
 @end

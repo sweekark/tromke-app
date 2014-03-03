@@ -67,7 +67,7 @@
     self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.progress.labelText = @"Fetching ...";
     self.progress.dimBackground = YES;
-    PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"stickersInLocation == %@", self.stickerObject]];
+    PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"post == %@", self.stickerObject]];
     [activityQuery includeKey:@"fromUser"];
     [activityQuery orderByDescending:SORT_ACTIVITIES_KEY];
     
@@ -78,7 +78,7 @@
             NSLog(@"Error in getting activities: %@", error.localizedDescription);
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                PFObject* user = weakSelf.stickerObject[@"user"];
+                PFObject* user = weakSelf.stickerObject[@"fromUser"];
                 
                 PFFile *imageFile = [user objectForKey:FACEBOOK_SMALLPIC_KEY];
                 if (imageFile) {
@@ -90,8 +90,8 @@
                 }
                 
                 
-                weakSelf.fromName.text = user[@"username"];
-                weakSelf.fromPostedTime.text = [weakSelf computePostedTime:self.stickerObject.updatedAt];
+                weakSelf.fromName.text = user[@"dislayName"];
+                weakSelf.fromPostedTime.text = [TUtility computePostedTime:self.stickerObject.updatedAt];
                 weakSelf.fromPostedMessage.text = weakSelf.stickerObject[@"data"];
                 [weakSelf.fromPostedMessage sizeToFit];
                 //Compute Thanks objects posted
@@ -150,10 +150,16 @@
         }
     }
 
-    cell.personName.text = fromUser[@"username"];
+    cell.personName.text = fromUser[@"displayName"];
     cell.comment.text = comment[@"content"];
     [cell.comment sizeToFit];
-    cell.updatedTime.text = [self computePostedTime:comment.updatedAt];
+    cell.updatedTime.text = [TUtility computePostedTime:comment.updatedAt];
+    
+    PFFile* perImg = fromUser[FACEBOOK_SMALLPIC_KEY];
+    if (perImg) {
+        cell.personImage.file = perImg;
+        [cell.personImage loadInBackground];
+    }
     
     return cell;
 }
@@ -226,10 +232,10 @@
                 PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
                 activiy[@"fromUser"] = [PFUser currentUser];
                 activiy[@"commentImage"] = imageFile;
-                activiy[@"toUser"] = self.stickerObject[@"user"];
+                activiy[@"toUser"] = self.stickerObject[@"fromUser"];
                 activiy[@"type"] = IMAGE_COMMENT;
                 activiy[@"content"] = self.activityDescription.text;
-                activiy[@"stickersInLocation"] = self.stickerObject;
+                activiy[@"post"] = self.stickerObject;
                 
                 [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     if (succeeded) {
@@ -255,10 +261,10 @@
         
         PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
         activiy[@"fromUser"] = [PFUser currentUser];
-        activiy[@"toUser"] = self.stickerObject[@"user"];
+        activiy[@"toUser"] = self.stickerObject[@"fromUser"];
         activiy[@"type"] = COMMENT;
         activiy[@"content"] = self.activityDescription.text;
-        activiy[@"stickersInLocation"] = self.stickerObject;
+        activiy[@"post"] = self.stickerObject;
 
         [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
@@ -284,55 +290,6 @@
 }
 
 
--(NSString*)computePostedTime :(NSDate*)date {
-    
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setAMSymbol:@"am"];
-    [dateFormatter setPMSymbol:@"pm"];
-    
-    NSString* timestamp;
-    int timeIntervalInHours = (int)[[NSDate date] timeIntervalSinceDate:date] /3600;
-    
-    int timeIntervalInMinutes = [[NSDate date] timeIntervalSinceDate:date] /60;
-    
-    if (timeIntervalInMinutes <= 2){//less than 2 minutes old
-        
-        timestamp = @"Just Now";
-        
-    }else if(timeIntervalInMinutes < 15){//less than 15 minutes old
-        
-        timestamp = @"A few minutes ago";
-        
-    }else if(timeIntervalInHours < 24){//less than 1 day
-        
-        [dateFormatter setDateFormat:@"h:mm a"];
-        timestamp = [NSString stringWithFormat:@"Today at %@",[dateFormatter stringFromDate:date]];
-        
-    }else if (timeIntervalInHours < 48){//less than 2 days
-        
-        [dateFormatter setDateFormat:@"h:mm a"];
-        timestamp = [NSString stringWithFormat:@"Yesterday at %@",[dateFormatter stringFromDate:date]];
-        
-    }else if (timeIntervalInHours < 168){//less than  a week
-        
-        [dateFormatter setDateFormat:@"EEEE"];
-        timestamp = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:date]];
-        
-    }else if (timeIntervalInHours < 8765){//less than a year
-        
-        [dateFormatter setDateFormat:@"d MMMM"];
-        timestamp = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:date]];
-        
-    }else{//older than a year
-        
-        [dateFormatter setDateFormat:@"d MMMM yyyy"];
-        timestamp = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:date]];
-        
-    }
-    
-    return timestamp;
-}
-
 - (IBAction)conveyThanks:(id)sender {
     [self.activityDescription resignFirstResponder];
     
@@ -342,10 +299,10 @@
     
     PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
     activiy[@"fromUser"] = [PFUser currentUser];
-    activiy[@"toUser"] = self.stickerObject[@"user"];
+    activiy[@"toUser"] = self.stickerObject[@"fromUser"];
     activiy[@"type"] = @"THANKS";
     activiy[@"content"] = self.activityDescription.text;
-    activiy[@"stickersInLocation"] = self.stickerObject;
+    activiy[@"post"] = self.stickerObject;
     
     __weak TActivityViewController* weakself = self;
     [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {

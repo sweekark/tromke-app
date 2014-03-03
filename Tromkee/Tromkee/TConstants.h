@@ -37,5 +37,15 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 #define IMAGE_ONLY @"IMAGE"
 
 
+//MENU IDENTIFIERS
+typedef NS_ENUM(NSInteger, MenuItem) {
+    MenuItemNearMe = 0,
+    MenuItemChooseMyRoute,
+    MenuItemChats,
+    MenuItemProfile,
+    MenuItemTopTromers,
+    MenuItemSettings
+};
 
+#define PROFILE @"PROFILE"
 

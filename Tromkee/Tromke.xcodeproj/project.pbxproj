@@ -10,6 +10,8 @@
 		450544B618B284A500529015 /* TActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 450544B518B284A500529015 /* TActivityViewController.m */; };
 		450544B918B284B600529015 /* TActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 450544B818B284B600529015 /* TActivityCell.m */; };
 		451AF9A61885314300811899 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451AF9A51885314300811899 /* MapKit.framework */; };
+		451C522118C2418F00386C63 /* TProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 451C522018C2418F00386C63 /* TProfileViewController.m */; };
+		451C522418C2509000386C63 /* TProfileCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 451C522318C2509000386C63 /* TProfileCell.m */; };
 		45309872187DBBD0005B3B5F /* TLogInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45309871187DBBD0005B3B5F /* TLogInViewController.m */; };
 		453AE94E188423F00099D8B0 /* TLocationUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 453AE94D188423F00099D8B0 /* TLocationUtility.m */; };
 		453CB8F01885B5BE00D7019D /* TCategoriesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 453CB8EF1885B5BE00D7019D /* TCategoriesViewController.m */; };
@@ -78,6 +80,10 @@
 		450544B818B284B600529015 /* TActivityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TActivityCell.m; sourceTree = "<group>"; };
 		451AF9A4188530B100811899 /* Tromke-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Tromke-Prefix.pch"; sourceTree = "<group>"; };
 		451AF9A51885314300811899 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		451C521F18C2418F00386C63 /* TProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TProfileViewController.h; sourceTree = "<group>"; };
+		451C522018C2418F00386C63 /* TProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TProfileViewController.m; sourceTree = "<group>"; };
+		451C522218C2509000386C63 /* TProfileCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TProfileCell.h; sourceTree = "<group>"; };
+		451C522318C2509000386C63 /* TProfileCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TProfileCell.m; sourceTree = "<group>"; };
 		45309870187DBBD0005B3B5F /* TLogInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLogInViewController.h; sourceTree = "<group>"; };
 		45309871187DBBD0005B3B5F /* TLogInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLogInViewController.m; sourceTree = "<group>"; };
 		453AE94C188423F00099D8B0 /* TLocationUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLocationUtility.h; sourceTree = "<group>"; };
@@ -191,6 +197,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		451C521E18C2418400386C63 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				451C521F18C2418F00386C63 /* TProfileViewController.h */,
+				451C522018C2418F00386C63 /* TProfileViewController.m */,
+				451C522218C2509000386C63 /* TProfileCell.h */,
+				451C522318C2509000386C63 /* TProfileCell.m */,
+			);
+			name = Profile;
+			sourceTree = "<group>";
+		};
 		453CB8F41885B65700D7019D /* Categories */ = {
 			isa = PBXGroup;
 			children = (
@@ -268,6 +285,7 @@
 		45A2E88318764FF1009A6171 /* Tromkee */ = {
 			isa = PBXGroup;
 			children = (
+				451C521E18C2418400386C63 /* Profile */,
 				45E54460188F934200FF8977 /* External */,
 				45D3E6C818ACA3D8000AD55F /* MenuDisplay */,
 				45A2E88C18764FF1009A6171 /* TAppDelegate.h */,
@@ -493,7 +511,9 @@
 				453CB8F31885B65100D7019D /* TCategoryCell.m in Sources */,
 				453AE94E188423F00099D8B0 /* TLocationUtility.m in Sources */,
 				453CB8F01885B5BE00D7019D /* TCategoriesViewController.m in Sources */,
+				451C522118C2418F00386C63 /* TProfileViewController.m in Sources */,
 				450544B618B284A500529015 /* TActivityViewController.m in Sources */,
+				451C522418C2509000386C63 /* TProfileCell.m in Sources */,
 				45D3E6CB18ACA3ED000AD55F /* TMenuViewController.m in Sources */,
 				45FC756018A017E10089255A /* UIImage+AlphaAdditions.m in Sources */,
 				453CB8FA1885C5D300D7019D /* TCategoryStickerCell.m in Sources */,
@@ -640,7 +660,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;
-				PROVISIONING_PROFILE = "1D1FC807-4444-49BE-80C1-06E40EF2FF3F";
+				PROVISIONING_PROFILE = "A22363D4-1DF3-46CD-9B5E-B209568DEEEB";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -661,7 +681,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;
-				PROVISIONING_PROFILE = "1D1FC807-4444-49BE-80C1-06E40EF2FF3F";
+				PROVISIONING_PROFILE = "A22363D4-1DF3-46CD-9B5E-B209568DEEEB";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

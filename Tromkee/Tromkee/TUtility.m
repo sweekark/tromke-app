@@ -63,4 +63,54 @@
     }
 }
 
++(NSString*)computePostedTime :(NSDate*)date {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setAMSymbol:@"am"];
+    [dateFormatter setPMSymbol:@"pm"];
+    
+    NSString* timestamp;
+    int timeIntervalInHours = (int)[[NSDate date] timeIntervalSinceDate:date] /3600;
+    
+    int timeIntervalInMinutes = [[NSDate date] timeIntervalSinceDate:date] /60;
+    
+    if (timeIntervalInMinutes <= 2){//less than 2 minutes old
+        
+        timestamp = @"Just Now";
+        
+    }else if(timeIntervalInMinutes < 15){//less than 15 minutes old
+        
+        timestamp = @"A few minutes ago";
+        
+    }else if(timeIntervalInHours < 24){//less than 1 day
+        
+        [dateFormatter setDateFormat:@"h:mm a"];
+        timestamp = [NSString stringWithFormat:@"Today at %@",[dateFormatter stringFromDate:date]];
+        
+    }else if (timeIntervalInHours < 48){//less than 2 days
+        
+        [dateFormatter setDateFormat:@"h:mm a"];
+        timestamp = [NSString stringWithFormat:@"Yesterday at %@",[dateFormatter stringFromDate:date]];
+        
+    }else if (timeIntervalInHours < 168){//less than  a week
+        
+        [dateFormatter setDateFormat:@"EEEE"];
+        timestamp = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:date]];
+        
+    }else if (timeIntervalInHours < 8765){//less than a year
+        
+        [dateFormatter setDateFormat:@"d MMMM"];
+        timestamp = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:date]];
+        
+    }else{//older than a year
+        
+        [dateFormatter setDateFormat:@"d MMMM yyyy"];
+        timestamp = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:date]];
+        
+    }
+    
+    return timestamp;
+}
+
+
 @end

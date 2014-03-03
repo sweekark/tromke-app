@@ -150,10 +150,10 @@
                             if (succeeded) {
                                 CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
                                 
-                                PFObject *stickerPost = [PFObject objectWithClassName:@"StickersInLocation"];
+                                PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
                                 stickerPost[@"data"] = self.stickerDescription.text;
                                 stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
-                                stickerPost[@"user"] = [PFUser currentUser];
+                                stickerPost[@"fromUser"] = [PFUser currentUser];
                                 stickerPost[@"sticker"] = self.postSticker;
                                 stickerPost[@"severity"] = [NSNumber numberWithFloat:self.stickerSeverity.value];
                                 stickerPost[@"points"] = @([self.postSticker[@"postPoints"] integerValue] + [self.postSticker[@"imagePoints"] integerValue]);
@@ -194,10 +194,10 @@
         //Post only content
         CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
         
-        PFObject *stickerPost = [PFObject objectWithClassName:@"StickersInLocation"];
+        PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
         stickerPost[@"data"] = self.stickerDescription.text;
         stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
-        stickerPost[@"user"] = [PFUser currentUser];
+        stickerPost[@"fromUser"] = [PFUser currentUser];
         stickerPost[@"sticker"] = self.postSticker;
         stickerPost[@"severity"] = [NSNumber numberWithFloat:self.stickerSeverity.value];
         stickerPost[@"points"] = self.postSticker[@"postPoints"];
