@@ -12,6 +12,7 @@
 #import "TAppDelegate.h"
 #import "TCircleView.h"
 #import "UIImage+ResizeAdditions.h"
+#import "TProfileViewController.h"
 
 #define SORT_ACTIVITIES_KEY @"updatedAt"
 
@@ -90,10 +91,10 @@
                 }
                 
                 
-                weakSelf.fromName.text = user[@"dislayName"];
+                weakSelf.fromName.text = user[@"displayName"];
                 weakSelf.fromPostedTime.text = [TUtility computePostedTime:self.stickerObject.updatedAt];
                 weakSelf.fromPostedMessage.text = weakSelf.stickerObject[@"data"];
-                [weakSelf.fromPostedMessage sizeToFit];
+//                [weakSelf.fromPostedMessage sizeToFit];
                 //Compute Thanks objects posted
                 NSIndexSet* indexes = [objects indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
                     return [[(PFObject*)obj valueForKey:@"type"] isEqualToString:THANKS];
@@ -129,6 +130,8 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - Tableview methods
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.activities.count;
 }
@@ -152,7 +155,7 @@
 
     cell.personName.text = fromUser[@"displayName"];
     cell.comment.text = comment[@"content"];
-    [cell.comment sizeToFit];
+//    [cell.comment sizeToFit];
     cell.updatedTime.text = [TUtility computePostedTime:comment.updatedAt];
     
     PFFile* perImg = fromUser[FACEBOOK_SMALLPIC_KEY];
@@ -173,6 +176,7 @@
     
     return height;
 }
+
 
 #pragma mark - TextView methods
 
@@ -368,4 +372,26 @@
     self.imagePickerController = nil;
 }
 
+- (void)updateLabelPreferredMaxLayoutWidthToCurrentWidth:(UILabel *)label
+{
+    label.preferredMaxLayoutWidth =
+    [label alignmentRectForFrame:label.frame].size.width;
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    [self updateLabelPreferredMaxLayoutWidthToCurrentWidth:self.fromPostedMessage];
+    [self.view layoutSubviews];
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:PROFILE]) {
+        NSIndexPath* indxPath = [self.activitiesTable indexPathForSelectedRow];
+        PFObject* comment = self.activities[indxPath.row];
+        PFUser* fromUser = comment[@"fromUser"];
+        TProfileViewController* profileVC = segue.destinationViewController;
+        profileVC.userProfile = fromUser;
+    }
+}
 @end

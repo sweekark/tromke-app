@@ -19,8 +19,6 @@
 		453CB8FA1885C5D300D7019D /* TCategoryStickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 453CB8F91885C5D300D7019D /* TCategoryStickerCell.m */; };
 		453CB8FD1885C7B700D7019D /* TCategoryStickersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 453CB8FC1885C7B700D7019D /* TCategoryStickersViewController.m */; };
 		454BDE0118890101009DC4F6 /* TPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 454BDE0018890101009DC4F6 /* TPostViewController.m */; };
-		455C01111879C60E00D54908 /* BackgroundLogin-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 455C010E1879C60E00D54908 /* BackgroundLogin-568h@2x.png */; };
-		455C01121879C60E00D54908 /* backgroundLogin.png in Resources */ = {isa = PBXBuildFile; fileRef = 455C010F1879C60E00D54908 /* backgroundLogin.png */; };
 		455C01131879C60E00D54908 /* backgroundLogin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 455C01101879C60E00D54908 /* backgroundLogin@2x.png */; };
 		4563F2E418A4B1EB00E8911E /* TStickerAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F2E318A4B1EB00E8911E /* TStickerAnnotation.m */; };
 		457C8A861893B02100D6DA40 /* TCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 457C8A851893B02100D6DA40 /* TCircleView.m */; };
@@ -98,8 +96,6 @@
 		453CB8FC1885C7B700D7019D /* TCategoryStickersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCategoryStickersViewController.m; sourceTree = "<group>"; };
 		454BDDFF18890101009DC4F6 /* TPostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPostViewController.h; sourceTree = "<group>"; };
 		454BDE0018890101009DC4F6 /* TPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPostViewController.m; sourceTree = "<group>"; };
-		455C010E1879C60E00D54908 /* BackgroundLogin-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BackgroundLogin-568h@2x.png"; sourceTree = "<group>"; };
-		455C010F1879C60E00D54908 /* backgroundLogin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backgroundLogin.png; sourceTree = "<group>"; };
 		455C01101879C60E00D54908 /* backgroundLogin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backgroundLogin@2x.png"; sourceTree = "<group>"; };
 		4563F2E218A4B1EB00E8911E /* TStickerAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TStickerAnnotation.h; sourceTree = "<group>"; };
 		4563F2E318A4B1EB00E8911E /* TStickerAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TStickerAnnotation.m; sourceTree = "<group>"; };
@@ -310,8 +306,6 @@
 		45A2E88418764FF1009A6171 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				455C010E1879C60E00D54908 /* BackgroundLogin-568h@2x.png */,
-				455C010F1879C60E00D54908 /* backgroundLogin.png */,
 				455C01101879C60E00D54908 /* backgroundLogin@2x.png */,
 				45A2E88518764FF1009A6171 /* Tromke-Info.plist */,
 				45A2E88618764FF1009A6171 /* InfoPlist.strings */,
@@ -476,10 +470,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				45A2E89618764FF1009A6171 /* Images.xcassets in Resources */,
-				455C01111879C60E00D54908 /* BackgroundLogin-568h@2x.png in Resources */,
 				455C01131879C60E00D54908 /* backgroundLogin@2x.png in Resources */,
 				45A2E88818764FF1009A6171 /* InfoPlist.strings in Resources */,
-				455C01121879C60E00D54908 /* backgroundLogin.png in Resources */,
 				45A2E89118764FF1009A6171 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

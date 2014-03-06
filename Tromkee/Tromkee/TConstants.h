@@ -44,8 +44,11 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     MenuItemChats,
     MenuItemProfile,
     MenuItemTopTromers,
-    MenuItemSettings
+    MenuItemSettings,
+    MenuItemLogout
 };
 
 #define PROFILE @"PROFILE"
-
+#define ACTIVITY @"Activity"
+#define MENU @"Menu"
+#define CATEGORIES @"Categories"

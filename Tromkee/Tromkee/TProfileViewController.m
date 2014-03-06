@@ -17,10 +17,12 @@
 @property (weak, nonatomic) IBOutlet UILabel *userName;
 @property (weak, nonatomic) IBOutlet PFImageView *userImage;
 @property (weak, nonatomic) IBOutlet UILabel *userPoints;
+@property (weak, nonatomic) IBOutlet UIButton *followButton;
 
 @property (strong, nonatomic) NSMutableArray* postsArray;
 @property (weak, nonatomic) IBOutlet UITableView *postsTableView;
 @property (nonatomic, strong) MBProgressHUD* progress;
+@property (nonatomic) BOOL isFollowing;
 
 @end
 
@@ -39,8 +41,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    PFUser* user = [PFUser currentUser];
-    PFFile *imageFile = [user objectForKey:FACEBOOK_SMALLPIC_KEY];
+    PFFile *imageFile = [self.userProfile objectForKey:FACEBOOK_SMALLPIC_KEY];
     if (imageFile) {
         NSLog(@"Loading person image:");
         [self.userImage setFile:imageFile];
@@ -48,7 +49,7 @@
     } else {
         NSLog(@"No image found");
     }
-    self.userName.text = user[@"displayName"];
+    self.userName.text = self.userProfile[@"displayName"];
     
     self.postsArray = [[NSMutableArray alloc] init];
     [self update];
@@ -58,13 +59,16 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (IBAction)followTheUser:(id)sender {
+    
+}
 
 
 -(void)update {
     self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.progress.labelText = @"Fetching ...";
     self.progress.dimBackground = YES;
-    PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"toUser == %@", [PFUser currentUser]]];
+    PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"toUser == %@", self.userProfile]];
     [activityQuery includeKey:@"fromUser"];
     [activityQuery orderByDescending:SORT_KEY];
     __weak TProfileViewController* weakSelf = self;
@@ -88,6 +92,7 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+    
     // Dispose of any resources that can be recreated.
 }
 
@@ -110,7 +115,7 @@
     } else if ([post[@"type"] isEqualToString:IMAGE_ONLY]) {
         cell.comment.text = @"posted Image";
     }
-    //[cell.comment sizeToFit];
+//    [cell.comment sizeToFit];
 
     
     PFObject* fromUser = post[@"fromUser"];
@@ -124,6 +129,7 @@
     
     return cell;
 }
+
 
 
 @end

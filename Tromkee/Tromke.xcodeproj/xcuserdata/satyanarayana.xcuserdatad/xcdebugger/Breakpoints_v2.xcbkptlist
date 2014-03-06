@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Tromkee/TActivityViewController.m"
-            timestampString = "415478204.533882"
+            timestampString = "415685054.517299"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "209"
-            endingLineNumber = "209"
-            landmarkName = "-postActivityDescription:"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
+            landmarkName = "-update"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -26,28 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Tromkee/TActivityViewController.m"
-            timestampString = "415478242.599908"
+            timestampString = "415685288.113469"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "262"
-            endingLineNumber = "262"
-            landmarkName = "-postActivityDescription:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Tromkee/TActivityViewController.m"
-            timestampString = "415478247.909692"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "270"
-            endingLineNumber = "270"
-            landmarkName = "-postActivityDescription:"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "-update"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

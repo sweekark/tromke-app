@@ -44,6 +44,8 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     PFQuery* categoriesQuery = [PFQuery queryWithClassName:@"category"];
+    categoriesQuery.cachePolicy = kPFCachePolicyCacheElseNetwork;
+    categoriesQuery.maxCacheAge = 3600;
     [categoriesQuery orderByAscending:SORTBY];
     [categoriesQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (error) {

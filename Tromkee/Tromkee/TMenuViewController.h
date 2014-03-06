@@ -10,7 +10,7 @@
 
 @protocol TMenuDelegate <NSObject>
 
--(void)userClickedMenu:(int)rowNumber;
+-(void)userClickedMenu:(NSInteger)rowNumber;
 
 @end
 

@@ -10,4 +10,6 @@
 
 @interface TProfileViewController : UIViewController
 
+@property (nonatomic, strong) PFUser* userProfile;
+
 @end

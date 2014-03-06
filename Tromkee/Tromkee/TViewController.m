@@ -17,6 +17,7 @@
 #import "TMenuViewController.h"
 #import "TStickerAnnotationView.h"
 #import "TActivityViewController.h"
+#import "TProfileViewController.h"
 
 @interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate>
 
@@ -106,15 +107,18 @@
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"Categories"]) {
+    if ([segue.identifier isEqualToString:CATEGORIES]) {
         self.categoriesVC = segue.destinationViewController;
         self.categoriesVC.delegate = self;
-    } else if ([segue.identifier isEqualToString:@"Menu"]) {
+    } else if ([segue.identifier isEqualToString:MENU]) {
         TMenuViewController* menuVC = segue.destinationViewController;
         menuVC.delegate = self;
-    } else if ([segue.identifier isEqualToString:@"Activity"]) {
+    } else if ([segue.identifier isEqualToString:ACTIVITY]) {
         TActivityViewController* activityVC = segue.destinationViewController;
         activityVC.stickerObject = sender;
+    } else if ([segue.identifier isEqualToString:PROFILE]) {
+        TProfileViewController* profileVC = segue.destinationViewController;
+        profileVC.userProfile = [PFUser currentUser];
     }
 }
 
@@ -124,7 +128,7 @@
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
     NSLog(@"Clicked Annotation");
     if ([view isKindOfClass:[TStickerAnnotationView class]]) {
-        TStickerAnnotation* annotation = view.annotation;
+        TStickerAnnotation* annotation = [(TStickerAnnotationView*)view annotation];
         [self performSegueWithIdentifier:@"Activity" sender:annotation.annotationObject];
     }
 }
@@ -253,8 +257,7 @@
 }
 
 
--(void)userClickedMenu:(int)rowNumber {
-    NSLog(@"User clicked: %d", rowNumber);
+-(void)userClickedMenu:(NSInteger)rowNumber {
     [self eyeClicked:nil];
     switch (rowNumber) {
         case MenuItemNearMe:
@@ -264,13 +267,19 @@
         case MenuItemChats:
             break;
         case MenuItemProfile:
-            [self performSegueWithIdentifier:PROFILE sender:nil];
+            if ([[PFUser currentUser] isAuthenticated]) {
+                [self performSegueWithIdentifier:PROFILE sender:nil];
+            } else {
+                [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You need to login first" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+            }
+
             break;
         case MenuItemTopTromers:
             break;
         case MenuItemSettings:
             break;
-        default:
+        case MenuItemLogout:
+            [PFUser logOut];
             break;
     }
 }

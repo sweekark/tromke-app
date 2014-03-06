@@ -36,7 +36,10 @@
     _category = category;
     if (self.category) {
         PFRelation* stickers = [self.category relationforKey:@"Stickers"];
-        [[stickers query] findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        PFQuery* stickersQuery = [stickers query];
+        stickersQuery.cachePolicy = kPFCachePolicyCacheElseNetwork;
+        stickersQuery.maxCacheAge = 3600;
+        [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             if (error) {
                 NSLog(@"Error in getting stickers");
             } else {

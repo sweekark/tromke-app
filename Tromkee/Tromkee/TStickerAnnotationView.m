@@ -60,12 +60,12 @@
     [_circleView setNeedsDisplay];
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    NSLog(@"Selected");
-}
-
-- (void)didAddSubview:(UIView *)subview {
-}
+//- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+//    NSLog(@"Selected");
+//}
+//
+//- (void)didAddSubview:(UIView *)subview {
+//}
 
 
 @end

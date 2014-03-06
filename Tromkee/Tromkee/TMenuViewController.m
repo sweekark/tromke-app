@@ -34,7 +34,7 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    self.menuItems = @[@"Near Me", @"Choose my route", @"Chats", @"Profile", @"Top Tromer's", @"Settings"];
+    self.menuItems = @[@"Near Me", @"Choose my route", @"Chats", @"Profile", @"Top Tromer's", @"Settings", @"Logout"];
 }
 
 - (void)didReceiveMemoryWarning
