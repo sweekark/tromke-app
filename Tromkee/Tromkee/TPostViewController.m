@@ -14,7 +14,6 @@
 #import "UIImage+ResizeAdditions.h"
 #import "UIImage+RoundedCornerAdditions.h"
 #import "UIImage+AlphaAdditions.h"
-#import "MBProgressHUD.h"
 
 
 #define IMAGE @"image"
@@ -31,12 +30,14 @@
 @property (weak, nonatomic) IBOutlet UITextView *stickerDescription;
 @property (weak, nonatomic) IBOutlet UIView* bottomView;
 
-@property (nonatomic, strong) NSMutableArray* stickerImages;
+@property (nonatomic, strong) PFFile* photoFile;
+@property (nonatomic, strong) PFFile* thumbnailFile;
+
 @property (nonatomic, strong) UIImagePickerController* imagePickerController;
-@property (nonatomic, strong) MBProgressHUD *hud;
 @property (nonatomic) BOOL isCommentEditing;
 
 @property (nonatomic, assign) UIBackgroundTaskIdentifier fileUploadBackgroundTaskId;
+@property (nonatomic, assign) UIBackgroundTaskIdentifier photoPostBackgroundTaskId;
 
 - (IBAction)postSticker:(id)sender;
 - (IBAction)takePicture:(id)sender;
@@ -59,13 +60,13 @@
 {
     [super viewDidLoad];
     self.stickerDescription.contentInset = UIEdgeInsetsMake(-4, 0, 0, 0);
-    self.stickerImages = [@[] mutableCopy];    
 	// Do any additional setup after loading the view.
     self.view.backgroundColor = STICKERS_BG_COLOR;
     self.bottomView.backgroundColor = STICKER_POST_BOTTOM_COLOR;
     
     [self updateSeverityColor:0.5];
     self.fileUploadBackgroundTaskId = UIBackgroundTaskInvalid;
+    self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -116,81 +117,48 @@
 //        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Please enter comment to post !!!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
 //        return;
 //    }
-    
     NSLog(@"User available");
-    __block UIViewController* vc = [self topMostController];
-//    self.hud = [MBProgressHUD showHUDAddedTo:vc.view animated:YES];
-//    self.hud.labelText = @"Posting...";
-//    self.hud.dimBackground = YES;
-
-    if (self.stickerImages.count) {
-        
-        self.fileUploadBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-            [[UIApplication sharedApplication] endBackgroundTask:self.fileUploadBackgroundTaskId];
+    if (self.photoFile && self.thumbnailFile) {
+        self.photoPostBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
         }];
         
-        NSLog(@"Requested background expiration task with id %lu for Anypic photo upload", (unsigned long)self.fileUploadBackgroundTaskId);
-
-        //Post image along with sticker
-        UIImage *img = [self.stickerImages[0] resizedImageWithContentMode:UIViewContentModeScaleAspectFit bounds:CGSizeMake(560.0f, 560.0f) interpolationQuality:kCGInterpolationHigh];
-        UIImage *thumbnailImage = [img thumbnailImage:86.0f transparentBorder:0.0f cornerRadius:10.0f interpolationQuality:kCGInterpolationDefault];
+        NSLog(@"Requested background expiration task with id %lu for Anypic photo upload", (unsigned long)self.photoPostBackgroundTaskId);
         
-        NSData *imageData = UIImageJPEGRepresentation(img, 0.8f);
-        NSData* thumbnailData = UIImagePNGRepresentation(thumbnailImage);
-        __block PFFile* imageFile = [PFFile fileWithData:imageData];
-        __block PFFile* thumbnailFile = [PFFile fileWithData:thumbnailData];
-        [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        __block PFObject *imagesObject = [PFObject objectWithClassName:@"Image"];
+        imagesObject[@"image"] = self.photoFile;
+        imagesObject[@"thumbnail"] = self.thumbnailFile;
+        [imagesObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
-                [thumbnailFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
+                
+                PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
+                stickerPost[@"data"] = self.stickerDescription.text;
+                stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
+                stickerPost[@"fromUser"] = [PFUser currentUser];
+                stickerPost[@"sticker"] = self.postSticker;
+                stickerPost[@"severity"] = [NSNumber numberWithFloat:self.stickerSeverity.value];
+                stickerPost[@"points"] = @([self.postSticker[@"postPoints"] integerValue] + [self.postSticker[@"imagePoints"] integerValue]);
+                stickerPost[@"images"] = imagesObject;
+                
+                [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     if (succeeded) {
-                        __block PFObject *imagesObject = [PFObject objectWithClassName:@"Image"];
-                        imagesObject[@"image"] = imageFile;
-                        imagesObject[@"thumbnail"] = thumbnailFile;
-                        [imagesObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                            if (succeeded) {
-                                CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
-                                
-                                PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
-                                stickerPost[@"data"] = self.stickerDescription.text;
-                                stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
-                                stickerPost[@"fromUser"] = [PFUser currentUser];
-                                stickerPost[@"sticker"] = self.postSticker;
-                                stickerPost[@"severity"] = [NSNumber numberWithFloat:self.stickerSeverity.value];
-                                stickerPost[@"points"] = @([self.postSticker[@"postPoints"] integerValue] + [self.postSticker[@"imagePoints"] integerValue]);
-                                stickerPost[@"images"] = imagesObject;
-                                
-                                [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                                    [MBProgressHUD hideHUDForView:vc.view animated:YES];
-                                    if (succeeded) {
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Sticker posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-                                            [self.navigationController popViewControllerAnimated:YES];
-                                            [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
-                                        });
-
-                                    } else {
-                                        NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
-                                    }
-                                }];
-                            } else {
-                                [MBProgressHUD hideHUDForView:vc.view animated:YES];
-                                NSLog(@"Failed with Image object Error: %@", error.localizedDescription);
-                            }
-                        }];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Sticker posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                            [self.navigationController popViewControllerAnimated:YES];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
+                        });
+                        
                     } else {
-                        [MBProgressHUD hideHUDForView:vc.view animated:YES];
-                        NSLog(@"Failed with Thumbnail Error: %@", error.localizedDescription);
+                        NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
                     }
                 }];
-                
-                [[UIApplication sharedApplication] endBackgroundTask:self.fileUploadBackgroundTaskId];
             } else {
-                [[UIApplication sharedApplication] endBackgroundTask:self.fileUploadBackgroundTaskId];
-                [MBProgressHUD hideHUDForView:vc.view animated:YES];
-                NSLog(@"Failed with Image Error: %@", error.localizedDescription);
+                NSLog(@"Failed with Image object Error: %@", error.localizedDescription);
             }
         }];
-    } else {
+    }
+    else {
         //Post only content
         CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
         
@@ -203,7 +171,6 @@
         stickerPost[@"points"] = self.postSticker[@"postPoints"];
         
         [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            [MBProgressHUD hideHUDForView:vc.view animated:YES];
             if (succeeded) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Sticker posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
@@ -216,10 +183,6 @@
         }];
     }
 }
-
-
-
-
 
 -(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
@@ -266,8 +229,7 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
-//    [self.stickerImages addObject:image];
-    [self.stickerImages insertObject:image atIndex:0];
+    [self shouldUploadImage:image];
     [self dismissViewControllerAnimated:YES completion:nil];
     self.imagePickerController = nil;
 }
@@ -322,5 +284,36 @@
     }
     
     return topController;
+}
+
+- (void)shouldUploadImage:(UIImage *)anImage {
+    UIImage *img = [anImage resizedImageWithContentMode:UIViewContentModeScaleAspectFit bounds:CGSizeMake(560.0f, 560.0f) interpolationQuality:kCGInterpolationHigh];
+    UIImage *thumbnailImage = [img thumbnailImage:86.0f transparentBorder:0.0f cornerRadius:10.0f interpolationQuality:kCGInterpolationDefault];
+    
+    NSData *imageData = UIImageJPEGRepresentation(img, 0.8f);
+    NSData* thumbnailData = UIImagePNGRepresentation(thumbnailImage);
+    
+    self.photoFile = [PFFile fileWithData:imageData];
+    self.thumbnailFile = [PFFile fileWithData:thumbnailData];
+    
+    // Request a background execution task to allow us to finish uploading the photo even if the app is backgrounded
+    self.fileUploadBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:self.fileUploadBackgroundTaskId];
+    }];
+    
+    NSLog(@"Requested background expiration task with id %lu for Anypic photo upload", (unsigned long)self.fileUploadBackgroundTaskId);
+    [self.photoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            NSLog(@"Photo uploaded successfully");
+            [self.thumbnailFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (succeeded) {
+                    NSLog(@"Thumbnail uploaded successfully");
+                }
+                [[UIApplication sharedApplication] endBackgroundTask:self.fileUploadBackgroundTaskId];
+            }];
+        } else {
+            [[UIApplication sharedApplication] endBackgroundTask:self.fileUploadBackgroundTaskId];
+        }
+    }];
 }
 @end
