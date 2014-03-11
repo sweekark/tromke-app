@@ -1,14 +1,14 @@
 //
-//  TProfileCell.m
+//  TFollowCell.m
 //  Tromke
 //
 //  Created by Satyanarayana SVV on 3/9/14.
 //  Copyright (c) 2014 Tromkee. All rights reserved.
 //
 
-#import "TProfileCell.h"
+#import "TFollowCell.h"
 
-@implementation TProfileCell
+@implementation TFollowCell
 
 - (id)initWithFrame:(CGRect)frame
 {

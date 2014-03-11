@@ -52,3 +52,4 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 #define ACTIVITY @"Activity"
 #define MENU @"Menu"
 #define CATEGORIES @"Categories"
+#define PROFILEVIEW @"Profile"

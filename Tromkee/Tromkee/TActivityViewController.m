@@ -74,22 +74,21 @@
     
     __weak TActivityViewController* weakSelf = self;
     [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        [weakSelf.progress hide:YES];
-        if (error) {
-            NSLog(@"Error in getting activities: %@", error.localizedDescription);
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.progress hide:YES];
+            if (error) {
+                NSLog(@"Error in getting activities: %@", error.localizedDescription);
+            } else {
                 PFObject* user = weakSelf.stickerObject[@"fromUser"];
                 
                 PFFile *imageFile = [user objectForKey:FACEBOOK_SMALLPIC_KEY];
                 if (imageFile) {
-                    NSLog(@"Loading person image:");
+                    weakSelf.fromImage.image = [UIImage imageNamed:@"PersonHolder"];
                     [weakSelf.fromImage setFile:imageFile];
                     [weakSelf.fromImage loadInBackground];
                 } else {
                     NSLog(@"No image found");
                 }
-                
                 
                 weakSelf.fromName.text = user[@"displayName"];
                 weakSelf.fromPostedTime.text = [TUtility computePostedTime:self.stickerObject.updatedAt];
@@ -119,9 +118,10 @@
                     [weakSelf.activities removeObjectsAtIndexes:indexes];
                     [weakSelf.activitiesTable reloadData];
                 }
-            });
-        }
+            }
+        });
     }];
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -177,6 +177,9 @@
     return height;
 }
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
 
 #pragma mark - TextView methods
 
@@ -394,4 +397,16 @@
         profileVC.userProfile = fromUser;
     }
 }
+
+-(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
+    if ([identifier isEqualToString:PROFILE]) {
+        if (![[PFUser currentUser] isAuthenticated]) {
+            [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You need to login inorder to follow other users" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+            return NO;
+        }
+    }
+    
+    return YES;
+}
+
 @end

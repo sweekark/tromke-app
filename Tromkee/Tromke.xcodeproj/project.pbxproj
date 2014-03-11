@@ -11,7 +11,6 @@
 		450544B918B284B600529015 /* TActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 450544B818B284B600529015 /* TActivityCell.m */; };
 		451AF9A61885314300811899 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451AF9A51885314300811899 /* MapKit.framework */; };
 		451C522118C2418F00386C63 /* TProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 451C522018C2418F00386C63 /* TProfileViewController.m */; };
-		451C522418C2509000386C63 /* TProfileCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 451C522318C2509000386C63 /* TProfileCell.m */; };
 		45309872187DBBD0005B3B5F /* TLogInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45309871187DBBD0005B3B5F /* TLogInViewController.m */; };
 		453AE94E188423F00099D8B0 /* TLocationUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 453AE94D188423F00099D8B0 /* TLocationUtility.m */; };
 		453CB8F01885B5BE00D7019D /* TCategoriesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 453CB8EF1885B5BE00D7019D /* TCategoriesViewController.m */; };
@@ -23,6 +22,7 @@
 		4563F2E418A4B1EB00E8911E /* TStickerAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F2E318A4B1EB00E8911E /* TStickerAnnotation.m */; };
 		456DAE5618CC9394009E4FEC /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 456DAE5418CC9394009E4FEC /* FacebookSDK.framework */; };
 		456DAE5718CC9394009E4FEC /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 456DAE5518CC9394009E4FEC /* Parse.framework */; };
+		456DAE5A18CCA869009E4FEC /* TProfileCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 456DAE5918CCA869009E4FEC /* TProfileCell.m */; };
 		457C8A861893B02100D6DA40 /* TCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 457C8A851893B02100D6DA40 /* TCircleView.m */; };
 		45A2E87E18764FF1009A6171 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E87D18764FF1009A6171 /* Foundation.framework */; };
 		45A2E88018764FF1009A6171 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E87F18764FF1009A6171 /* CoreGraphics.framework */; };
@@ -56,6 +56,7 @@
 		45E54467188F934200FF8977 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 45E54464188F934200FF8977 /* Reachability.m */; };
 		45F53E26189D6EB100C7C42A /* TUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F53E25189D6EB100C7C42A /* TUtility.m */; };
 		45F53E2A189D6FA200C7C42A /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F53E29189D6FA200C7C42A /* MBProgressHUD.m */; };
+		45FC0DCD18CCD46700C82A2B /* TFollowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FC0DCC18CCD46700C82A2B /* TFollowCell.m */; };
 		45FC756018A017E10089255A /* UIImage+AlphaAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FC755B18A017E10089255A /* UIImage+AlphaAdditions.m */; };
 		45FC756118A017E10089255A /* UIImage+ResizeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FC755D18A017E10089255A /* UIImage+ResizeAdditions.m */; };
 		45FC756218A017E10089255A /* UIImage+RoundedCornerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FC755F18A017E10089255A /* UIImage+RoundedCornerAdditions.m */; };
@@ -80,8 +81,6 @@
 		451AF9A51885314300811899 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		451C521F18C2418F00386C63 /* TProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TProfileViewController.h; sourceTree = "<group>"; };
 		451C522018C2418F00386C63 /* TProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TProfileViewController.m; sourceTree = "<group>"; };
-		451C522218C2509000386C63 /* TProfileCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TProfileCell.h; sourceTree = "<group>"; };
-		451C522318C2509000386C63 /* TProfileCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TProfileCell.m; sourceTree = "<group>"; };
 		45309870187DBBD0005B3B5F /* TLogInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLogInViewController.h; sourceTree = "<group>"; };
 		45309871187DBBD0005B3B5F /* TLogInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLogInViewController.m; sourceTree = "<group>"; };
 		453AE94C188423F00099D8B0 /* TLocationUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLocationUtility.h; sourceTree = "<group>"; };
@@ -101,6 +100,8 @@
 		4563F2E318A4B1EB00E8911E /* TStickerAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TStickerAnnotation.m; sourceTree = "<group>"; };
 		456DAE5418CC9394009E4FEC /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		456DAE5518CC9394009E4FEC /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
+		456DAE5818CCA869009E4FEC /* TProfileCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TProfileCell.h; sourceTree = "<group>"; };
+		456DAE5918CCA869009E4FEC /* TProfileCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TProfileCell.m; sourceTree = "<group>"; };
 		457C8A841893B02100D6DA40 /* TCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCircleView.h; sourceTree = "<group>"; };
 		457C8A851893B02100D6DA40 /* TCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCircleView.m; sourceTree = "<group>"; };
 		45A2E87A18764FF1009A6171 /* Tromke.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tromke.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -145,6 +146,8 @@
 		45F53E25189D6EB100C7C42A /* TUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUtility.m; sourceTree = "<group>"; };
 		45F53E28189D6FA200C7C42A /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		45F53E29189D6FA200C7C42A /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
+		45FC0DCB18CCD46700C82A2B /* TFollowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFollowCell.h; sourceTree = "<group>"; };
+		45FC0DCC18CCD46700C82A2B /* TFollowCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFollowCell.m; sourceTree = "<group>"; };
 		45FC755A18A017E10089255A /* UIImage+AlphaAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+AlphaAdditions.h"; sourceTree = "<group>"; };
 		45FC755B18A017E10089255A /* UIImage+AlphaAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+AlphaAdditions.m"; sourceTree = "<group>"; };
 		45FC755C18A017E10089255A /* UIImage+ResizeAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ResizeAdditions.h"; sourceTree = "<group>"; };
@@ -198,8 +201,10 @@
 			children = (
 				451C521F18C2418F00386C63 /* TProfileViewController.h */,
 				451C522018C2418F00386C63 /* TProfileViewController.m */,
-				451C522218C2509000386C63 /* TProfileCell.h */,
-				451C522318C2509000386C63 /* TProfileCell.m */,
+				45FC0DCB18CCD46700C82A2B /* TFollowCell.h */,
+				45FC0DCC18CCD46700C82A2B /* TFollowCell.m */,
+				456DAE5818CCA869009E4FEC /* TProfileCell.h */,
+				456DAE5918CCA869009E4FEC /* TProfileCell.m */,
 			);
 			name = Profile;
 			sourceTree = "<group>";
@@ -505,7 +510,7 @@
 				453CB8F01885B5BE00D7019D /* TCategoriesViewController.m in Sources */,
 				451C522118C2418F00386C63 /* TProfileViewController.m in Sources */,
 				450544B618B284A500529015 /* TActivityViewController.m in Sources */,
-				451C522418C2509000386C63 /* TProfileCell.m in Sources */,
+				456DAE5A18CCA869009E4FEC /* TProfileCell.m in Sources */,
 				45D3E6CB18ACA3ED000AD55F /* TMenuViewController.m in Sources */,
 				45FC756018A017E10089255A /* UIImage+AlphaAdditions.m in Sources */,
 				453CB8FA1885C5D300D7019D /* TCategoryStickerCell.m in Sources */,
@@ -515,6 +520,7 @@
 				454BDE0118890101009DC4F6 /* TPostViewController.m in Sources */,
 				453CB8FD1885C7B700D7019D /* TCategoryStickersViewController.m in Sources */,
 				45F53E2A189D6FA200C7C42A /* MBProgressHUD.m in Sources */,
+				45FC0DCD18CCD46700C82A2B /* TFollowCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -652,7 +658,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;
-				PROVISIONING_PROFILE = "A22363D4-1DF3-46CD-9B5E-B209568DEEEB";
+				PROVISIONING_PROFILE = "0D6FCAB2-C2B9-4C33-A286-22A7F4F603BF";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -673,7 +679,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;
-				PROVISIONING_PROFILE = "A22363D4-1DF3-46CD-9B5E-B209568DEEEB";
+				PROVISIONING_PROFILE = "0D6FCAB2-C2B9-4C33-A286-22A7F4F603BF";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -243,7 +243,7 @@
         <!--Profile View Controller-->
         <scene sceneID="mBK-qW-lED">
             <objects>
-                <viewController id="XTB-9t-TTs" customClass="TProfileViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Profile" id="XTB-9t-TTs" customClass="TProfileViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="QYO-w3-fKV"/>
                         <viewControllerLayoutGuide type="bottom" id="TOH-6l-FEE"/>
@@ -252,6 +252,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="No results found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8r3-bp-Q30">
+                                <rect key="frame" x="0.0" y="274" width="320" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="italicSystem" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TopBar" translatesAutoresizingMaskIntoConstraints="NO" id="ifT-C8-KmS">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="64"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -299,7 +306,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="roe-rd-uoS">
-                                        <rect key="frame" x="73" y="5" width="227" height="21"/>
+                                        <rect key="frame" x="77" y="5" width="227" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <nil key="highlightedColor"/>
@@ -332,6 +339,9 @@
                                         <state key="normal" title="Activity">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="showActivity:" destination="XTB-9t-TTs" eventType="touchUpInside" id="vBf-Cc-fq4"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zuT-jM-i9o">
                                         <rect key="frame" x="213" y="0.0" width="106" height="40"/>
@@ -339,6 +349,9 @@
                                         <state key="normal">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="showFollowing:" destination="XTB-9t-TTs" eventType="touchUpInside" id="GhE-wL-DFl"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7qj-d1-BBb">
                                         <rect key="frame" x="106" y="0.0" width="107" height="40"/>
@@ -346,6 +359,9 @@
                                         <state key="normal">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="showFollowers:" destination="XTB-9t-TTs" eventType="touchUpInside" id="7KQ-if-oyi"/>
+                                        </connections>
                                     </button>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Followers" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ziN-PS-xcy">
                                         <rect key="frame" x="106" y="20" width="107" height="21"/>
@@ -359,6 +375,19 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zpT-aZ-qlO">
+                                        <rect key="frame" x="139" y="-1" width="42" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pge-Vg-Dag">
+                                        <rect key="frame" x="245" y="-1" width="42" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <constraints>
@@ -366,93 +395,142 @@
                                     <constraint firstAttribute="width" constant="320" id="cNr-BT-0wV"/>
                                 </constraints>
                             </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="100" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="zEN-Te-Hp7">
-                                <rect key="frame" x="0.0" y="222" width="320" height="346"/>
+                            <collectionView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="zo2-nQ-rMv">
+                                <rect key="frame" x="0.0" y="214" width="320" height="354"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="POSTCELL" id="xvG-rs-9U0" customClass="TProfileCell">
-                                        <rect key="frame" x="0.0" y="22" width="320" height="100"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Se5-Xf-IUw">
+                                    <size key="itemSize" width="310" height="100"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="5" minY="5" maxX="5" maxY="5"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="POSTCELL" id="Hat-US-3kh" customClass="TProfileCell">
+                                        <rect key="frame" x="5" y="5" width="310" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="xvG-rs-9U0" id="mlR-qg-bva">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="99"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="310" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Personholder" translatesAutoresizingMaskIntoConstraints="NO" id="Uhm-aH-CI4" customClass="PFImageView">
-                                                    <rect key="frame" x="6" y="5" width="70" height="70"/>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Personholder" translatesAutoresizingMaskIntoConstraints="NO" id="Fth-Fv-8rh" customClass="PFImageView">
+                                                    <rect key="frame" x="10" y="10" width="80" height="80"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="70" id="EJU-Mt-Uy5"/>
-                                                        <constraint firstAttribute="height" constant="70" id="pdW-3Z-jFx"/>
-                                                    </constraints>
                                                 </imageView>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sUv-zs-O6Q">
-                                                    <rect key="frame" x="81" y="3" width="231" height="18"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I7L-GF-ZON">
+                                                    <rect key="frame" x="100" y="3" width="205" height="14"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="231" id="NrT-db-AGy"/>
-                                                        <constraint firstAttribute="height" constant="18" id="gtw-im-LOx"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="306" translatesAutoresizingMaskIntoConstraints="NO" id="jPI-3P-s8r">
-                                                    <rect key="frame" x="6" y="78" width="306" height="21"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="47l-cK-Ha3">
+                                                    <rect key="frame" x="100" y="19" width="205" height="14"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="231" translatesAutoresizingMaskIntoConstraints="NO" id="LHj-X2-VqW">
-                                                    <rect key="frame" x="81" y="20" width="231" height="55"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="205" translatesAutoresizingMaskIntoConstraints="NO" id="e0P-7h-Oyg">
+                                                    <rect key="frame" x="100" y="37" width="205" height="58"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TgB-5V-XdV">
+                                                    <rect key="frame" x="0.0" y="99" width="320" height="1"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                </view>
                                             </subviews>
-                                            <constraints>
-                                                <constraint firstItem="jPI-3P-s8r" firstAttribute="leading" secondItem="mlR-qg-bva" secondAttribute="leading" constant="6" id="9LI-nh-pxD"/>
-                                                <constraint firstAttribute="bottom" secondItem="jPI-3P-s8r" secondAttribute="bottom" id="He3-6r-PSM"/>
-                                                <constraint firstItem="jPI-3P-s8r" firstAttribute="top" secondItem="Uhm-aH-CI4" secondAttribute="bottom" constant="3" id="M3d-oX-sQH"/>
-                                                <constraint firstItem="sUv-zs-O6Q" firstAttribute="top" secondItem="mlR-qg-bva" secondAttribute="top" constant="3" id="MEX-FY-1NK"/>
-                                                <constraint firstItem="Uhm-aH-CI4" firstAttribute="top" secondItem="mlR-qg-bva" secondAttribute="top" constant="5" id="Sit-wc-ICS"/>
-                                                <constraint firstAttribute="trailing" secondItem="sUv-zs-O6Q" secondAttribute="trailing" constant="8" id="eCl-UV-org"/>
-                                                <constraint firstItem="Uhm-aH-CI4" firstAttribute="leading" secondItem="mlR-qg-bva" secondAttribute="leading" constant="6" id="mri-vc-CkO"/>
-                                                <constraint firstAttribute="trailing" secondItem="jPI-3P-s8r" secondAttribute="trailing" constant="8" id="sUz-aO-3cS"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
                                         <connections>
-                                            <outlet property="comment" destination="LHj-X2-VqW" id="3Y9-zh-esa"/>
-                                            <outlet property="personImage" destination="Uhm-aH-CI4" id="AsT-hV-j2V"/>
-                                            <outlet property="personName" destination="sUv-zs-O6Q" id="9sh-lV-vPk"/>
-                                            <outlet property="postedTime" destination="jPI-3P-s8r" id="Ebl-Xe-cUy"/>
+                                            <outlet property="comment" destination="e0P-7h-Oyg" id="DpM-NO-iUN"/>
+                                            <outlet property="personImage" destination="Fth-Fv-8rh" id="AXO-sX-AUn"/>
+                                            <outlet property="personName" destination="I7L-GF-ZON" id="sxT-Vj-agt"/>
+                                            <outlet property="postedTime" destination="47l-cK-Ha3" id="Zku-IZ-s97"/>
                                         </connections>
-                                    </tableViewCell>
-                                </prototypes>
+                                    </collectionViewCell>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="FOLLOWCELL" id="BTA-j9-Z3i" customClass="TFollowCell">
+                                        <rect key="frame" x="115" y="115" width="90" height="90"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Personholder" translatesAutoresizingMaskIntoConstraints="NO" id="DNp-uq-Zzm" customClass="TImageView">
+                                                    <rect key="frame" x="5" y="5" width="0.0" height="80"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                </imageView>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rR3-gt-gyB">
+                                                    <rect key="frame" x="100" y="3" width="205" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Iuz-le-8tR">
+                                                    <rect key="frame" x="100" y="19" width="205" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="205" translatesAutoresizingMaskIntoConstraints="NO" id="Wlq-WB-6JM">
+                                                    <rect key="frame" x="100" y="37" width="205" height="58"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Nqd-vk-IZu">
+                                                    <rect key="frame" x="0.0" y="99" width="320" height="1"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                </view>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Personholder" translatesAutoresizingMaskIntoConstraints="NO" id="seK-ni-fUx" customClass="PFImageView">
+                                                    <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <size key="customSize" width="90" height="90"/>
+                                        <connections>
+                                            <outlet property="personImage" destination="seK-ni-fUx" id="ngW-1W-gKJ"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
                                 <connections>
-                                    <outlet property="dataSource" destination="XTB-9t-TTs" id="onQ-ma-Ncd"/>
-                                    <outlet property="delegate" destination="XTB-9t-TTs" id="BKN-gx-n5Q"/>
+                                    <outlet property="dataSource" destination="XTB-9t-TTs" id="9Bh-LX-V4F"/>
+                                    <outlet property="delegate" destination="XTB-9t-TTs" id="kao-fM-NHS"/>
                                 </connections>
-                            </tableView>
+                            </collectionView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="dwt-gL-k82" firstAttribute="leading" secondItem="wUM-8V-oDO" secondAttribute="leading" id="Irg-kE-Ukp"/>
                             <constraint firstItem="8Hj-Yy-vcK" firstAttribute="top" secondItem="dwt-gL-k82" secondAttribute="bottom" id="JP7-sq-ogM"/>
                             <constraint firstItem="ifT-C8-KmS" firstAttribute="top" secondItem="wUM-8V-oDO" secondAttribute="top" id="KS9-UU-UPm"/>
+                            <constraint firstItem="TOH-6l-FEE" firstAttribute="top" secondItem="zo2-nQ-rMv" secondAttribute="bottom" id="L3x-Ke-t9T"/>
                             <constraint firstAttribute="trailing" secondItem="ifT-C8-KmS" secondAttribute="trailing" id="LcP-aM-L7v"/>
+                            <constraint firstItem="zo2-nQ-rMv" firstAttribute="leading" secondItem="wUM-8V-oDO" secondAttribute="leading" id="Oyl-W3-d8A"/>
                             <constraint firstItem="ifT-C8-KmS" firstAttribute="leading" secondItem="wUM-8V-oDO" secondAttribute="leading" id="SqI-DN-qnF"/>
+                            <constraint firstItem="zo2-nQ-rMv" firstAttribute="top" secondItem="8Hj-Yy-vcK" secondAttribute="bottom" id="UY2-B0-SmN"/>
                             <constraint firstItem="8Hj-Yy-vcK" firstAttribute="leading" secondItem="wUM-8V-oDO" secondAttribute="leading" id="UvW-5K-qcc"/>
                             <constraint firstAttribute="trailing" secondItem="dwt-gL-k82" secondAttribute="trailing" id="eqz-ov-rng"/>
                             <constraint firstAttribute="trailing" secondItem="8Hj-Yy-vcK" secondAttribute="trailing" id="gTL-Av-ly3"/>
                             <constraint firstItem="dwt-gL-k82" firstAttribute="top" secondItem="ifT-C8-KmS" secondAttribute="bottom" id="hR5-Nb-CBN"/>
+                            <constraint firstAttribute="trailing" secondItem="zo2-nQ-rMv" secondAttribute="trailing" id="rw5-nI-HCF"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="HWN-v2-tYb"/>
                     <connections>
+                        <outlet property="collectionView" destination="zo2-nQ-rMv" id="aY2-r6-Xq2"/>
                         <outlet property="followButton" destination="5B0-Ea-6nY" id="kAZ-rZ-aIQ"/>
-                        <outlet property="postsTableView" destination="zEN-Te-Hp7" id="N0r-Gq-xZu"/>
+                        <outlet property="followersValue" destination="zpT-aZ-qlO" id="jgL-y2-Y0B"/>
+                        <outlet property="followingValue" destination="Pge-Vg-Dag" id="CFJ-bd-3Wc"/>
+                        <outlet property="noResultsLabel" destination="8r3-bp-Q30" id="mKX-5u-QiR"/>
                         <outlet property="userImage" destination="OJU-zx-Qub" id="PlG-Qv-GFy"/>
                         <outlet property="userName" destination="roe-rd-uoS" id="s3x-TD-C73"/>
                         <outlet property="userPoints" destination="mO5-Tc-rnq" id="gCP-TD-EjO"/>
@@ -659,7 +737,7 @@
                                                 <action selector="conveyThanks:" destination="oKO-5Q-Eb5" eventType="touchUpInside" id="JK4-nw-jrW"/>
                                             </connections>
                                         </button>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WkT-TB-y1L">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WkT-TB-y1L">
                                             <rect key="frame" x="284" y="5" width="31" height="15"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <constraints>
@@ -783,7 +861,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="300"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Personholder" translatesAutoresizingMaskIntoConstraints="NO" id="lu5-SU-J1i">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Personholder" translatesAutoresizingMaskIntoConstraints="NO" id="lu5-SU-J1i" customClass="PFImageView">
                                                     <rect key="frame" x="5" y="5" width="70" height="70"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>

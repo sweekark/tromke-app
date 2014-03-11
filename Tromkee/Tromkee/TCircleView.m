@@ -39,7 +39,8 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
-    CGRect borderRect = CGRectMake(0.0, 0.0, 60.0, 60.0);
+//    CGRect borderRect = CGRectMake(0.0, 0.0, 60.0, 60.0);
+    CGRect borderRect = CGRectMake(0.0, 0.0, self.frame.size.width, self.frame.size.height);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 1.0);
     CGContextSetRGBFillColor(context, 1.0 - self.green, self.green, 0.0, self.opacity);
