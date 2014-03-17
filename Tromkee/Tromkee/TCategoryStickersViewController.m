@@ -40,12 +40,14 @@
         stickersQuery.cachePolicy = kPFCachePolicyCacheElseNetwork;
         stickersQuery.maxCacheAge = 3600;
         [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            if (error) {
-                NSLog(@"Error in getting stickers");
-            } else {
-                self.stickers = objects;
-                [self.collectionView reloadData];
-            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    NSLog(@"Error in getting stickers");
+                } else {
+                    self.stickers = objects;
+                    [self.collectionView reloadData];
+                }
+            });
         }];
     }
 }
@@ -79,10 +81,12 @@
     
     PFFile *userImageFile = sticker[IMAGE];
     [userImageFile getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
-        if (!error) {
-            TCategoryStickerCell* tempCell = (TCategoryStickerCell*)[collectionView cellForItemAtIndexPath:indexPath];
-            tempCell.stickerImage.image = [UIImage imageWithData:imageData];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!error) {
+                TCategoryStickerCell* tempCell = (TCategoryStickerCell*)[collectionView cellForItemAtIndexPath:indexPath];
+                tempCell.stickerImage.image = [UIImage imageWithData:imageData];
+            }
+        });
     }];
 
     return cell;

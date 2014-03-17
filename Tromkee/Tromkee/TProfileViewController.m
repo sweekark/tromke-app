@@ -94,6 +94,7 @@ NS_ENUM(int, ProfileDisplay) {
     [activityQuery orderByDescending:SORT_KEY];
     __weak TProfileViewController* weakSelf = self;
     [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        DLog(@"Received activities in profile: %d", objects.count);
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.progress hide:YES];
             if (error) {
@@ -129,6 +130,7 @@ NS_ENUM(int, ProfileDisplay) {
     followersQuery.maxCacheAge = 300;
     __weak TProfileViewController* weakSelf = self;
     [followersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        DLog(@"Followers count is : %d", objects.count);
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.progress hide:YES];
             if (error) {
@@ -163,6 +165,7 @@ NS_ENUM(int, ProfileDisplay) {
     followersQuery.maxCacheAge = 300;
     __weak TProfileViewController* weakSelf = self;
     [followersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        DLog(@"Following count is : %d", objects.count);
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.progress hide:YES];
             if (error) {
@@ -189,6 +192,7 @@ NS_ENUM(int, ProfileDisplay) {
     [followQuery getObjectInBackgroundWithId:self.userProfile.objectId block:^(PFObject *object, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             PFUser* usr = (PFUser*)object;
+            DLog(@"Followers Value: %d, Following Value: %d", [usr[@"followers"] intValue],  [usr[@"following"] intValue]);
             weakSelf.followersValue.text = [NSString stringWithFormat:@"%d", [usr[@"followers"] intValue]];
             weakSelf.followingValue.text = [NSString stringWithFormat:@"%d", [usr[@"following"] intValue]];
         });
@@ -225,6 +229,7 @@ NS_ENUM(int, ProfileDisplay) {
         [activity whereKey:@"toUser" equalTo:self.userProfile];
         [activity whereKey:@"type" equalTo:@"FOLLOW"];
         [activity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            DLog(@"Deleted following");
             if (!error) {
                 for (PFObject *activity in objects) {
                     [activity delete];
@@ -242,11 +247,11 @@ NS_ENUM(int, ProfileDisplay) {
         __weak TProfileViewController* weakself = self;
         [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             [weakself.progress hide:YES];
-            if (succeeded) {
                 dispatch_async(dispatch_get_main_queue(), ^{
+            if (succeeded) {
                     [self updateFollowButton];
-                });
             }
+                });                    
         }];
         self.isFollowing = YES;
         [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
@@ -338,6 +343,10 @@ NS_ENUM(int, ProfileDisplay) {
     return cellSize;
 }
 
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    [collectionView deselectItemAtIndexPath:indexPath animated:YES];
+}
+
 #pragma mark - Actions
 
 - (IBAction)showActivity:(id)sender {
@@ -355,4 +364,30 @@ NS_ENUM(int, ProfileDisplay) {
     [self updateFollowingUsers];
 }
 
+
+-(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
+    if ([identifier isEqualToString:@"PROFILE"]) {
+        if (self.currentDisplay == ProfileDisplayActivity) {
+            return NO;
+        }
+    }
+    
+    return YES;
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"PROFILE"]) {
+        NSIndexPath* indxPath = [[self.collectionView indexPathsForSelectedItems] firstObject];
+        PFObject* act = self.postsArray[indxPath.row];
+        PFUser* usr;
+        if (self.currentDisplay == ProfileDisplayFollowers) {
+            usr = act[@"fromUser"];
+        } else if (self.currentDisplay == ProfileDisplayFollowing) {
+            usr = act[@"toUser"];
+        }
+        
+        TProfileViewController* profileVC = segue.destinationViewController;
+        profileVC.userProfile = usr;
+    }
+}
 @end

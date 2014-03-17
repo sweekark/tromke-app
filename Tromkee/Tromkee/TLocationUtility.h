@@ -12,5 +12,6 @@
 
 +(id)sharedInstance;
 -(CLLocationCoordinate2D)getUserCoordinate;
+-(void)initiateLocationCapture;
 
 @end

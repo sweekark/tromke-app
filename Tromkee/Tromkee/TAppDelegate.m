@@ -30,7 +30,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Register for push notifications
-    
+    [[TLocationUtility sharedInstance] initiateLocationCapture];
     [application registerForRemoteNotificationTypes: UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound];
     
 //    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:160/255.0f green:234/255.0f blue:242/255.0f alpha:1.0f]];
@@ -70,6 +70,7 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    [[TLocationUtility sharedInstance] initiateLocationCapture];    
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -78,7 +79,6 @@
 //    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorized) {
 //        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Tromkee can't find your location. Please visit settings on your iOS device and allow the app to detect your settings" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
 //    }
-    [TLocationUtility sharedInstance];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

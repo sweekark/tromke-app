@@ -74,6 +74,7 @@
     
     __weak TActivityViewController* weakSelf = self;
     [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        DLog(@"Received objects for sticker : %d", objects.count);
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.progress hide:YES];
             if (error) {
@@ -276,7 +277,7 @@
         [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Comment posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+//                    [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Comment posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
                     [self update];
                 });
             }
@@ -316,7 +317,7 @@
         [weakself.progress hide:YES];
         if (succeeded) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Comment posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+//                [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Comment posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
                 [self update];
             });
         }

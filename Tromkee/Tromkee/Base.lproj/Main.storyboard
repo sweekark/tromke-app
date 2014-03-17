@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ZXd-sE-E8Y">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ZXd-sE-E8Y">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
         <!--View Controller - Tromke-->
@@ -395,7 +395,7 @@
                                     <constraint firstAttribute="width" constant="320" id="cNr-BT-0wV"/>
                                 </constraints>
                             </view>
-                            <collectionView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="zo2-nQ-rMv">
+                            <collectionView hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="zo2-nQ-rMv">
                                 <rect key="frame" x="0.0" y="214" width="320" height="354"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -498,6 +498,7 @@
                                         <size key="customSize" width="90" height="90"/>
                                         <connections>
                                             <outlet property="personImage" destination="seK-ni-fUx" id="ngW-1W-gKJ"/>
+                                            <segue destination="XTB-9t-TTs" kind="push" identifier="PROFILE" id="IzJ-9E-grF"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -696,7 +697,7 @@
         <!--Activity View Controller-->
         <scene sceneID="9Pj-0U-ZgZ">
             <objects>
-                <viewController id="oKO-5Q-Eb5" customClass="TActivityViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Activity" id="oKO-5Q-Eb5" customClass="TActivityViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="JT6-bY-3Wz"/>
                         <viewControllerLayoutGuide type="bottom" id="1DZ-bU-7Zf"/>
@@ -962,7 +963,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dEe-wB-I9P">
-                                <rect key="frame" x="10" y="5" width="30" height="54"/>
+                                <rect key="frame" x="4" y="5" width="44" height="54"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="35"/>
                                 <state key="normal" title="&lt;">

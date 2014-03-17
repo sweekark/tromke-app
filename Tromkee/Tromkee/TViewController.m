@@ -129,7 +129,7 @@
     NSLog(@"Clicked Annotation");
     if ([view isKindOfClass:[TStickerAnnotationView class]]) {
         TStickerAnnotation* annotation = [(TStickerAnnotationView*)view annotation];
-        [self performSegueWithIdentifier:@"Activity" sender:annotation.annotationObject];
+        [self performSegueWithIdentifier:ACTIVITY sender:annotation.annotationObject];
     }
 }
 
@@ -205,7 +205,6 @@
 
 
 -(void)updatePostedStickers {
-//    CLLocationCoordinate2D userCoordinate = [[TLocationUtility sharedInstance] getUserCoordinate];
     PFQuery* stickersQuery = [PFQuery queryWithClassName:@"Post"];
     [stickersQuery includeKey:@"sticker"];
     [stickersQuery includeKey:@"images"];
@@ -215,15 +214,15 @@
     
     __weak TViewController* weakSelf = self;
     [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        if (!error) {
-            weakSelf.stickerLocations = objects;
-            [self updateMapWithStickers];
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
+        DLog(@"Stickers received: %d", objects.count);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!error) {
+                weakSelf.stickerLocations = objects;
+                [self updateMapWithStickers];
+            } else {
                 [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Error in retrieving stickers" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-            });
-        }
-        
+            }
+        });
     }];
 }
 

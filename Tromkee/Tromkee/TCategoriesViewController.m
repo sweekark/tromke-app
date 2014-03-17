@@ -48,6 +48,7 @@
     categoriesQuery.maxCacheAge = 3600;
     [categoriesQuery orderByAscending:SORTBY];
     [categoriesQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        DLog(@"Categories received: %d", objects.count);
         if (error) {
             NSLog(@"Error in getting categories: %@", error.localizedDescription);
         } else {
@@ -85,10 +86,12 @@
     
     PFFile *userImageFile = category[IMAGE];
     [userImageFile getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
-        if (!error) {
-            TCategoryCell* tempCell = (TCategoryCell*)[collectionView cellForItemAtIndexPath:indexPath];
-            tempCell.categoryImage.image = [UIImage imageWithData:imageData];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!error) {
+                TCategoryCell* tempCell = (TCategoryCell*)[collectionView cellForItemAtIndexPath:indexPath];
+                tempCell.categoryImage.image = [UIImage imageWithData:imageData];
+            }
+        });
     }];
     
     cell.categoryTitle.text = category[NAME];
@@ -98,10 +101,6 @@
 
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-//    if (self.currentSelectedItem == indexPath.item && self.isStickersShowing) {
-//        return;
-//    }
-
     self.currentSelectedItem = indexPath.item;
     if (!self.isStickersShowing) {
         self.stickersVC.category = self.allCategories[indexPath.item];

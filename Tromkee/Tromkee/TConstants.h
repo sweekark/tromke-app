@@ -11,6 +11,12 @@
 static NSString* const kParseApplicationID = @"IgOuPSL7tE4lSUYDUoqeovRPalXs7PWV61xfsIKb";
 static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVNi1T";
 
+#ifdef DEBUG
+#    define DLog(...) NSLog(@"TROMKE :: "__VA_ARGS__)
+#else
+#    define DLog(...) /* */
+#endif
+
 
 #define TROMKE_USER_LOCATION_UPDATED @"TROMKE_USER_LOCATION_UPDATED"
 #define TROMKEE_UPDATE_STICKERS @"TROMEE_UPDATE_STICKERS"
