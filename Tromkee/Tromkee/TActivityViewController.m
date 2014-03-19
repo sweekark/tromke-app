@@ -23,7 +23,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *fromPostedTime;
 @property (weak, nonatomic) IBOutlet UILabel *fromPostedMessage;
 @property (weak, nonatomic) IBOutlet UILabel *totalThanks;
-@property (weak, nonatomic) IBOutlet UIImageView *fromStickerImage;
+@property (weak, nonatomic) IBOutlet PFImageView *fromStickerImage;
 @property (weak, nonatomic) IBOutlet TCircleView *fromStickerIntensity;
 
 
@@ -58,6 +58,9 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    UIBarButtonItem* forwardButton = [[UIBarButtonItem alloc] initWithTitle:@"Forward" style:UIBarButtonItemStyleBordered target:self action:@selector(share)];
+    self.navigationController.navigationItem.rightBarButtonItem = forwardButton;
+    
     self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
     self.activities = [@[] mutableCopy];
     self.stickerImages = [@[] mutableCopy];
@@ -74,13 +77,13 @@
     
     __weak TActivityViewController* weakSelf = self;
     [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        DLog(@"Received objects for sticker : %d", objects.count);
+        DLog(@"Received objects for sticker : %lu", (unsigned long)objects.count);
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.progress hide:YES];
             if (error) {
                 NSLog(@"Error in getting activities: %@", error.localizedDescription);
             } else {
-                PFObject* user = weakSelf.stickerObject[@"fromUser"];
+                PFUser* user = weakSelf.stickerObject[@"fromUser"];
                 
                 PFFile *imageFile = [user objectForKey:FACEBOOK_SMALLPIC_KEY];
                 if (imageFile) {
@@ -103,16 +106,15 @@
                 weakSelf.totalThanks.text = [NSString stringWithFormat:@"%lu", (unsigned long)(indexes ? indexes.count : 0)];
                 
                 PFObject* stickerObj = weakSelf.stickerObject[@"sticker"];
+                
                 PFFile* stickerImage = stickerObj[@"image"];
-                [stickerImage getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (!error) {
-                            weakSelf.fromStickerImage.image = [UIImage imageWithData:imageData];
-                            weakSelf.fromStickerIntensity.green = [weakSelf.stickerObject[@"severity"] floatValue];
-                            [weakSelf.fromStickerIntensity setNeedsDisplay];
-                        }
-                    });
-                }];
+                if (stickerImage) {
+                    weakSelf.fromStickerImage.file = stickerImage;
+                    [weakSelf.fromStickerImage loadInBackground];
+                }
+                
+                weakSelf.fromStickerIntensity.green = [weakSelf.stickerObject[@"severity"] floatValue];
+                [weakSelf.fromStickerIntensity setNeedsDisplay];
                 
                 if (objects.count) {
                     weakSelf.activities = [NSMutableArray arrayWithArray:objects];
@@ -123,6 +125,12 @@
         });
     }];
 
+}
+
+-(void)share {
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:[NSArray arrayWithObjects: self.stickerObject[@"data"], nil] applicationActivities:nil];
+    activityVC.excludedActivityTypes = @[ UIActivityTypeMessage ,UIActivityTypeAssignToContact,UIActivityTypeSaveToCameraRoll];
+    [self presentViewController:activityVC animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -396,16 +404,23 @@
         PFUser* fromUser = comment[@"fromUser"];
         TProfileViewController* profileVC = segue.destinationViewController;
         profileVC.userProfile = fromUser;
+    } else if ([segue.identifier isEqualToString:STICKER_POSTED_PROFILE]) {
+        PFUser* user = self.stickerObject[@"fromUser"];
+        TProfileViewController* profileVC = segue.destinationViewController;
+        profileVC.userProfile = user;
     }
 }
 
 -(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
-    if ([identifier isEqualToString:PROFILE]) {
-        if (![[PFUser currentUser] isAuthenticated]) {
-            [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You need to login inorder to follow other users" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-            return NO;
-        }
+    if (![[PFUser currentUser] isAuthenticated]) {
+        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You need to login inorder to follow other users" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+        return NO;
     }
+    
+//    if ([identifier isEqualToString:PROFILE]) {
+//    } else {
+//        
+//    }
     
     return YES;
 }

@@ -214,7 +214,7 @@
     
     __weak TViewController* weakSelf = self;
     [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        DLog(@"Stickers received: %d", objects.count);
+        DLog(@"Stickers received: %lu", (unsigned long)objects.count);
         dispatch_async(dispatch_get_main_queue(), ^{
             if (!error) {
                 weakSelf.stickerLocations = objects;

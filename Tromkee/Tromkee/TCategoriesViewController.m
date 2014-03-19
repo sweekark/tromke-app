@@ -19,7 +19,7 @@
 @property (weak, nonatomic) IBOutlet UICollectionView *categoriesView;
 @property (nonatomic, strong) NSArray* allCategories;
 @property (nonatomic, strong) TCategoryStickersViewController* stickersVC;
-@property (nonatomic) int currentSelectedItem;
+@property (nonatomic) NSInteger currentSelectedItem;
 @property (nonatomic, strong) UINavigationController* navController;
 
 @property (nonatomic) BOOL isStickersShowing;
@@ -48,7 +48,7 @@
     categoriesQuery.maxCacheAge = 3600;
     [categoriesQuery orderByAscending:SORTBY];
     [categoriesQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        DLog(@"Categories received: %d", objects.count);
+        DLog(@"Categories received: %lu", (unsigned long)objects.count);
         if (error) {
             NSLog(@"Error in getting categories: %@", error.localizedDescription);
         } else {

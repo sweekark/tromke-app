@@ -11,5 +11,6 @@
 @interface TActivityViewController : UIViewController
 
 @property(nonatomic, strong) PFObject* stickerObject;
+@property (nonatomic, strong) NSString* postObjectID;
 
 @end

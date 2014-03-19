@@ -94,7 +94,7 @@ NS_ENUM(int, ProfileDisplay) {
     [activityQuery orderByDescending:SORT_KEY];
     __weak TProfileViewController* weakSelf = self;
     [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        DLog(@"Received activities in profile: %d", objects.count);
+        DLog(@"Received activities in profile: %lu", (unsigned long)objects.count);
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.progress hide:YES];
             if (error) {
@@ -130,7 +130,7 @@ NS_ENUM(int, ProfileDisplay) {
     followersQuery.maxCacheAge = 300;
     __weak TProfileViewController* weakSelf = self;
     [followersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        DLog(@"Followers count is : %d", objects.count);
+        DLog(@"Followers count is : %lu", (unsigned long)objects.count);
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.progress hide:YES];
             if (error) {
@@ -165,7 +165,7 @@ NS_ENUM(int, ProfileDisplay) {
     followersQuery.maxCacheAge = 300;
     __weak TProfileViewController* weakSelf = self;
     [followersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        DLog(@"Following count is : %d", objects.count);
+        DLog(@"Following count is : %lu", (unsigned long)objects.count);
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.progress hide:YES];
             if (error) {
