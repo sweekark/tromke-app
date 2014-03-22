@@ -19,7 +19,7 @@
 #import "TActivityViewController.h"
 #import "TProfileViewController.h"
 
-@interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate>
+@interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate, TStickerAnnotationDelegate>
 
 @property (weak, nonatomic) IBOutlet MKMapView *map;
 @property (weak, nonatomic) IBOutlet UIView *categoryContainer;
@@ -125,6 +125,11 @@
 
 #pragma mark - MKMapViewDelegate
 
+-(void)userTappedSticker:(id<MKAnnotation>)annotation {
+    TStickerAnnotation* ann = (TStickerAnnotation*)annotation;
+    [self performSegueWithIdentifier:ACTIVITY sender:ann.annotationObject];
+}
+
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
     NSLog(@"Clicked Annotation");
     if ([view isKindOfClass:[TStickerAnnotationView class]]) {
@@ -145,6 +150,7 @@
     if (!annotationView) {
         annotationView = [[TStickerAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
         annotationView.canShowCallout = NO;
+        annotationView.delegate = self;
     }
     
     PFObject* postObj = [(TStickerAnnotation*)annotation annotationObject];

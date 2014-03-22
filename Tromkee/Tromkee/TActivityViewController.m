@@ -50,6 +50,8 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        self.stickerObject = nil;
+        self.postObjectID = nil;
     }
     return self;
 }
@@ -64,7 +66,25 @@
     self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
     self.activities = [@[] mutableCopy];
     self.stickerImages = [@[] mutableCopy];
-    [self update];
+    
+    if (self.stickerObject) {
+        [self update];
+    } else {
+        self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        self.progress.labelText = @"Fetching ...";
+        self.progress.dimBackground = YES;
+        
+        __weak TActivityViewController* weakSelf = self;
+        PFQuery* postQuery = [PFQuery queryWithClassName:@"Post"];
+        [postQuery whereKey:@"objectId" equalTo:self.postObjectID];
+        [postQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            [weakSelf.progress hide:YES];
+            if (!error) {
+                self.stickerObject = [objects firstObject];
+                [self update];
+            }
+        }];
+    }
 }
 
 -(void)update {

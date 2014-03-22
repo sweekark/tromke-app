@@ -8,8 +8,15 @@
 
 #import <MapKit/MapKit.h>
 
+@protocol TStickerAnnotationDelegate <NSObject>
+
+-(void)userTappedSticker:(id<MKAnnotation>)annotation;
+
+@end
+
 @interface TStickerAnnotationView : MKAnnotationView
 
-@property(nonatomic) float stickerColor;
+@property (nonatomic) float stickerColor;
+@property (nonatomic, weak) id<TStickerAnnotationDelegate> delegate;
 
 @end

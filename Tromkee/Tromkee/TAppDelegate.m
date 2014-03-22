@@ -10,7 +10,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import "TLocationUtility.h"
 #import "TLogInViewController.h"
-#import "MBProgressHUD.h"
+#import "TActivityViewController.h"
 
 @interface TAppDelegate() <PFLogInViewControllerDelegate> {
     NSMutableData *_data;
@@ -21,7 +21,6 @@
 @property (nonatomic, strong) Reachability *wifiReach;
 
 @property (nonatomic) int networkStatus;
-@property (nonatomic, strong) MBProgressHUD *hud;
 
 @end
 
@@ -95,6 +94,40 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    //Sticker posted
+//    {
+//	    aps =     {
+//	        alert = "sat posted a sticker";
+//	        badge = 36;
+//	    };
+//	    fu = eS1z0ZKRZz;
+//	    p = p;
+//	    pid = OX6rWD0ftJ;
+//	    t = s;
+//	}
+
+    //Comment for sticker
+//    {
+//	    aid = waJGIoXCts;
+//	    aps =     {
+//	        alert = "sat: PPP";
+//	        badge = 37;
+//	    };
+//	    fu = eS1z0ZKRZz;
+//	    p = a;
+//	    pid = OX6rWD0ftJ;
+//	    t = c;
+//	    tu = eS1z0ZKRZz;
+//	}
+    
+    if ([userInfo[@"p"] isEqualToString:@"a"]) {
+        UIStoryboard *mainstoryboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+        TActivityViewController* pvc = [mainstoryboard instantiateViewControllerWithIdentifier:@"Activity"];
+        pvc.postObjectID = userInfo[@"pid"];
+        UINavigationController* navController = (UINavigationController*)self.window.rootViewController;
+        [navController pushViewController:pvc animated:YES];
+    }
+    
     [PFPush handlePush:userInfo];
 }
 
