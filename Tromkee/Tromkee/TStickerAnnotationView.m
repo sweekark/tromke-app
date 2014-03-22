@@ -26,7 +26,7 @@
         // make sure the x and y of the CGRect are half it's
         // width and height, so the callout shows when user clicks
         // in the middle of the image
-        CGRect  viewRect = CGRectMake(-20, -20, 40, 40);
+        CGRect  viewRect = CGRectMake(-30, -30, 60, 60);
         
         TCircleView* circleView = [[TCircleView alloc] initWithFrame:viewRect];
         _circleView = circleView;

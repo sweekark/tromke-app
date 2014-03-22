@@ -314,7 +314,7 @@ NS_ENUM(int, ProfileDisplay) {
 
         PFFile *imageFile = [usr objectForKey:FACEBOOK_SMALLPIC_KEY];
         if (imageFile) {
-            cell.personImage.image = [UIImage imageNamed:@"PersonHolder"];
+//            cell.personImage.image = [UIImage imageNamed:@"Personholder"];
             [cell.personImage setFile:imageFile];
             [cell.personImage loadInBackground];
         } else {

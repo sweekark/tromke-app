@@ -86,8 +86,8 @@
                 PFUser* user = weakSelf.stickerObject[@"fromUser"];
                 
                 PFFile *imageFile = [user objectForKey:FACEBOOK_SMALLPIC_KEY];
+                weakSelf.fromImage.image = [UIImage imageNamed:@"Personholder"];                
                 if (imageFile) {
-                    weakSelf.fromImage.image = [UIImage imageNamed:@"PersonHolder"];
                     [weakSelf.fromImage setFile:imageFile];
                     [weakSelf.fromImage loadInBackground];
                 } else {
@@ -156,6 +156,7 @@
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"COMMENT_IMAGE"];
         PFFile* imgFile = comment[@"commentImage"];
+        cell.commentImage.image = [UIImage imageNamed:@"Personholder"];
         if (imgFile) {
             [cell.commentImage setFile:imgFile];
             [cell.commentImage loadInBackground];
