@@ -21,6 +21,7 @@
 @property (nonatomic, strong) Reachability *wifiReach;
 
 @property (nonatomic) int networkStatus;
+@property (nonatomic) BOOL applicationIsActive;
 
 @end
 
@@ -28,6 +29,39 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    //Sticker posted
+    //    {
+    //	    aps =     {
+    //	        alert = "sat posted a sticker";
+    //	        badge = 36;
+    //	    };
+    //	    fu = eS1z0ZKRZz;
+    //	    p = p;
+    //	    pid = OX6rWD0ftJ;
+    //	    t = s;
+    //	}
+    
+    //Comment for sticker
+    //    {
+    //	    aid = waJGIoXCts;
+    //	    aps =     {
+    //	        alert = "sat: PPP";
+    //	        badge = 37;
+    //	    };
+    //	    fu = eS1z0ZKRZz;
+    //	    p = a;
+    //	    pid = OX6rWD0ftJ;
+    //	    t = c;
+    //	    tu = eS1z0ZKRZz;
+    //	}
+    
+    NSLog(@"Launch options is %@", launchOptions);
+    if (launchOptions != nil) {
+        NSLog(@"Received remote notification");
+        NSDictionary *userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+        [self performSelector:@selector(showActivityForPushNotification:) withObject:userInfo afterDelay:3.0];
+    }
+    
     // Register for push notifications
     [[TLocationUtility sharedInstance] initiateLocationCapture];
     [application registerForRemoteNotificationTypes: UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound];
@@ -53,11 +87,22 @@
 
     return YES;
 }
-							
+
+-(void)showActivityForPushNotification:(NSDictionary*)userInfo {
+//    if ([userInfo[@"p"] isEqualToString:@"p"]) {
+        UIStoryboard *mainstoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        TActivityViewController* pvc = [mainstoryboard instantiateViewControllerWithIdentifier:@"Activity"];
+        pvc.postObjectID = userInfo[@"pid"];
+        UINavigationController* navController = (UINavigationController*)self.window.rootViewController;
+        [navController pushViewController:pvc animated:YES];
+//    }
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    self.applicationIsActive = NO;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -78,6 +123,7 @@
 //    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorized) {
 //        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Tromkee can't find your location. Please visit settings on your iOS device and allow the app to detect your settings" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
 //    }
+    self.applicationIsActive = YES;
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -94,41 +140,17 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    //Sticker posted
-//    {
-//	    aps =     {
-//	        alert = "sat posted a sticker";
-//	        badge = 36;
-//	    };
-//	    fu = eS1z0ZKRZz;
-//	    p = p;
-//	    pid = OX6rWD0ftJ;
-//	    t = s;
-//	}
-
-    //Comment for sticker
-//    {
-//	    aid = waJGIoXCts;
-//	    aps =     {
-//	        alert = "sat: PPP";
-//	        badge = 37;
-//	    };
-//	    fu = eS1z0ZKRZz;
-//	    p = a;
-//	    pid = OX6rWD0ftJ;
-//	    t = c;
-//	    tu = eS1z0ZKRZz;
-//	}
+//    UIApplicationState state = [application applicationState];
+//    if (state == UIApplicationStateBackground) {
+//        NSLog(@"Inside didReceiveRemoteNotification");
+//        [self showActivityForPushNotification:userInfo];
+//    }
     
-    if ([userInfo[@"p"] isEqualToString:@"a"]) {
-        UIStoryboard *mainstoryboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-        TActivityViewController* pvc = [mainstoryboard instantiateViewControllerWithIdentifier:@"Activity"];
-        pvc.postObjectID = userInfo[@"pid"];
-        UINavigationController* navController = (UINavigationController*)self.window.rootViewController;
-        [navController pushViewController:pvc animated:YES];
+    if (!self.applicationIsActive) {
+        NSLog(@"Inside didReceiveRemoteNotification");
+        [self showActivityForPushNotification:userInfo];
     }
-    
-    [PFPush handlePush:userInfo];
+//    [PFPush handlePush:userInfo];
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {

@@ -66,30 +66,39 @@
     self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
     self.activities = [@[] mutableCopy];
     self.stickerImages = [@[] mutableCopy];
+}
+
+
+-(void)setStickerObject:(PFObject *)stickerObject {
+    _stickerObject = stickerObject;
+    [self update];
+}
+
+
+-(void)setPostObjectID:(NSString *)postObjectID {
+    _postObjectID = postObjectID;
+    self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    self.progress.labelText = @"Fetching Sticker";
+    self.progress.dimBackground = YES;
     
-    if (self.stickerObject) {
-        [self update];
-    } else {
-        self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        self.progress.labelText = @"Fetching ...";
-        self.progress.dimBackground = YES;
-        
-        __weak TActivityViewController* weakSelf = self;
-        PFQuery* postQuery = [PFQuery queryWithClassName:@"Post"];
-        [postQuery whereKey:@"objectId" equalTo:self.postObjectID];
-        [postQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            [weakSelf.progress hide:YES];
-            if (!error) {
-                self.stickerObject = [objects firstObject];
-                [self update];
-            }
-        }];
-    }
+    PFQuery* postQuery = [PFQuery queryWithClassName:@"Post"];
+    [postQuery includeKey:@"sticker"];
+    [postQuery includeKey:@"images"];
+    [postQuery includeKey:@"fromUser"];
+    [postQuery whereKey:@"objectId" equalTo:self.postObjectID];
+    [postQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        [self.progress hide:YES];
+        self.progress = nil;
+        if (!error) {
+            self.stickerObject = [objects firstObject];
+            [self update];
+        }
+    }];
 }
 
 -(void)update {
     self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    self.progress.labelText = @"Fetching ...";
+    self.progress.labelText = @"Fetching Comments";
     self.progress.dimBackground = YES;
     PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"post == %@", self.stickerObject]];
     [activityQuery includeKey:@"fromUser"];
@@ -97,52 +106,54 @@
     
     __weak TActivityViewController* weakSelf = self;
     [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        DLog(@"Received objects for sticker : %lu", (unsigned long)objects.count);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf.progress hide:YES];
-            if (error) {
-                NSLog(@"Error in getting activities: %@", error.localizedDescription);
+        NSLog(@"Received objects for sticker : %lu", (unsigned long)objects.count);
+//        [weakSelf.progress hide:YES];
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+        self.progress = nil;
+        
+        if (error) {
+            NSLog(@"Error in getting activities: %@", error.localizedDescription);
+        } else {
+            PFUser* user = weakSelf.stickerObject[@"fromUser"];
+            
+            PFFile *imageFile = [user objectForKey:FACEBOOK_SMALLPIC_KEY];
+            weakSelf.fromImage.image = [UIImage imageNamed:@"Personholder"];                
+            if (imageFile) {
+                NSLog(@"Showing sticker user image");
+                [weakSelf.fromImage setFile:imageFile];
+                [weakSelf.fromImage loadInBackground];
             } else {
-                PFUser* user = weakSelf.stickerObject[@"fromUser"];
-                
-                PFFile *imageFile = [user objectForKey:FACEBOOK_SMALLPIC_KEY];
-                weakSelf.fromImage.image = [UIImage imageNamed:@"Personholder"];                
-                if (imageFile) {
-                    [weakSelf.fromImage setFile:imageFile];
-                    [weakSelf.fromImage loadInBackground];
-                } else {
-                    NSLog(@"No image found");
-                }
-                
-                weakSelf.fromName.text = user[@"displayName"];
-                weakSelf.fromPostedTime.text = [TUtility computePostedTime:self.stickerObject.updatedAt];
-                weakSelf.fromPostedMessage.text = weakSelf.stickerObject[@"data"];
-//                [weakSelf.fromPostedMessage sizeToFit];
-                //Compute Thanks objects posted
-                NSIndexSet* indexes = [objects indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-                    return [[(PFObject*)obj valueForKey:@"type"] isEqualToString:THANKS];
-                }];
-                
-                weakSelf.totalThanks.text = [NSString stringWithFormat:@"%lu", (unsigned long)(indexes ? indexes.count : 0)];
-                
-                PFObject* stickerObj = weakSelf.stickerObject[@"sticker"];
-                
-                PFFile* stickerImage = stickerObj[@"image"];
-                if (stickerImage) {
-                    weakSelf.fromStickerImage.file = stickerImage;
-                    [weakSelf.fromStickerImage loadInBackground];
-                }
-                
-                weakSelf.fromStickerIntensity.green = [weakSelf.stickerObject[@"severity"] floatValue];
-                [weakSelf.fromStickerIntensity setNeedsDisplay];
-                
-                if (objects.count) {
-                    weakSelf.activities = [NSMutableArray arrayWithArray:objects];
-                    [weakSelf.activities removeObjectsAtIndexes:indexes];
-                    [weakSelf.activitiesTable reloadData];
-                }
+                NSLog(@"No image found");
             }
-        });
+            
+            weakSelf.fromName.text = user[@"displayName"];
+            weakSelf.fromPostedTime.text = [TUtility computePostedTime:self.stickerObject.updatedAt];
+            weakSelf.fromPostedMessage.text = weakSelf.stickerObject[@"data"];
+//                [weakSelf.fromPostedMessage sizeToFit];
+            //Compute Thanks objects posted
+            NSIndexSet* indexes = [objects indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+                return [[(PFObject*)obj valueForKey:@"type"] isEqualToString:THANKS];
+            }];
+            
+            weakSelf.totalThanks.text = [NSString stringWithFormat:@"%lu", (unsigned long)(indexes ? indexes.count : 0)];
+            
+            PFObject* stickerObj = weakSelf.stickerObject[@"sticker"];
+            
+            PFFile* stickerImage = stickerObj[@"image"];
+            if (stickerImage) {
+                weakSelf.fromStickerImage.file = stickerImage;
+                [weakSelf.fromStickerImage loadInBackground];
+            }
+            
+            weakSelf.fromStickerIntensity.green = [weakSelf.stickerObject[@"severity"] floatValue];
+            [weakSelf.fromStickerIntensity setNeedsDisplay];
+            
+            if (objects.count) {
+                weakSelf.activities = [NSMutableArray arrayWithArray:objects];
+                [weakSelf.activities removeObjectsAtIndexes:indexes];
+                [weakSelf.activitiesTable reloadData];
+            }
+        }
     }];
 
 }
@@ -190,6 +201,7 @@
     
     PFFile* perImg = fromUser[FACEBOOK_SMALLPIC_KEY];
     if (perImg) {
+        NSLog(@"Showing from user image");
         cell.personImage.file = perImg;
         [cell.personImage loadInBackground];
     }
@@ -445,5 +457,19 @@
     
     return YES;
 }
+
+- (IBAction)share:(id)sender {
+    NSMutableArray* actItems = [[NSMutableArray alloc] init];
+    NSString* comment = self.stickerObject[@"data"];
+    if (comment && comment.length) {
+        [actItems addObject:comment];
+    }
+    [actItems addObject:self.fromStickerImage.image];
+    
+    UIActivityViewController* actController = [[UIActivityViewController alloc] initWithActivityItems:actItems applicationActivities:nil];
+    [self presentViewController:actController animated:YES completion:nil];
+}
+
+
 
 @end
