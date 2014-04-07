@@ -35,7 +35,11 @@
     }
     
     UIImage *image = [UIImage imageWithData:newProfilePictureData];
-    
+    [self uploadUserImage:image];
+}
+
+
++ (UIImage*)uploadUserImage:(UIImage*)image {
     UIImage *mediumImage = [image thumbnailImage:280 transparentBorder:0 cornerRadius:0 interpolationQuality:kCGInterpolationHigh];
     UIImage *smallRoundedImage = [image thumbnailImage:64 transparentBorder:0 cornerRadius:9 interpolationQuality:kCGInterpolationLow];
     
@@ -61,6 +65,8 @@
             }
         }];
     }
+    
+    return smallRoundedImage;
 }
 
 +(NSString*)computePostedTime :(NSDate*)date {

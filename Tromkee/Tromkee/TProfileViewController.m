@@ -21,7 +21,7 @@ NS_ENUM(int, ProfileDisplay) {
     ProfileDisplayFollowing
 };
 
-@interface TProfileViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface TProfileViewController () <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *noResultsLabel;
 @property (weak, nonatomic) IBOutlet UILabel *userName;
@@ -59,6 +59,8 @@ NS_ENUM(int, ProfileDisplay) {
     self.currentDisplay = 0;
     if ([self.userProfile.objectId isEqualToString:[PFUser currentUser].objectId]) {
         self.followButton.hidden = YES;
+        UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectPhoto)];
+        [self.userImage addGestureRecognizer:tapGesture];
     } else {
         [self updateFollowButton];
     }
@@ -77,6 +79,37 @@ NS_ENUM(int, ProfileDisplay) {
     [self updateActivity];
     [self updateFollowersAndFollowingValues];
 }
+
+-(void)selectPhoto {
+    UIActionSheet* actSheet = [[UIActionSheet alloc] initWithTitle:@"Select source for camera" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Camera", @"Album", nil];
+    [actSheet showInView:self.view];
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 2) {
+        return;
+    }
+    
+    UIImagePickerController* imagePicker = [[UIImagePickerController alloc] init];
+    imagePicker.delegate = self;
+    imagePicker.allowsEditing = YES;
+    
+    if (buttonIndex == 0) {
+        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    } else if (buttonIndex == 1) {
+        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    }
+    
+    [self presentViewController:imagePicker animated:YES completion:nil];
+}
+
+//Tells the delegate that the user picked a still image or movie.
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    UIImage *image = [info objectForKey:UIImagePickerControllerEditedImage];
+    self.userImage.image = [TUtility uploadUserImage:image];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 
 - (IBAction)goBack:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
