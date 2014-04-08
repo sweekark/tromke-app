@@ -305,12 +305,6 @@
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="roe-rd-uoS">
-                                        <rect key="frame" x="77" y="5" width="227" height="21"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5B0-Ea-6nY">
                                         <rect key="frame" x="199" y="75" width="101" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -320,6 +314,26 @@
                                         </state>
                                         <connections>
                                             <action selector="followTheUser:" destination="XTB-9t-TTs" eventType="touchUpInside" id="XbZ-8s-uN6"/>
+                                        </connections>
+                                    </button>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bBJ-eu-eN6">
+                                        <rect key="frame" x="80" y="8" width="175" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="XTB-9t-TTs" id="R8N-IQ-M2J"/>
+                                        </connections>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="e2b-JO-EcI">
+                                        <rect key="frame" x="263" y="7" width="46" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
+                                        <state key="normal" title="Submit">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="updateUserName:" destination="XTB-9t-TTs" eventType="touchUpInside" id="xtS-jW-CPZ"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -532,8 +546,9 @@
                         <outlet property="followersValue" destination="zpT-aZ-qlO" id="jgL-y2-Y0B"/>
                         <outlet property="followingValue" destination="Pge-Vg-Dag" id="CFJ-bd-3Wc"/>
                         <outlet property="noResultsLabel" destination="8r3-bp-Q30" id="mKX-5u-QiR"/>
+                        <outlet property="submitBtn" destination="e2b-JO-EcI" id="9Bm-7f-oQs"/>
                         <outlet property="userImage" destination="OJU-zx-Qub" id="PlG-Qv-GFy"/>
-                        <outlet property="userName" destination="roe-rd-uoS" id="s3x-TD-C73"/>
+                        <outlet property="userName" destination="bBJ-eu-eN6" id="o2R-cW-iPL"/>
                         <outlet property="userPoints" destination="mO5-Tc-rnq" id="gCP-TD-EjO"/>
                     </connections>
                 </viewController>

@@ -132,10 +132,15 @@
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
     NSLog(@"Clicked Annotation");
-    if ([view isKindOfClass:[TStickerAnnotationView class]]) {
-        TStickerAnnotation* annotation = [(TStickerAnnotationView*)view annotation];
-        [self performSegueWithIdentifier:ACTIVITY sender:annotation.annotationObject];
-    }
+    TStickerAnnotation* annotation = view.annotation;
+    [self performSegueWithIdentifier:ACTIVITY sender:annotation.annotationObject];
+    
+//    NSLog(@"Clicked Annotation");
+//    if ([view isKindOfClass:[TStickerAnnotationView class]]) {
+//        TStickerAnnotation* annotation = [(TStickerAnnotationView*)view annotation];
+//        [self performSegueWithIdentifier:ACTIVITY sender:annotation.annotationObject];
+//    }
+
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
@@ -145,27 +150,43 @@
     
     static NSString *annotationIdentifier = @"StickerPin";
     
-    TStickerAnnotationView *annotationView = (TStickerAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
+    MKAnnotationView* annotationView = (MKAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
     
     if (!annotationView) {
-        annotationView = [[TStickerAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
+        annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
         annotationView.canShowCallout = NO;
-        annotationView.delegate = self;
+        annotationView.image = [UIImage imageNamed:@"Sticker"];
     }
     
-    PFObject* postObj = [(TStickerAnnotation*)annotation annotationObject];
-    PFObject* stickerObj = postObj[@"sticker"];
-    PFFile* stickerImage = stickerObj[@"image"];
-    [stickerImage getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (!error) {
-                annotationView.image = [UIImage imageWithData:imageData];
-                annotationView.stickerColor = [postObj[@"severity"] floatValue];
-            }
-        });
-    }];
-    
     return annotationView;
+    
+//    if ([annotation isKindOfClass:[MKPointAnnotation class]]) {
+//        return nil;
+//    }
+//    
+//    static NSString *annotationIdentifier = @"StickerPin";
+//    
+//    TStickerAnnotationView *annotationView = (TStickerAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
+//    
+//    if (!annotationView) {
+//        annotationView = [[TStickerAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
+//        annotationView.canShowCallout = NO;
+//        annotationView.delegate = self;
+//    }
+//    
+//    PFObject* postObj = [(TStickerAnnotation*)annotation annotationObject];
+//    PFObject* stickerObj = postObj[@"sticker"];
+//    PFFile* stickerImage = stickerObj[@"image"];
+//    [stickerImage getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            if (!error) {
+//                annotationView.image = [UIImage imageWithData:imageData];
+//                annotationView.stickerColor = [postObj[@"severity"] floatValue];
+//            }
+//        });
+//    }];
+//    
+//    return annotationView;
 }
 
 - (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated{

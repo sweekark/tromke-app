@@ -23,8 +23,9 @@ NS_ENUM(int, ProfileDisplay) {
 
 @interface TProfileViewController () <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
+@property (weak, nonatomic) IBOutlet UIButton *submitBtn;
 @property (weak, nonatomic) IBOutlet UILabel *noResultsLabel;
-@property (weak, nonatomic) IBOutlet UILabel *userName;
+@property (weak, nonatomic) IBOutlet UITextField *userName;
 @property (weak, nonatomic) IBOutlet PFImageView *userImage;
 @property (weak, nonatomic) IBOutlet UILabel *userPoints;
 @property (weak, nonatomic) IBOutlet UIButton *followButton;
@@ -56,6 +57,7 @@ NS_ENUM(int, ProfileDisplay) {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.submitBtn.hidden = YES;
     self.currentDisplay = 0;
     if ([self.userProfile.objectId isEqualToString:[PFUser currentUser].objectId]) {
         self.followButton.hidden = YES;
@@ -422,5 +424,27 @@ NS_ENUM(int, ProfileDisplay) {
         TProfileViewController* profileVC = segue.destinationViewController;
         profileVC.userProfile = usr;
     }
+}
+
+- (IBAction)updateUserName:(id)sender {
+    NSString* actualDispName = self.userProfile[@"displayName"];
+    NSString* latestDispName = self.userName.text;
+    if (latestDispName && ![latestDispName isEqual:[NSNull null]] && latestDispName.length && ![latestDispName isEqualToString:actualDispName]) {
+        [[PFUser currentUser] setObject:latestDispName forKey:@"displayName"];
+        [[PFUser currentUser] saveEventually];
+    }
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    self.submitBtn.hidden = NO;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    self.submitBtn.hidden = YES;
 }
 @end
