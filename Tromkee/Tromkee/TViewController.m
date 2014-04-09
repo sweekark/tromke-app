@@ -32,6 +32,7 @@
 @property (nonatomic) BOOL isMenuExpanded;
 
 @property (nonatomic) CLLocationCoordinate2D currentMapLocation;
+@property (nonatomic) CLLocationCoordinate2D currentCenterLocation;
 
 @property (nonatomic, strong) NSArray* stickerLocations;
 
@@ -88,7 +89,7 @@
 -(void)updateUserLocation:(NSNotification*)notification {
     [self.map removeAnnotations:self.map.annotations];
     // Creates a marker in the center of the map.
-    self.currentMapLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
+    self.currentCenterLocation = self.currentMapLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
     
     MKPointAnnotation* point = [[MKPointAnnotation alloc] init];
     point.coordinate = self.currentMapLocation;
@@ -101,7 +102,7 @@
     span.latitudeDelta = 0.0144927536; //1 mile
     span.longitudeDelta = 0.0144927536; //1 mile
     region.span = span;
-    [self.map setRegion:region animated:YES];
+    [self.map setRegion:region animated:NO];
     
     [self updatePostedStickers];
 }
@@ -190,19 +191,25 @@
 }
 
 - (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated{
-    if(!animated){
-        //Instantaneous change, which means you probably did something code-wise, so you should have handled anything there, but you can do it here as well.
+
+        CLLocationCoordinate2D mapCenter2D = mapView.centerCoordinate;
+        CLLocation* mapCenter = [[CLLocation alloc] initWithLatitude:mapCenter2D.latitude longitude:mapCenter2D.longitude];
         
-    } else {
-        //User is most likely scrolling, so the best way to do things here is check if the new region is significantly (by whatever standard) away from the starting region
-//        CLLocationDistance *distance = [mapView.centerCoordinate distanceFromLocation:originalCoordinate];
-//        if( distance > 200 ) {
-//            //The map region was shifted by 200 meters
-//            //Remove annotations outsides the view, or whatever
-//            //Most likely, instead of checking for a distance change, you might want to check for a change relative to the view size
-//        }
-        
-    }
+        CLLocation* oldCenter = [[CLLocation alloc] initWithLatitude:self.currentCenterLocation.latitude longitude:self.currentCenterLocation.longitude];
+        NSLog(@"Distance is: %f", [mapCenter distanceFromLocation:oldCenter]);
+        if ([mapCenter distanceFromLocation:oldCenter] > 1000) {
+            CLLocationCoordinate2D center = mapView.centerCoordinate;
+            self.currentCenterLocation = center;
+            [self updatePostedStickersOnMapWithCenter:center.latitude andLongitude:center.longitude];
+        }
+
+    
+//    if(!animated){
+//        //Instantaneous change, which means you probably did something code-wise, so you should have handled anything there, but you can do it here as well.
+//        
+//    } else {
+//        //User is most likely scrolling, so the best way to do things here is check if the new region is significantly (by whatever standard) away from the starting region
+//    }
     
 }
 
@@ -230,13 +237,12 @@
     }];
 }
 
-
--(void)updatePostedStickers {
+-(void)updatePostedStickersOnMapWithCenter:(CGFloat)latitude andLongitude:(CGFloat)longitude {
     PFQuery* stickersQuery = [PFQuery queryWithClassName:@"Post"];
     [stickersQuery includeKey:@"sticker"];
     [stickersQuery includeKey:@"images"];
     [stickersQuery includeKey:@"fromUser"];
-    [stickersQuery whereKey:@"location" nearGeoPoint:[PFGeoPoint geoPointWithLatitude:self.currentMapLocation.latitude longitude:self.currentMapLocation.longitude] withinMiles:STICKER_QUERY_RADIUS];
+    [stickersQuery whereKey:@"location" nearGeoPoint:[PFGeoPoint geoPointWithLatitude:latitude longitude:longitude] withinMiles:STICKER_QUERY_RADIUS];
     stickersQuery.limit = 15;
     
     __weak TViewController* weakSelf = self;
@@ -251,6 +257,10 @@
             }
         });
     }];
+}
+
+-(void)updatePostedStickers {
+    [self updatePostedStickersOnMapWithCenter:self.currentMapLocation.latitude andLongitude:self.currentMapLocation.longitude];
 }
 
 -(void)updateMapWithStickers {
