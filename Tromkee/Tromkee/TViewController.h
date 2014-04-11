@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TBaseViewController.h"
 
-@interface TViewController : UIViewController
+@interface TViewController : TBaseViewController
 
 @end

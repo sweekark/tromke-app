@@ -116,6 +116,10 @@
         } else {
             PFUser* user = weakSelf.stickerObject[@"fromUser"];
             
+//            PFQuery* usrQuery = [PFQuery queryWithClassName:@"User"];
+//            [usrQuery whereKey:@"objectId" equalTo:self.stickerObject[@"fromUser"]];
+//            PFUser* user = [[usrQuery findObjects] firstObject];
+
             PFFile *imageFile = [user objectForKey:FACEBOOK_SMALLPIC_KEY];
             weakSelf.fromImage.image = [UIImage imageNamed:@"Personholder"];                
             if (imageFile) {

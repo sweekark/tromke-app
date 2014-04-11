@@ -21,6 +21,7 @@
 
 @interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate, TStickerAnnotationDelegate>
 
+@property (weak, nonatomic) IBOutlet UILabel *notificationsCount;
 @property (weak, nonatomic) IBOutlet MKMapView *map;
 @property (weak, nonatomic) IBOutlet UIView *categoryContainer;
 @property (weak, nonatomic) IBOutlet UIView *menuContainer;
@@ -66,6 +67,8 @@
     if (self.isCategoriesExpanded) {
         [self showCategoriesView];
     }
+    
+    [self updatePostedStickersOnMapWithCenter:self.currentCenterLocation.latitude andLongitude:self.currentCenterLocation.longitude];
     [super viewDidAppear:animated];
 }
 
@@ -132,7 +135,10 @@
 }
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
-    NSLog(@"Clicked Annotation");
+    if ([view isKindOfClass:[MKPinAnnotationView class]]) {
+        return;
+    }
+    NSLog(@"Clicked Annotation");    
     TStickerAnnotation* annotation = view.annotation;
     [self performSegueWithIdentifier:ACTIVITY sender:annotation.annotationObject];
     
@@ -192,16 +198,16 @@
 
 - (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated{
 
-        CLLocationCoordinate2D mapCenter2D = mapView.centerCoordinate;
-        CLLocation* mapCenter = [[CLLocation alloc] initWithLatitude:mapCenter2D.latitude longitude:mapCenter2D.longitude];
-        
-        CLLocation* oldCenter = [[CLLocation alloc] initWithLatitude:self.currentCenterLocation.latitude longitude:self.currentCenterLocation.longitude];
-        NSLog(@"Distance is: %f", [mapCenter distanceFromLocation:oldCenter]);
-        if ([mapCenter distanceFromLocation:oldCenter] > 1000) {
-            CLLocationCoordinate2D center = mapView.centerCoordinate;
-            self.currentCenterLocation = center;
-            [self updatePostedStickersOnMapWithCenter:center.latitude andLongitude:center.longitude];
-        }
+    CLLocationCoordinate2D mapCenter2D = mapView.centerCoordinate;
+    CLLocation* mapCenter = [[CLLocation alloc] initWithLatitude:mapCenter2D.latitude longitude:mapCenter2D.longitude];
+    
+    CLLocation* oldCenter = [[CLLocation alloc] initWithLatitude:self.currentCenterLocation.latitude longitude:self.currentCenterLocation.longitude];
+    NSLog(@"Distance is: %f", [mapCenter distanceFromLocation:oldCenter]);
+    if ([mapCenter distanceFromLocation:oldCenter] > 1000) {
+        CLLocationCoordinate2D center = mapView.centerCoordinate;
+        self.currentCenterLocation = center;
+        [self updatePostedStickersOnMapWithCenter:center.latitude andLongitude:center.longitude];
+    }
 
     
 //    if(!animated){

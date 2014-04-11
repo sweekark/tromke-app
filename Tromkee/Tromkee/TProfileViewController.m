@@ -16,7 +16,7 @@
 
 
 NS_ENUM(int, ProfileDisplay) {
-    ProfileDisplayActivity,
+    ProfileDisplayActivity = 0,
     ProfileDisplayFollowers,
     ProfileDisplayFollowing
 };
@@ -58,7 +58,7 @@ NS_ENUM(int, ProfileDisplay) {
 {
     [super viewDidLoad];
     self.submitBtn.hidden = YES;
-    self.currentDisplay = 0;
+    self.currentDisplay = ProfileDisplayActivity;
     if ([self.userProfile.objectId isEqualToString:[PFUser currentUser].objectId]) {
         self.followButton.hidden = YES;
         UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectPhoto)];
@@ -78,8 +78,24 @@ NS_ENUM(int, ProfileDisplay) {
     }
     self.userName.text = self.userProfile[@"displayName"];
     self.postsArray = [[NSMutableArray alloc] init];
-    [self updateActivity];
+
     [self updateFollowersAndFollowingValues];
+}
+
+
+-(void)viewWillAppear:(BOOL)animated {
+    [self updateCurrentDisplay];
+    [super viewWillAppear:animated];
+}
+
+-(void)updateCurrentDisplay {
+    if (self.currentDisplay == ProfileDisplayActivity) {
+        [self updateActivity];
+    } else if (self.currentDisplay == ProfileDisplayFollowers) {
+        [self updateFollowerUsers];
+    } else if (self.currentDisplay == ProfileDisplayFollowing) {
+        [self updateFollowingUsers];
+    }
 }
 
 -(void)selectPhoto {
@@ -108,7 +124,13 @@ NS_ENUM(int, ProfileDisplay) {
 //Tells the delegate that the user picked a still image or movie.
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage *image = [info objectForKey:UIImagePickerControllerEditedImage];
-    self.userImage.image = [TUtility uploadUserImage:image];
+    [TUtility uploadUserImage:image withCompletionHandler:^(BOOL success, UIImage *img) {
+        if (success) {
+            self.userImage.image = img;
+            [self performSelector:@selector(updateCurrentDisplay) withObject:nil afterDelay:2.0];
+        }
+    }];
+    
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -314,13 +336,13 @@ NS_ENUM(int, ProfileDisplay) {
         PFObject* post = self.postsArray[indexPath.row];
         cell.postedTime.text = [TUtility computePostedTime:post.updatedAt];
         if ([post[@"type"] isEqualToString:COMMENT]) {
-            cell.comment.text = [NSString stringWithFormat:@"posted %@", post[@"content"]];
+            cell.comment.text = [NSString stringWithFormat:@"Commented %@", post[@"content"]];
         } else if ([post[@"type"] isEqualToString:THANKS]) {
-            cell.comment.text = @"posted Thanks";
+            cell.comment.text = @"Conveyed Thanks";
         } else if ([post[@"type"] isEqualToString:IMAGE_COMMENT]) {
-            cell.comment.text = [NSString stringWithFormat:@"posted image with %@", post[@"content"]];
+            cell.comment.text = [NSString stringWithFormat:@"Posted image with %@", post[@"content"]];
         } else if ([post[@"type"] isEqualToString:IMAGE_ONLY]) {
-            cell.comment.text = @"posted Image";
+            cell.comment.text = @"Posted Image";
         }
         //    [cell.comment sizeToFit];
         
@@ -427,11 +449,18 @@ NS_ENUM(int, ProfileDisplay) {
 }
 
 - (IBAction)updateUserName:(id)sender {
+    [self.userName resignFirstResponder];
+    
     NSString* actualDispName = self.userProfile[@"displayName"];
     NSString* latestDispName = self.userName.text;
     if (latestDispName && ![latestDispName isEqual:[NSNull null]] && latestDispName.length && ![latestDispName isEqualToString:actualDispName]) {
         [[PFUser currentUser] setObject:latestDispName forKey:@"displayName"];
-        [[PFUser currentUser] saveEventually];
+        [[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                [[PFUser currentUser] refresh];
+                NSLog(@"Successfully name uploaded");
+            }
+        }];
     }
 }
 

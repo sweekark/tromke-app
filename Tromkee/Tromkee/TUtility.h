@@ -11,7 +11,7 @@
 @interface TUtility : NSObject
 
 + (void)processFacebookProfilePictureData:(NSData *)data;
-+ (UIImage*)uploadUserImage:(UIImage*)image;
++ (void)uploadUserImage:(UIImage*)image withCompletionHandler:(void (^)(BOOL,UIImage*))handler;
 + (NSString*)computePostedTime :(NSDate*)date;
 
 @end
