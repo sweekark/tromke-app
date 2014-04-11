@@ -124,6 +124,7 @@
     PFObject* fromUser = post[@"fromUser"];
     cell.userName.text = fromUser[@"displayName"];
     PFFile* imgFile = fromUser[FACEBOOK_SMALLPIC_KEY];
+    cell.userImage.image = [UIImage imageNamed:@"Personholder"];
     if (imgFile) {
         [cell.userImage setFile:imgFile];
         [cell.userImage loadInBackground];

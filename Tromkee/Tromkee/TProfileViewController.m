@@ -404,6 +404,14 @@ NS_ENUM(int, ProfileDisplay) {
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
 }
 
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+    if (self.currentDisplay == ProfileDisplayActivity) {
+        return 0;
+    } else {
+        return 10;
+    }
+}
+
 #pragma mark - Actions
 
 - (IBAction)showActivity:(id)sender {
