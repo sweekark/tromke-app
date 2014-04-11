@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TBaseViewController.h"
 
-@interface TActivityViewController : UIViewController
+@interface TActivityViewController : TBaseViewController
 
 @property(nonatomic, strong) PFObject* stickerObject;
 @property (nonatomic, strong) NSString* postObjectID;

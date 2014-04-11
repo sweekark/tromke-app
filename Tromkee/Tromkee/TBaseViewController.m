@@ -42,7 +42,6 @@
     [self.view addSubview:self.notificationCountValue];
 }
 
-
 -(void)showUserActivity {
     UIViewController* vc = [self.storyboard instantiateViewControllerWithIdentifier:@"USERACTIVITY"];
     [self.navigationController pushViewController:vc animated:YES];
@@ -50,7 +49,13 @@
 
 -(void)viewWillAppear:(BOOL)animated {
     [self updateNotificationCount];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNotificationCount) name:UPDATE_NOTIFICATION_COUNT object:nil];
     [super viewWillAppear:animated];
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super viewWillDisappear:animated];
 }
 
 -(void)updateNotificationCount {
