@@ -51,6 +51,14 @@
     NSLog(@"Lat: %f Long: %f", newLocation.coordinate.latitude, newLocation.coordinate.longitude);
     self.userLocation = newLocation.coordinate;
     [[NSNotificationCenter defaultCenter] postNotificationName:TROMKE_USER_LOCATION_UPDATED object:nil];
+    
+    CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
+    [geoCoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
+        for (CLPlacemark * placemark in placemarks) {
+//            .... = [placemark locality];
+            [[NSUserDefaults standardUserDefaults] setValue:[NSString stringWithFormat:@"%@, %@, %@", placemark.name, placemark.subLocality, placemark.locality] forKeyPath:USER_LOCATION];
+        }
+    }];
 }
 
 - (void)locationManager:(CLLocationManager *)manager

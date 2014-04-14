@@ -140,6 +140,7 @@
                 stickerPost[@"severity"] = [NSNumber numberWithFloat:self.stickerSeverity.value];
                 stickerPost[@"points"] = @([self.postSticker[@"postPoints"] integerValue] + [self.postSticker[@"imagePoints"] integerValue]);
                 stickerPost[@"images"] = imagesObject;
+                stickerPost[@"usrlocation"] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
                 
                 [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     if (succeeded) {
@@ -169,6 +170,7 @@
         stickerPost[@"sticker"] = self.postSticker;
         stickerPost[@"severity"] = [NSNumber numberWithFloat:self.stickerSeverity.value];
         stickerPost[@"points"] = self.postSticker[@"postPoints"];
+        stickerPost[@"usrlocation"] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
         
         [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (succeeded) {

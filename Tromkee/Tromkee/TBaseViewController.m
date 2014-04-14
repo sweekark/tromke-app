@@ -59,16 +59,8 @@
 }
 
 -(void)updateNotificationCount {
-    PFQuery* query = [PFQuery queryWithClassName:@"Installation"];
-    [query whereKey:@"user" equalTo:[PFUser currentUser]];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        if (!error && objects.count) {
-            PFObject* obj = [objects firstObject];
-            self.notificationCountValue.text = [obj[@"badge"] stringValue];
-        } else {
-            self.notificationCountValue.text = @"0";
-        }
-    }];
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    self.notificationCountValue.text = [NSString stringWithFormat:@"%d", currentInstallation.badge];
 }
 
 

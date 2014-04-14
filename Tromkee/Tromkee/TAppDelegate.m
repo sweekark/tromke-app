@@ -150,6 +150,8 @@
         NSLog(@"Inside didReceiveRemoteNotification");
         [self showActivityForPushNotification:userInfo];
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:UPDATE_NOTIFICATION_COUNT object:nil];
 //    [PFPush handlePush:userInfo];
 }
 

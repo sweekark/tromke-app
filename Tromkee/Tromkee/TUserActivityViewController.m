@@ -37,17 +37,14 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    PFQuery* query = [PFQuery queryWithClassName:@"Installation"];
-    [query whereKey:@"user" equalTo:[PFUser currentUser]];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        if (!error && objects.count) {
-            PFObject* obj = [objects firstObject];
-            obj[@"badge"] = [NSNumber numberWithInt:0];
-            [obj saveEventually];
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    if (currentInstallation.badge != 0) {
+        currentInstallation.badge = 0;
+        [currentInstallation saveEventually:^(BOOL succeeded, NSError *error) {
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-        }
-    }];
-    
+        }];
+    }
+        
     self.postsArray = [[NSMutableArray alloc] init];
     self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.progress.labelText = @"Fetching ...";

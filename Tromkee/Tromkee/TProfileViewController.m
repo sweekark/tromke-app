@@ -263,8 +263,10 @@ NS_ENUM(int, ProfileDisplay) {
         dispatch_async(dispatch_get_main_queue(), ^{
             weakself.followButton.hidden = NO;
             if (objects.count) {
+                self.isFollowing = YES;
                 [weakself.followButton setTitle:@"Following" forState:UIControlStateNormal];
             } else {
+                self.isFollowing = NO;
                 [weakself.followButton setTitle:@"Follow" forState:UIControlStateNormal];
             }
         });
@@ -281,20 +283,19 @@ NS_ENUM(int, ProfileDisplay) {
     }
     
     if (self.isFollowing) {
-        PFQuery* activity = [PFQuery queryWithClassName:@"Actvity"];
+        PFQuery* activity = [PFQuery queryWithClassName:@"Activity"];
         [activity whereKey:@"fromUser" equalTo:[PFUser currentUser]];
         [activity whereKey:@"toUser" equalTo:self.userProfile];
         [activity whereKey:@"type" equalTo:@"FOLLOW"];
-        [activity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        [activity getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             DLog(@"Deleted following");
-            if (!error) {
-                for (PFObject *activity in objects) {
-                    [activity delete];
+            [object deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (succeeded) {
+                    self.isFollowing = NO;
+                    [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
                 }
-            }
+            }];
         }];
-        self.isFollowing = NO;
-        [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
     } else {
         PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
         activiy[@"fromUser"] = [PFUser currentUser];
@@ -304,14 +305,11 @@ NS_ENUM(int, ProfileDisplay) {
         __weak TProfileViewController* weakself = self;
         [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             [weakself.progress hide:YES];
-                dispatch_async(dispatch_get_main_queue(), ^{
             if (succeeded) {
-                    [self updateFollowButton];
+                self.isFollowing = YES;
+                [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
             }
-                });                    
         }];
-        self.isFollowing = YES;
-        [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
     }
 }
 
@@ -370,8 +368,8 @@ NS_ENUM(int, ProfileDisplay) {
         }
 
         PFFile *imageFile = [usr objectForKey:FACEBOOK_SMALLPIC_KEY];
+        cell.personImage.image = [UIImage imageNamed:@"Personholder"];
         if (imageFile) {
-//            cell.personImage.image = [UIImage imageNamed:@"Personholder"];
             [cell.personImage setFile:imageFile];
             [cell.personImage loadInBackground];
         } else {

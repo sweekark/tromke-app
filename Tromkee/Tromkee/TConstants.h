@@ -17,7 +17,10 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 #    define DLog(...) /* */
 #endif
 
+//User defaults
+#define USER_LOCATION @"USER_LOCATION"
 
+//Notifications
 #define TROMKE_USER_LOCATION_UPDATED @"TROMKE_USER_LOCATION_UPDATED"
 #define TROMKEE_UPDATE_STICKERS @"TROMEE_UPDATE_STICKERS"
 
