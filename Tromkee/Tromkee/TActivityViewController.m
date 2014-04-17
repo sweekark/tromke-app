@@ -27,6 +27,7 @@
 @property (weak, nonatomic) IBOutlet TCircleView *fromStickerIntensity;
 
 
+@property (weak, nonatomic) IBOutlet UIButton *thanksButton;
 @property (nonatomic, strong) MBProgressHUD* progress;
 @property (nonatomic, strong) NSMutableArray* activities;
 @property (nonatomic, weak) IBOutlet UITableView* activitiesTable;
@@ -97,6 +98,7 @@
 }
 
 -(void)update {
+    [self updateThanksButton];
     self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.progress.labelText = @"Fetching Comments";
     self.progress.dimBackground = YES;
@@ -160,6 +162,20 @@
         }
     }];
 
+}
+
+-(void)updateThanksButton {
+    PFQuery* thanksQuery = [PFQuery queryWithClassName:@"Activity"];
+    [thanksQuery whereKey:@"post" equalTo:self.stickerObject];
+    [thanksQuery whereKey:@"fromUser" equalTo:[PFUser currentUser]];
+    [thanksQuery whereKey:@"type" equalTo:@"THANKS"];
+    [thanksQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        if (!error && object) {
+            [self.thanksButton setTitle:@"Thanked" forState:UIControlStateNormal];
+            self.thanksButton.userInteractionEnabled = NO;
+//            self.thanksButton.enabled = NO;
+        }
+    }];
 }
 
 -(void)share {
@@ -345,6 +361,8 @@
 
 - (IBAction)conveyThanks:(id)sender {
     [self.activityDescription resignFirstResponder];
+//    self.thanksButton.enabled = NO;
+    self.thanksButton.userInteractionEnabled = NO;
     
     self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.progress.labelText = @"Sending Thanks ...";

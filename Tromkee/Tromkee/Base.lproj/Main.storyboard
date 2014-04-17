@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ZXd-sE-E8Y">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ZXd-sE-E8Y">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -1097,7 +1097,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="atK-Ho-lBR">
-                                <rect key="frame" x="230" y="69" width="51" height="30"/>
+                                <rect key="frame" x="227" y="65" width="61" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Thanks">
@@ -1107,8 +1107,8 @@
                                     <action selector="conveyThanks:" destination="oKO-5Q-Eb5" eventType="touchUpInside" id="u9Z-uT-Nmf"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nzh-7y-Nmx">
-                                <rect key="frame" x="285" y="73" width="29" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nzh-7y-Nmx">
+                                <rect key="frame" x="290" y="71" width="24" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                 <nil key="highlightedColor"/>
@@ -1169,6 +1169,7 @@
                         <outlet property="fromPostedTime" destination="JMw-7p-r2W" id="DFw-pK-a5x"/>
                         <outlet property="fromStickerImage" destination="v66-gV-dSp" id="0lM-1A-3nR"/>
                         <outlet property="fromStickerIntensity" destination="S6o-HA-OBA" id="PC6-x5-cMZ"/>
+                        <outlet property="thanksButton" destination="atK-Ho-lBR" id="fJe-Wz-j4M"/>
                         <outlet property="totalThanks" destination="Nzh-7y-Nmx" id="Eil-SA-bTG"/>
                     </connections>
                 </viewController>
@@ -1214,6 +1215,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="csI-B0-Age"/>
+        <segue reference="ztk-3t-Wck"/>
     </inferredMetricsTieBreakers>
 </document>

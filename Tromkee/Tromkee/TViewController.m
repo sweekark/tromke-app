@@ -102,8 +102,8 @@
     MKCoordinateRegion region;
     region.center = self.currentMapLocation;
     MKCoordinateSpan span;
-    span.latitudeDelta = 0.0144927536; //1 mile
-    span.longitudeDelta = 0.0144927536; //1 mile
+    span.latitudeDelta = 0.0144927536 * STICKER_QUERY_RADIUS; //1 mile
+    span.longitudeDelta = 0.0144927536  * STICKER_QUERY_RADIUS; //1 mile
     region.span = span;
     [self.map setRegion:region animated:NO];
     
