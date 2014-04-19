@@ -208,15 +208,6 @@
         self.currentCenterLocation = center;
         [self updatePostedStickersOnMapWithCenter:center.latitude andLongitude:center.longitude];
     }
-
-    
-//    if(!animated){
-//        //Instantaneous change, which means you probably did something code-wise, so you should have handled anything there, but you can do it here as well.
-//        
-//    } else {
-//        //User is most likely scrolling, so the best way to do things here is check if the new region is significantly (by whatever standard) away from the starting region
-//    }
-    
 }
 
 #pragma mark - Actions
@@ -296,6 +287,11 @@
 }
 
 - (IBAction)searchClicked:(id)sender {
+}
+
+
+-(IBAction)takeToUserLocation:(id)sender {
+    [self updateUserLocation:nil];
 }
 
 
