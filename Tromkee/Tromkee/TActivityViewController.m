@@ -7,7 +7,6 @@
 //
 
 #import "TActivityViewController.h"
-#import "MBProgressHUD.h"
 #import "TActivityCell.h"
 #import "TAppDelegate.h"
 #import "TCircleView.h"
@@ -19,7 +18,6 @@
 
 @interface TActivityViewController () <UITableViewDataSource, UITableViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, TPostCellDelegate>
 
-@property (nonatomic, strong) MBProgressHUD* progress;
 @property (nonatomic, strong) NSMutableArray* activities;
 @property (nonatomic, weak) IBOutlet UITableView* activitiesTable;
 @property (nonatomic, weak) IBOutlet UITextView* activityDescription;
@@ -71,18 +69,14 @@
 
 -(void)setPostObjectID:(NSString *)postObjectID {
     _postObjectID = postObjectID;
-    self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    self.progress.labelText = @"Fetching Sticker";
-    self.progress.dimBackground = YES;
-    
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     PFQuery* postQuery = [PFQuery queryWithClassName:@"Post"];
     [postQuery includeKey:@"sticker"];
     [postQuery includeKey:@"images"];
     [postQuery includeKey:@"fromUser"];
     [postQuery whereKey:@"objectId" equalTo:self.postObjectID];
     [postQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        [self.progress hide:YES];
-        self.progress = nil;
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         if (!error) {
             self.stickerObject = [objects firstObject];
             [self update];
@@ -92,9 +86,7 @@
 
 -(void)update {
     [self updateThanksButton];
-    self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    self.progress.labelText = @"Fetching Comments";
-    self.progress.dimBackground = YES;
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity"];
     [activityQuery whereKey:@"post" equalTo:self.stickerObject];
     [activityQuery whereKey:@"type" containedIn:@[@"IMAGE_COMMENT", @"COMMENT", @"THANKS"]];
@@ -105,8 +97,7 @@
     [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         NSLog(@"Received objects for sticker : %lu", (unsigned long)objects.count);
         
-        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-        self.progress = nil;
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         
         NSIndexSet* indexes = [objects indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
             return [[(PFObject*)obj valueForKey:@"type"] isEqualToString:THANKS];
@@ -352,29 +343,23 @@
 
 - (void)conveyThanks {
     [self.activityDescription resignFirstResponder];
-//    self.thanksButton.userInteractionEnabled = NO;
-    
-    self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    self.progress.labelText = @"Sending Thanks ...";
-    self.progress.dimBackground = YES;
-    
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
     activiy[@"fromUser"] = [PFUser currentUser];
     activiy[@"toUser"] = self.stickerObject[@"fromUser"];
     activiy[@"type"] = @"THANKS";
     activiy[@"content"] = self.activityDescription.text;
     activiy[@"post"] = self.stickerObject;
-    
-    __weak TActivityViewController* weakself = self;
-    [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        [weakself.progress hide:YES];
-        if (succeeded) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-//                [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Comment posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-                [self updateThanksButton];
-            });
-        }
-    }];
+
+    [activiy saveInBackground];
+//    [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+//        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+//        if (succeeded) {
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [self updateThanksButton];
+//            });
+//        }
+//    }];
 
 }
 

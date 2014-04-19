@@ -7,7 +7,6 @@
 //
 
 #import "TUserActivityViewController.h"
-#import "MBProgressHUD.h"
 #import "TUserActivityCell.h"
 #import "TProfileViewController.h"
 
@@ -16,7 +15,6 @@
 @interface TUserActivityViewController ()
 
 @property (strong, nonatomic) NSMutableArray* postsArray;
-@property (nonatomic, strong) MBProgressHUD* progress;
 @property (weak, nonatomic) IBOutlet UILabel *noResultsLabel;
 @property (weak, nonatomic) IBOutlet UITableView* userActivityTable;
 
@@ -46,9 +44,7 @@
     }
         
     self.postsArray = [[NSMutableArray alloc] init];
-    self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    self.progress.labelText = @"Fetching ...";
-    self.progress.dimBackground = YES;
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"fromUser == %@ OR toUser == %@", [PFUser currentUser], [PFUser currentUser]]];
     activityQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
     activityQuery.maxCacheAge = 300;
@@ -58,7 +54,7 @@
     [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         DLog(@"Received activities in profile: %lu", (unsigned long)objects.count);
         dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf.progress hide:YES];
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             if (error) {
                 NSLog(@"Error in getting activities: %@", error.localizedDescription);
             } else {

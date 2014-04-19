@@ -60,7 +60,6 @@
 		45D3E6CB18ACA3ED000AD55F /* TMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D3E6CA18ACA3ED000AD55F /* TMenuViewController.m */; };
 		45E54467188F934200FF8977 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 45E54464188F934200FF8977 /* Reachability.m */; };
 		45F53E26189D6EB100C7C42A /* TUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F53E25189D6EB100C7C42A /* TUtility.m */; };
-		45F53E2A189D6FA200C7C42A /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F53E29189D6FA200C7C42A /* MBProgressHUD.m */; };
 		45FC0DCD18CCD46700C82A2B /* TFollowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FC0DCC18CCD46700C82A2B /* TFollowCell.m */; };
 		45FC756018A017E10089255A /* UIImage+AlphaAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FC755B18A017E10089255A /* UIImage+AlphaAdditions.m */; };
 		45FC756118A017E10089255A /* UIImage+ResizeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FC755D18A017E10089255A /* UIImage+ResizeAdditions.m */; };
@@ -158,8 +157,6 @@
 		45EA89CA187E69F500223D26 /* TConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TConstants.h; sourceTree = "<group>"; };
 		45F53E24189D6EB100C7C42A /* TUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUtility.h; sourceTree = "<group>"; };
 		45F53E25189D6EB100C7C42A /* TUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUtility.m; sourceTree = "<group>"; };
-		45F53E28189D6FA200C7C42A /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
-		45F53E29189D6FA200C7C42A /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		45FC0DCB18CCD46700C82A2B /* TFollowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFollowCell.h; sourceTree = "<group>"; };
 		45FC0DCC18CCD46700C82A2B /* TFollowCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFollowCell.m; sourceTree = "<group>"; };
 		45FC755A18A017E10089255A /* UIImage+AlphaAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+AlphaAdditions.h"; sourceTree = "<group>"; };
@@ -397,21 +394,10 @@
 				456DAE5418CC9394009E4FEC /* FacebookSDK.framework */,
 				456DAE5518CC9394009E4FEC /* Parse.framework */,
 				45FC755918A017E10089255A /* UIImage */,
-				45F53E27189D6FA200C7C42A /* MBProgressHUD */,
 				45E54463188F934200FF8977 /* Reachability.h */,
 				45E54464188F934200FF8977 /* Reachability.m */,
 			);
 			path = External;
-			sourceTree = SOURCE_ROOT;
-		};
-		45F53E27189D6FA200C7C42A /* MBProgressHUD */ = {
-			isa = PBXGroup;
-			children = (
-				45F53E28189D6FA200C7C42A /* MBProgressHUD.h */,
-				45F53E29189D6FA200C7C42A /* MBProgressHUD.m */,
-			);
-			name = MBProgressHUD;
-			path = Tromkee/MBProgressHUD;
 			sourceTree = SOURCE_ROOT;
 		};
 		45FC755918A017E10089255A /* UIImage */ = {
@@ -572,7 +558,6 @@
 				457C8A861893B02100D6DA40 /* TCircleView.m in Sources */,
 				454BDE0118890101009DC4F6 /* TPostViewController.m in Sources */,
 				453CB8FD1885C7B700D7019D /* TCategoryStickersViewController.m in Sources */,
-				45F53E2A189D6FA200C7C42A /* MBProgressHUD.m in Sources */,
 				45FC0DCD18CCD46700C82A2B /* TFollowCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

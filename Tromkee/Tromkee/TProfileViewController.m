@@ -7,10 +7,8 @@
 //
 
 #import "TProfileViewController.h"
-#import "MBProgressHUD.h"
 #import "TProfileCell.h"
 #import "TFollowCell.h"
-#import "MBProgressHUD.h"
 
 #define SORT_KEY @"updatedAt"
 
@@ -37,7 +35,6 @@ NS_ENUM(int, ProfileDisplay) {
 @property (strong, nonatomic) NSMutableArray* followersArray;
 @property (strong, nonatomic) NSMutableArray* followingArray;
 
-@property (nonatomic, strong) MBProgressHUD* progress;
 @property (nonatomic) BOOL isFollowing;
 @property (nonatomic) int currentDisplay;
 
@@ -141,9 +138,7 @@ NS_ENUM(int, ProfileDisplay) {
 
 
 -(void)updateActivity {
-    self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    self.progress.labelText = @"Fetching ...";
-    self.progress.dimBackground = YES;
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"fromUser == %@", self.userProfile]];
     activityQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
     activityQuery.maxCacheAge = 300;
@@ -153,7 +148,7 @@ NS_ENUM(int, ProfileDisplay) {
     [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         DLog(@"Received activities in profile: %lu", (unsigned long)objects.count);
         dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf.progress hide:YES];
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             if (error) {
                 NSLog(@"Error in getting activities: %@", error.localizedDescription);
             } else {
@@ -172,10 +167,8 @@ NS_ENUM(int, ProfileDisplay) {
 }
 
 -(void)updateFollowerUsers {
-    self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    self.progress.labelText = @"Fetching ...";
-    self.progress.dimBackground = YES;
-
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    
     PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
     [followersQuery whereKey:@"fromUser" equalTo:self.userProfile];
     [followersQuery whereKey:@"toUser" equalTo:[PFUser currentUser]];
@@ -189,7 +182,7 @@ NS_ENUM(int, ProfileDisplay) {
     [followersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         DLog(@"Followers count is : %lu", (unsigned long)objects.count);
         dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf.progress hide:YES];
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             if (error) {
                 NSLog(@"Error in getting activities: %@", error.localizedDescription);
             } else {
@@ -208,10 +201,7 @@ NS_ENUM(int, ProfileDisplay) {
 }
 
 -(void)updateFollowingUsers {
-    self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    self.progress.labelText = @"Fetching ...";
-    self.progress.dimBackground = YES;
-    
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
     [followersQuery whereKey:@"fromUser" equalTo:[PFUser currentUser]];
     [followersQuery whereKey:@"toUser" equalTo:self.userProfile];
@@ -224,7 +214,7 @@ NS_ENUM(int, ProfileDisplay) {
     [followersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         DLog(@"Following count is : %lu", (unsigned long)objects.count);
         dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf.progress hide:YES];
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             if (error) {
                 NSLog(@"Error in getting activities: %@", error.localizedDescription);
             } else {
@@ -304,7 +294,7 @@ NS_ENUM(int, ProfileDisplay) {
         
         __weak TProfileViewController* weakself = self;
         [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            [weakself.progress hide:YES];
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             if (succeeded) {
                 self.isFollowing = YES;
                 [self.followButton setTitle:@"Following" forState:UIControlStateNormal];

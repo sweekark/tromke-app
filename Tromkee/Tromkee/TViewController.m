@@ -299,6 +299,7 @@
     [self eyeClicked:nil];
     switch (rowNumber) {
         case MenuItemNearMe:
+            [self updateUserLocation:nil];
             break;
         case MenuItemChooseMyRoute:
             break;

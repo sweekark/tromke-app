@@ -55,7 +55,6 @@
     CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
     [geoCoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
         for (CLPlacemark * placemark in placemarks) {
-//            .... = [placemark locality];
             [[NSUserDefaults standardUserDefaults] setValue:[NSString stringWithFormat:@"%@, %@, %@", placemark.name, placemark.subLocality, placemark.locality] forKeyPath:USER_LOCATION];
         }
     }];
