@@ -13,32 +13,24 @@
 #import "TCircleView.h"
 #import "UIImage+ResizeAdditions.h"
 #import "TProfileViewController.h"
+#import "TPostCell.h"
 
 #define SORT_ACTIVITIES_KEY @"updatedAt"
 
-@interface TActivityViewController () <UITableViewDataSource, UITableViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate>
+@interface TActivityViewController () <UITableViewDataSource, UITableViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, TPostCellDelegate>
 
-@property (weak, nonatomic) IBOutlet PFImageView *fromImage;
-@property (weak, nonatomic) IBOutlet UILabel *fromName;
-@property (weak, nonatomic) IBOutlet UILabel *fromPostedTime;
-@property (weak, nonatomic) IBOutlet UILabel *fromPostedMessage;
-@property (weak, nonatomic) IBOutlet UILabel *totalThanks;
-@property (weak, nonatomic) IBOutlet PFImageView *fromStickerImage;
-@property (weak, nonatomic) IBOutlet TCircleView *fromStickerIntensity;
-
-
-@property (weak, nonatomic) IBOutlet UIButton *thanksButton;
 @property (nonatomic, strong) MBProgressHUD* progress;
 @property (nonatomic, strong) NSMutableArray* activities;
 @property (nonatomic, weak) IBOutlet UITableView* activitiesTable;
 @property (nonatomic, weak) IBOutlet UITextView* activityDescription;
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
-
 @property (nonatomic, strong) NSMutableArray* stickerImages;
 @property (nonatomic, strong) UIImagePickerController* imagePickerController;
 @property (nonatomic) BOOL isCommentEditing;
 
 @property (nonatomic, assign) UIBackgroundTaskIdentifier photoPostBackgroundTaskId;
+
+@property (nonatomic, strong) TPostCell* postCell;
 
 - (IBAction)postActivityDescription:(id)sender;
 
@@ -60,6 +52,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.postCell = nil;
 	// Do any additional setup after loading the view.
     UIBarButtonItem* forwardButton = [[UIBarButtonItem alloc] initWithTitle:@"Forward" style:UIBarButtonItemStyleBordered target:self action:@selector(share)];
     self.navigationController.navigationItem.rightBarButtonItem = forwardButton;
@@ -102,58 +95,28 @@
     self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.progress.labelText = @"Fetching Comments";
     self.progress.dimBackground = YES;
-    PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"post == %@", self.stickerObject]];
+    PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity"];
+    [activityQuery whereKey:@"post" equalTo:self.stickerObject];
+    [activityQuery whereKey:@"type" containedIn:@[@"IMAGE_COMMENT", @"COMMENT", @"THANKS"]];
     [activityQuery includeKey:@"fromUser"];
     [activityQuery orderByDescending:SORT_ACTIVITIES_KEY];
     
     __weak TActivityViewController* weakSelf = self;
     [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         NSLog(@"Received objects for sticker : %lu", (unsigned long)objects.count);
-//        [weakSelf.progress hide:YES];
+        
         [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         self.progress = nil;
+        
+        NSIndexSet* indexes = [objects indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+            return [[(PFObject*)obj valueForKey:@"type"] isEqualToString:THANKS];
+        }];
+        
+        weakSelf.postCell.totalThanks.text = [NSString stringWithFormat:@"%lu", (unsigned long)(indexes ? indexes.count : 0)];
         
         if (error) {
             NSLog(@"Error in getting activities: %@", error.localizedDescription);
         } else {
-            PFUser* user = weakSelf.stickerObject[@"fromUser"];
-            
-//            PFQuery* usrQuery = [PFQuery queryWithClassName:@"User"];
-//            [usrQuery whereKey:@"objectId" equalTo:self.stickerObject[@"fromUser"]];
-//            PFUser* user = [[usrQuery findObjects] firstObject];
-
-            PFFile *imageFile = [user objectForKey:FACEBOOK_SMALLPIC_KEY];
-            weakSelf.fromImage.image = [UIImage imageNamed:@"Personholder"];                
-            if (imageFile) {
-                NSLog(@"Showing sticker user image");
-                [weakSelf.fromImage setFile:imageFile];
-                [weakSelf.fromImage loadInBackground];
-            } else {
-                NSLog(@"No image found");
-            }
-            
-            weakSelf.fromName.text = user[@"displayName"];
-            weakSelf.fromPostedTime.text = [TUtility computePostedTime:self.stickerObject.updatedAt];
-            weakSelf.fromPostedMessage.text = weakSelf.stickerObject[@"data"];
-//                [weakSelf.fromPostedMessage sizeToFit];
-            //Compute Thanks objects posted
-            NSIndexSet* indexes = [objects indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-                return [[(PFObject*)obj valueForKey:@"type"] isEqualToString:THANKS];
-            }];
-            
-            weakSelf.totalThanks.text = [NSString stringWithFormat:@"%lu", (unsigned long)(indexes ? indexes.count : 0)];
-            
-            PFObject* stickerObj = weakSelf.stickerObject[@"sticker"];
-            
-            PFFile* stickerImage = stickerObj[@"image"];
-            if (stickerImage) {
-                weakSelf.fromStickerImage.file = stickerImage;
-                [weakSelf.fromStickerImage loadInBackground];
-            }
-            
-            weakSelf.fromStickerIntensity.green = [weakSelf.stickerObject[@"severity"] floatValue];
-            [weakSelf.fromStickerIntensity setNeedsDisplay];
-            
             if (objects.count) {
                 weakSelf.activities = [NSMutableArray arrayWithArray:objects];
                 [weakSelf.activities removeObjectsAtIndexes:indexes];
@@ -171,9 +134,8 @@
     [thanksQuery whereKey:@"type" equalTo:@"THANKS"];
     [thanksQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         if (!error && object) {
-            [self.thanksButton setTitle:@"Thanked" forState:UIControlStateNormal];
-            self.thanksButton.userInteractionEnabled = NO;
-//            self.thanksButton.enabled = NO;
+            [self.postCell.thanksButton setTitle:@"Thanked" forState:UIControlStateNormal];
+            self.postCell.thanksButton.userInteractionEnabled = NO;
         }
     }];
 }
@@ -193,12 +155,31 @@
 #pragma mark - Tableview methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.activities.count;
+    if (self.activities && self.activities.count) {
+        return self.activities.count + 1;
+    }
+
+    return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    PFObject* comment = self.activities[indexPath.row];
+    if (indexPath.row == 0) {
+        if (self.postCell == nil) {
+            PFObject* images = self.stickerObject[@"images"];
+            if (images) {
+                self.postCell = [tableView dequeueReusableCellWithIdentifier:@"POST_IMAGE"];
+            } else {
+                self.postCell = [tableView dequeueReusableCellWithIdentifier:@"ONLY_POST"];
+            }
+            self.postCell.delegate = self;
+            [self.postCell update:self.stickerObject];
+        }
+        
+        return self.postCell;
+    }
+    
+    PFObject* comment = self.activities[indexPath.row - 1];
     PFObject* fromUser = comment[@"fromUser"];
     
     TActivityCell* cell;
@@ -216,7 +197,6 @@
 
     cell.personName.text = fromUser[@"displayName"];
     cell.comment.text = comment[@"content"];
-//    [cell.comment sizeToFit];
     cell.updatedTime.text = [TUtility computePostedTime:comment.updatedAt];
     
     PFFile* perImg = fromUser[FACEBOOK_SMALLPIC_KEY];
@@ -231,9 +211,20 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     CGFloat height = 100;
-    PFObject* comment = self.activities[indexPath.row];
-    if ([comment[@"type"] isEqualToString:IMAGE_COMMENT]) {
-        height = 300;
+    if (indexPath.row == 0) {
+        PFObject* images = self.stickerObject[@"images"];
+        if (images) {
+            height = 325;
+        } else {
+            height = 135;
+        }
+    } else {
+        if (self.activities && self.activities.count) {
+            PFObject* comment = self.activities[indexPath.row - 1];
+            if ([comment[@"type"] isEqualToString:IMAGE_COMMENT]) {
+                height = 300;
+            }
+        }
     }
     
     return height;
@@ -359,10 +350,9 @@
 }
 
 
-- (IBAction)conveyThanks:(id)sender {
+- (void)conveyThanks {
     [self.activityDescription resignFirstResponder];
-//    self.thanksButton.enabled = NO;
-    self.thanksButton.userInteractionEnabled = NO;
+//    self.thanksButton.userInteractionEnabled = NO;
     
     self.progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.progress.labelText = @"Sending Thanks ...";
@@ -381,7 +371,7 @@
         if (succeeded) {
             dispatch_async(dispatch_get_main_queue(), ^{
 //                [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Comment posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-                [self update];
+                [self updateThanksButton];
             });
         }
     }];
@@ -445,17 +435,10 @@
     [label alignmentRectForFrame:label.frame].size.width;
 }
 
-- (void)viewDidLayoutSubviews
-{
-    [super viewDidLayoutSubviews];
-    [self updateLabelPreferredMaxLayoutWidthToCurrentWidth:self.fromPostedMessage];
-    [self.view layoutSubviews];
-}
-
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:PROFILE]) {
         NSIndexPath* indxPath = [self.activitiesTable indexPathForSelectedRow];
-        PFObject* comment = self.activities[indxPath.row];
+        PFObject* comment = self.activities[indxPath.row - 1];
         PFUser* fromUser = comment[@"fromUser"];
         TProfileViewController* profileVC = segue.destinationViewController;
         profileVC.userProfile = fromUser;
@@ -486,7 +469,11 @@
     if (comment && comment.length) {
         [actItems addObject:comment];
     }
-    [actItems addObject:self.fromStickerImage.image];
+    
+    PFObject* stickerObj = self.stickerObject[@"sticker"];
+    PFFile* stickerImage = stickerObj[@"image"];
+    UIImage* img = [UIImage imageWithData:[stickerImage getData]];
+    [actItems addObject:img];
     
     UIActivityViewController* actController = [[UIActivityViewController alloc] initWithActivityItems:actItems applicationActivities:nil];
     [self presentViewController:actController animated:YES completion:nil];

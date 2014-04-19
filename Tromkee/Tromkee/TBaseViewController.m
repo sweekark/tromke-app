@@ -60,7 +60,7 @@
 
 -(void)updateNotificationCount {
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    self.notificationCountValue.text = [NSString stringWithFormat:@"%d", currentInstallation.badge];
+    self.notificationCountValue.text = [NSString stringWithFormat:@"%ld", (long)currentInstallation.badge];
 }
 
 

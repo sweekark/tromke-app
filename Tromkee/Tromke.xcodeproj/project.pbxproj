@@ -18,6 +18,7 @@
 		453CB8FA1885C5D300D7019D /* TCategoryStickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 453CB8F91885C5D300D7019D /* TCategoryStickerCell.m */; };
 		453CB8FD1885C7B700D7019D /* TCategoryStickersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 453CB8FC1885C7B700D7019D /* TCategoryStickersViewController.m */; };
 		454BDE0118890101009DC4F6 /* TPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 454BDE0018890101009DC4F6 /* TPostViewController.m */; };
+		455B796B19003DEC00D4AAD2 /* TPostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 455B796A19003DEC00D4AAD2 /* TPostCell.m */; };
 		455C01131879C60E00D54908 /* backgroundLogin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 455C01101879C60E00D54908 /* backgroundLogin@2x.png */; };
 		4563F2E418A4B1EB00E8911E /* TStickerAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F2E318A4B1EB00E8911E /* TStickerAnnotation.m */; };
 		4564400818F5434600672099 /* Sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = 4564400718F5434600672099 /* Sticker.png */; };
@@ -99,6 +100,8 @@
 		453CB8FC1885C7B700D7019D /* TCategoryStickersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCategoryStickersViewController.m; sourceTree = "<group>"; };
 		454BDDFF18890101009DC4F6 /* TPostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPostViewController.h; sourceTree = "<group>"; };
 		454BDE0018890101009DC4F6 /* TPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPostViewController.m; sourceTree = "<group>"; };
+		455B796919003DEC00D4AAD2 /* TPostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPostCell.h; sourceTree = "<group>"; };
+		455B796A19003DEC00D4AAD2 /* TPostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPostCell.m; sourceTree = "<group>"; };
 		455C01101879C60E00D54908 /* backgroundLogin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backgroundLogin@2x.png"; sourceTree = "<group>"; };
 		4563F2E218A4B1EB00E8911E /* TStickerAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TStickerAnnotation.h; sourceTree = "<group>"; };
 		4563F2E318A4B1EB00E8911E /* TStickerAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TStickerAnnotation.m; sourceTree = "<group>"; };
@@ -244,6 +247,8 @@
 			children = (
 				450544B418B284A500529015 /* TActivityViewController.h */,
 				450544B518B284A500529015 /* TActivityViewController.m */,
+				455B796919003DEC00D4AAD2 /* TPostCell.h */,
+				455B796A19003DEC00D4AAD2 /* TPostCell.m */,
 				450544B718B284B600529015 /* TActivityCell.h */,
 				450544B818B284B600529015 /* TActivityCell.m */,
 			);
@@ -546,6 +551,7 @@
 				45F53E26189D6EB100C7C42A /* TUtility.m in Sources */,
 				450544B918B284B600529015 /* TActivityCell.m in Sources */,
 				45A2E88E18764FF1009A6171 /* TAppDelegate.m in Sources */,
+				455B796B19003DEC00D4AAD2 /* TPostCell.m in Sources */,
 				45FC756218A017E10089255A /* UIImage+RoundedCornerAdditions.m in Sources */,
 				45E54467188F934200FF8977 /* Reachability.m in Sources */,
 				45A2E89418764FF1009A6171 /* TViewController.m in Sources */,
