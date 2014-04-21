@@ -15,6 +15,7 @@
     #import <Foundation/Foundation.h>
 
     #import <Parse/Parse.h>
+    #import "Reachability.h"
     #import "TConstants.h"
     #import "TUtility.h"
 

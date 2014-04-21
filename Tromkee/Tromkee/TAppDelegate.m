@@ -77,9 +77,6 @@
     
     //[PFUser enableAutomaticUser];
     
-    // Use Reachability to monitor connectivity
-    [self monitorReachability];
-    
     PFACL *defaultACL = [PFACL ACL];
     // If you would like all objects to be private by default, remove this line.
     [defaultACL setPublicReadAccess:YES];
@@ -157,35 +154,6 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication withSession:[PFFacebookUtils session]];
-}
-
-
-- (void)monitorReachability {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
-    
-    self.hostReach = [Reachability reachabilityWithHostName:@"api.parse.com"];
-    [self.hostReach startNotifier];
-    
-    self.internetReach = [Reachability reachabilityForInternetConnection];
-    [self.internetReach startNotifier];
-    
-    self.wifiReach = [Reachability reachabilityForLocalWiFi];
-    [self.wifiReach startNotifier];
-}
-
-- (void)reachabilityChanged:(NSNotification* )note {
-    Reachability *curReach = (Reachability *)[note object];
-    NSParameterAssert([curReach isKindOfClass: [Reachability class]]);
-    
-    self.networkStatus = [curReach currentReachabilityStatus];
-    
-    if (self.networkStatus == NotReachable) {
-        NSLog(@"Network not reachable.");
-    }    
-}
-
-- (BOOL)isParseReachable {
-    return self.networkStatus != NotReachable;
 }
 
 #pragma mark - PFLoginViewController

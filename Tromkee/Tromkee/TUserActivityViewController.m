@@ -42,34 +42,36 @@
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
         }];
     }
-        
-    self.postsArray = [[NSMutableArray alloc] init];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"fromUser == %@ OR toUser == %@", [PFUser currentUser], [PFUser currentUser]]];
-    activityQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
-    activityQuery.maxCacheAge = 300;
-    [activityQuery includeKey:@"fromUser"];
-    [activityQuery orderByDescending:SORTBY];
-    __weak TUserActivityViewController* weakSelf = self;
-    [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        DLog(@"Received activities in profile: %lu", (unsigned long)objects.count);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-            if (error) {
-                NSLog(@"Error in getting activities: %@", error.localizedDescription);
-            } else {
-                weakSelf.postsArray = [objects mutableCopy];
-                if ([weakSelf.postsArray count]) {
-                    weakSelf.noResultsLabel.hidden = YES;
-                    weakSelf.userActivityTable.hidden = NO;
-                    [weakSelf.userActivityTable reloadData];
+    
+    if ([Reachability isReachable]) {
+        self.postsArray = [[NSMutableArray alloc] init];
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        PFQuery* activityQuery = [PFQuery queryWithClassName:@"NotifyActivity"];
+        [activityQuery includeKey:@"toUser"];
+        [activityQuery includeKey:@"activity"];
+        [activityQuery includeKey:@"post"];
+        [activityQuery orderByDescending:SORTBY];
+        __weak TUserActivityViewController* weakSelf = self;
+        [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            DLog(@"Received activities in profile: %lu", (unsigned long)objects.count);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                if (error) {
+                    NSLog(@"Error in getting activities: %@", error.localizedDescription);
                 } else {
-                    weakSelf.noResultsLabel.hidden = NO;
-                    weakSelf.userActivityTable.hidden = YES;
+                    weakSelf.postsArray = [objects mutableCopy];
+                    if ([weakSelf.postsArray count]) {
+                        weakSelf.noResultsLabel.hidden = YES;
+                        weakSelf.userActivityTable.hidden = NO;
+                        [weakSelf.userActivityTable reloadData];
+                    } else {
+                        weakSelf.noResultsLabel.hidden = NO;
+                        weakSelf.userActivityTable.hidden = YES;
+                    }
                 }
-            }
-        });
-    }];
+            });
+        }];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -97,33 +99,39 @@
 }
 
 -(UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString* cellIdentifier = @"USERACTIVITY";
-    TUserActivityCell* cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
-    PFObject* post = self.postsArray[indexPath.row];
-    cell.postedAt.text = [TUtility computePostedTime:post.updatedAt];
-    if ([post[@"type"] isEqualToString:COMMENT]) {
-        cell.comment.text = [NSString stringWithFormat:@"Commented %@", post[@"content"]];
-    } else if ([post[@"type"] isEqualToString:THANKS]) {
-        cell.comment.text = @"Conveyed Thanks";
-    } else if ([post[@"type"] isEqualToString:IMAGE_COMMENT]) {
-        cell.comment.text = [NSString stringWithFormat:@"Posted image with %@", post[@"content"]];
-    } else if ([post[@"type"] isEqualToString:IMAGE_ONLY]) {
-        cell.comment.text = @"Posted Image";
+    PFObject* notifyObj = self.postsArray[indexPath.row];
+    if (notifyObj[@"activity"]) {
+        static NSString* cellIdentifier = @"USERACTIVITY";
+        TUserActivityCell* cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+        cell.postedAt.text = [TUtility computePostedTime:notifyObj.updatedAt];
+        
+        PFObject* activityObj = notifyObj[@"activity"];
+        if ([activityObj[@"type"] isEqualToString:COMMENT]) {
+            cell.notificationMessage.text = [NSString stringWithFormat:@"Commented %@", activityObj[@"content"]];
+        } else if ([activityObj[@"type"] isEqualToString:THANKS]) {
+            cell.notificationMessage.text = @"Conveyed Thanks";
+        } else if ([activityObj[@"type"] isEqualToString:IMAGE_COMMENT]) {
+            cell.notificationMessage.text = [NSString stringWithFormat:@"Posted image with %@", activityObj[@"content"]];
+        } else if ([activityObj[@"type"] isEqualToString:IMAGE_ONLY]) {
+            cell.notificationMessage.text = @"Posted Image";
+        }
+        
+        PFObject* fromUser = activityObj[@"fromUser"];
+        cell.notificationMessage.text = fromUser[@"displayName"];
+        PFFile* imgFile = fromUser[FACEBOOK_SMALLPIC_KEY];
+        cell.userImage.image = [UIImage imageNamed:@"Personholder"];
+        if (imgFile) {
+            [cell.userImage setFile:imgFile];
+            [cell.userImage loadInBackground];
+        }
+        
+        return cell;
+    } else {
+        static NSString* cellIdentifier = @"USERPOST";
+        TUserActivityCell* cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+        return cell;
     }
-    //    [cell.comment sizeToFit];
-    
-    
-    PFObject* fromUser = post[@"fromUser"];
-    cell.userName.text = fromUser[@"displayName"];
-    PFFile* imgFile = fromUser[FACEBOOK_SMALLPIC_KEY];
-    cell.userImage.image = [UIImage imageNamed:@"Personholder"];
-    if (imgFile) {
-        [cell.userImage setFile:imgFile];
-        [cell.userImage loadInBackground];
-    }
-
-    return cell;
 }
 
 

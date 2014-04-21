@@ -69,53 +69,57 @@
 
 -(void)setPostObjectID:(NSString *)postObjectID {
     _postObjectID = postObjectID;
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    PFQuery* postQuery = [PFQuery queryWithClassName:@"Post"];
-    [postQuery includeKey:@"sticker"];
-    [postQuery includeKey:@"images"];
-    [postQuery includeKey:@"fromUser"];
-    [postQuery whereKey:@"objectId" equalTo:self.postObjectID];
-    [postQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-        if (!error) {
-            self.stickerObject = [objects firstObject];
-            [self update];
-        }
-    }];
+    if ([Reachability isReachable]) {
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        PFQuery* postQuery = [PFQuery queryWithClassName:@"Post"];
+        [postQuery includeKey:@"sticker"];
+        [postQuery includeKey:@"images"];
+        [postQuery includeKey:@"fromUser"];
+        [postQuery whereKey:@"objectId" equalTo:self.postObjectID];
+        [postQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            if (!error) {
+                self.stickerObject = [objects firstObject];
+                [self update];
+            }
+        }];
+    }
 }
 
 -(void)update {
-    [self updateThanksButton];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity"];
-    [activityQuery whereKey:@"post" equalTo:self.stickerObject];
-    [activityQuery whereKey:@"type" containedIn:@[@"IMAGE_COMMENT", @"COMMENT", @"THANKS"]];
-    [activityQuery includeKey:@"fromUser"];
-    [activityQuery orderByDescending:SORT_ACTIVITIES_KEY];
-    
-    __weak TActivityViewController* weakSelf = self;
-    [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        NSLog(@"Received objects for sticker : %lu", (unsigned long)objects.count);
+    if ([Reachability isReachable]) {
+        [self updateThanksButton];
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity"];
+        [activityQuery whereKey:@"post" equalTo:self.stickerObject];
+        [activityQuery whereKey:@"type" containedIn:@[@"IMAGE_COMMENT", @"COMMENT", @"THANKS"]];
+        [activityQuery includeKey:@"fromUser"];
+        [activityQuery orderByDescending:SORT_ACTIVITIES_KEY];
         
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-        
-        NSIndexSet* indexes = [objects indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-            return [[(PFObject*)obj valueForKey:@"type"] isEqualToString:THANKS];
-        }];
-        
-        weakSelf.postCell.totalThanks.text = [NSString stringWithFormat:@"%lu", (unsigned long)(indexes ? indexes.count : 0)];
-        
-        if (error) {
-            NSLog(@"Error in getting activities: %@", error.localizedDescription);
-        } else {
-            if (objects.count) {
-                weakSelf.activities = [NSMutableArray arrayWithArray:objects];
-                [weakSelf.activities removeObjectsAtIndexes:indexes];
-                [weakSelf.activitiesTable reloadData];
+        __weak TActivityViewController* weakSelf = self;
+        [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            NSLog(@"Received objects for sticker : %lu", (unsigned long)objects.count);
+            
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            
+            NSIndexSet* indexes = [objects indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+                return [[(PFObject*)obj valueForKey:@"type"] isEqualToString:THANKS];
+            }];
+            
+            weakSelf.postCell.totalThanks.text = [NSString stringWithFormat:@"%lu", (unsigned long)(indexes ? indexes.count : 0)];
+            
+            if (error) {
+                NSLog(@"Error in getting activities: %@", error.localizedDescription);
+            } else {
+                if (objects.count) {
+                    weakSelf.activities = [NSMutableArray arrayWithArray:objects];
+                    [weakSelf.activities removeObjectsAtIndexes:indexes];
+                    [weakSelf.activitiesTable reloadData];
+                }
             }
-        }
-    }];
-
+        }];
+    }
 }
 
 -(void)updateThanksButton {
@@ -351,16 +355,7 @@
     activiy[@"content"] = self.activityDescription.text;
     activiy[@"post"] = self.stickerObject;
 
-    [activiy saveInBackground];
-//    [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-//        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-//        if (succeeded) {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                [self updateThanksButton];
-//            });
-//        }
-//    }];
-
+    [activiy saveEventually];
 }
 
 - (IBAction)takePicture:(id)sender {

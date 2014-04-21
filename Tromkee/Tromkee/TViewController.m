@@ -235,25 +235,29 @@
 }
 
 -(void)updatePostedStickersOnMapWithCenter:(CGFloat)latitude andLongitude:(CGFloat)longitude {
-    PFQuery* stickersQuery = [PFQuery queryWithClassName:@"Post"];
-    [stickersQuery includeKey:@"sticker"];
-    [stickersQuery includeKey:@"images"];
-    [stickersQuery includeKey:@"fromUser"];
-    [stickersQuery whereKey:@"location" nearGeoPoint:[PFGeoPoint geoPointWithLatitude:latitude longitude:longitude] withinMiles:STICKER_QUERY_RADIUS];
-    stickersQuery.limit = 15;
-    
-    __weak TViewController* weakSelf = self;
-    [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        DLog(@"Stickers received: %lu", (unsigned long)objects.count);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (!error) {
-                weakSelf.stickerLocations = objects;
-                [self updateMapWithStickers];
-            } else {
-                [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Error in retrieving stickers" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-            }
-        });
-    }];
+    if ([Reachability isReachable]) {
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        PFQuery* stickersQuery = [PFQuery queryWithClassName:@"Post"];
+        [stickersQuery includeKey:@"sticker"];
+        [stickersQuery includeKey:@"images"];
+        [stickersQuery includeKey:@"fromUser"];
+        [stickersQuery whereKey:@"location" nearGeoPoint:[PFGeoPoint geoPointWithLatitude:latitude longitude:longitude] withinMiles:STICKER_QUERY_RADIUS];
+        stickersQuery.limit = 15;
+        
+        __weak TViewController* weakSelf = self;
+        [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            DLog(@"Stickers received: %lu", (unsigned long)objects.count);
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (!error) {
+                    weakSelf.stickerLocations = objects;
+                    [self updateMapWithStickers];
+                } else {
+                    [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Error in retrieving stickers" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                }
+            });
+        }];
+    }
 }
 
 -(void)updatePostedStickers {

@@ -34,21 +34,25 @@
     [self.collectionView reloadData];
     
     _category = category;
-    if (self.category) {
-        PFRelation* stickers = [self.category relationforKey:@"Stickers"];
-        PFQuery* stickersQuery = [stickers query];
-        stickersQuery.cachePolicy = kPFCachePolicyCacheElseNetwork;
-        stickersQuery.maxCacheAge = 3600;
-        [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (error) {
-                    NSLog(@"Error in getting stickers");
-                } else {
-                    self.stickers = objects;
-                    [self.collectionView reloadData];
-                }
-            });
-        }];
+    if ([Reachability isReachable]) {
+        if (self.category) {
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            PFRelation* stickers = [self.category relationforKey:@"Stickers"];
+            PFQuery* stickersQuery = [stickers query];
+            stickersQuery.cachePolicy = kPFCachePolicyCacheElseNetwork;
+            stickersQuery.maxCacheAge = 3600;
+            [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (error) {
+                        NSLog(@"Error in getting stickers");
+                    } else {
+                        self.stickers = objects;
+                        [self.collectionView reloadData];
+                    }
+                });
+            }];
+        }
     }
 }
 

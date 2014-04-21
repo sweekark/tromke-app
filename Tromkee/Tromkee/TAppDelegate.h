@@ -13,8 +13,6 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-@property (nonatomic, readonly) int networkStatus;
-
 - (void)presentLoginViewControllerAnimated:(BOOL)animated;
 
 @end

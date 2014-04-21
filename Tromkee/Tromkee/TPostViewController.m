@@ -113,6 +113,10 @@
         return;
     }
     
+    if (![Reachability isReachable]) {
+        return;
+    }
+    
 //    if (![self.stickerDescription.text length]) {
 //        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Please enter comment to post !!!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
 //        return;

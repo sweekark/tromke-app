@@ -138,129 +138,138 @@ NS_ENUM(int, ProfileDisplay) {
 
 
 -(void)updateActivity {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"fromUser == %@", self.userProfile]];
-    activityQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
-    activityQuery.maxCacheAge = 300;
-    [activityQuery includeKey:@"fromUser"];
-    [activityQuery orderByDescending:SORT_KEY];
-    __weak TProfileViewController* weakSelf = self;
-    [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        DLog(@"Received activities in profile: %lu", (unsigned long)objects.count);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-            if (error) {
-                NSLog(@"Error in getting activities: %@", error.localizedDescription);
-            } else {
-                weakSelf.postsArray = [objects mutableCopy];
-                if ([weakSelf.postsArray count]) {
-                    weakSelf.noResultsLabel.hidden = YES;
-                    weakSelf.collectionView.hidden = NO;
-                    [weakSelf.collectionView reloadData];
+    if ([Reachability isReachable]) {
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"fromUser == %@", self.userProfile]];
+        activityQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
+        activityQuery.maxCacheAge = 300;
+        [activityQuery includeKey:@"fromUser"];
+        [activityQuery orderByDescending:SORT_KEY];
+        __weak TProfileViewController* weakSelf = self;
+        [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            DLog(@"Received activities in profile: %lu", (unsigned long)objects.count);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                if (error) {
+                    NSLog(@"Error in getting activities: %@", error.localizedDescription);
                 } else {
-                    weakSelf.noResultsLabel.hidden = NO;
-                    weakSelf.collectionView.hidden = YES;
+                    weakSelf.postsArray = [objects mutableCopy];
+                    if ([weakSelf.postsArray count]) {
+                        weakSelf.noResultsLabel.hidden = YES;
+                        weakSelf.collectionView.hidden = NO;
+                        [weakSelf.collectionView reloadData];
+                    } else {
+                        weakSelf.noResultsLabel.hidden = NO;
+                        weakSelf.collectionView.hidden = YES;
+                    }
                 }
-            }
-        });
-    }];
+            });
+        }];
+    }
 }
 
 -(void)updateFollowerUsers {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    
-    PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
-    [followersQuery whereKey:@"fromUser" equalTo:self.userProfile];
-    [followersQuery whereKey:@"toUser" equalTo:[PFUser currentUser]];
-    [followersQuery whereKey:@"type" equalTo:@"FOLLOW"];
-
-    
-    [followersQuery includeKey:@"fromUser"];
-    followersQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
-    followersQuery.maxCacheAge = 300;
-    __weak TProfileViewController* weakSelf = self;
-    [followersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        DLog(@"Followers count is : %lu", (unsigned long)objects.count);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-            if (error) {
-                NSLog(@"Error in getting activities: %@", error.localizedDescription);
-            } else {
-                weakSelf.postsArray = [objects mutableCopy];
-                if ([weakSelf.postsArray count]) {
-                    weakSelf.noResultsLabel.hidden = YES;
-                    weakSelf.collectionView.hidden = NO;
-                    [weakSelf.collectionView reloadData];
+    if ([Reachability isReachable]) {
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        
+        PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
+        [followersQuery whereKey:@"fromUser" equalTo:self.userProfile];
+        [followersQuery whereKey:@"toUser" equalTo:[PFUser currentUser]];
+        [followersQuery whereKey:@"type" equalTo:@"FOLLOW"];
+        
+        
+        [followersQuery includeKey:@"fromUser"];
+        followersQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
+        followersQuery.maxCacheAge = 300;
+        __weak TProfileViewController* weakSelf = self;
+        [followersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            DLog(@"Followers count is : %lu", (unsigned long)objects.count);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                if (error) {
+                    NSLog(@"Error in getting activities: %@", error.localizedDescription);
                 } else {
-                    weakSelf.noResultsLabel.hidden = NO;
-                    weakSelf.collectionView.hidden = YES;
+                    weakSelf.postsArray = [objects mutableCopy];
+                    if ([weakSelf.postsArray count]) {
+                        weakSelf.noResultsLabel.hidden = YES;
+                        weakSelf.collectionView.hidden = NO;
+                        [weakSelf.collectionView reloadData];
+                    } else {
+                        weakSelf.noResultsLabel.hidden = NO;
+                        weakSelf.collectionView.hidden = YES;
+                    }
                 }
-            }
-        });
-    }];
+            });
+        }];
+    }
 }
 
 -(void)updateFollowingUsers {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
-    [followersQuery whereKey:@"fromUser" equalTo:[PFUser currentUser]];
-    [followersQuery whereKey:@"toUser" equalTo:self.userProfile];
-    [followersQuery whereKey:@"type" equalTo:@"FOLLOW"];
-
-    [followersQuery includeKey:@"toUser"];
-    followersQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
-    followersQuery.maxCacheAge = 300;
-    __weak TProfileViewController* weakSelf = self;
-    [followersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        DLog(@"Following count is : %lu", (unsigned long)objects.count);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-            if (error) {
-                NSLog(@"Error in getting activities: %@", error.localizedDescription);
-            } else {
-                weakSelf.postsArray = [objects mutableCopy];
-                if ([weakSelf.postsArray count]) {
-                    weakSelf.noResultsLabel.hidden = YES;
-                    weakSelf.collectionView.hidden = NO;
-                    [weakSelf.collectionView reloadData];
+    if ([Reachability isReachable]) {
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
+        [followersQuery whereKey:@"fromUser" equalTo:[PFUser currentUser]];
+        [followersQuery whereKey:@"toUser" equalTo:self.userProfile];
+        [followersQuery whereKey:@"type" equalTo:@"FOLLOW"];
+        
+        [followersQuery includeKey:@"toUser"];
+        followersQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
+        followersQuery.maxCacheAge = 300;
+        __weak TProfileViewController* weakSelf = self;
+        [followersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            DLog(@"Following count is : %lu", (unsigned long)objects.count);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                if (error) {
+                    NSLog(@"Error in getting activities: %@", error.localizedDescription);
                 } else {
-                    weakSelf.noResultsLabel.hidden = NO;
-                    weakSelf.collectionView.hidden = YES;
+                    weakSelf.postsArray = [objects mutableCopy];
+                    if ([weakSelf.postsArray count]) {
+                        weakSelf.noResultsLabel.hidden = YES;
+                        weakSelf.collectionView.hidden = NO;
+                        [weakSelf.collectionView reloadData];
+                    } else {
+                        weakSelf.noResultsLabel.hidden = NO;
+                        weakSelf.collectionView.hidden = YES;
+                    }
                 }
-            }
-        });
-    }];
+            });
+        }];
+    }
 }
 
 -(void)updateFollowersAndFollowingValues {
-    
-    PFQuery* followQuery = [PFUser query];
-    __weak TProfileViewController* weakSelf = self;
-    [followQuery getObjectInBackgroundWithId:self.userProfile.objectId block:^(PFObject *object, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            PFUser* usr = (PFUser*)object;
-            DLog(@"Followers Value: %d, Following Value: %d", [usr[@"followers"] intValue],  [usr[@"following"] intValue]);
-            weakSelf.followersValue.text = [NSString stringWithFormat:@"%d", [usr[@"followers"] intValue]];
-            weakSelf.followingValue.text = [NSString stringWithFormat:@"%d", [usr[@"following"] intValue]];
-        });
-    }];
+    if ([Reachability isReachable]) {
+        PFQuery* followQuery = [PFUser query];
+        __weak TProfileViewController* weakSelf = self;
+        [followQuery getObjectInBackgroundWithId:self.userProfile.objectId block:^(PFObject *object, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                PFUser* usr = (PFUser*)object;
+                DLog(@"Followers Value: %d, Following Value: %d", [usr[@"followers"] intValue],  [usr[@"following"] intValue]);
+                weakSelf.followersValue.text = [NSString stringWithFormat:@"%d", [usr[@"followers"] intValue]];
+                weakSelf.followingValue.text = [NSString stringWithFormat:@"%d", [usr[@"following"] intValue]];
+            });
+        }];
+    }
 }
 
 -(void)updateFollowButton {
-    PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"toUser == %@ AND fromUser == %@", self.userProfile, [PFUser currentUser]]];
-    __weak TProfileViewController* weakself = self;
-    [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            weakself.followButton.hidden = NO;
-            if (objects.count) {
-                self.isFollowing = YES;
-                [weakself.followButton setTitle:@"Following" forState:UIControlStateNormal];
-            } else {
-                self.isFollowing = NO;
-                [weakself.followButton setTitle:@"Follow" forState:UIControlStateNormal];
-            }
-        });
-    }];
+    if ([Reachability isReachable]) {
+        PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"toUser == %@ AND fromUser == %@", self.userProfile, [PFUser currentUser]]];
+        __weak TProfileViewController* weakself = self;
+        [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                weakself.followButton.hidden = NO;
+                if (objects.count) {
+                    self.isFollowing = YES;
+                    [weakself.followButton setTitle:@"Following" forState:UIControlStateNormal];
+                } else {
+                    self.isFollowing = NO;
+                    [weakself.followButton setTitle:@"Follow" forState:UIControlStateNormal];
+                }
+            });
+        }];
+    }
 }
 
 
@@ -272,13 +281,19 @@ NS_ENUM(int, ProfileDisplay) {
         return;
     }
     
+    if (![Reachability isReachable]) {
+        return;
+    }
+    
     if (self.isFollowing) {
         PFQuery* activity = [PFQuery queryWithClassName:@"Activity"];
         [activity whereKey:@"fromUser" equalTo:[PFUser currentUser]];
         [activity whereKey:@"toUser" equalTo:self.userProfile];
         [activity whereKey:@"type" equalTo:@"FOLLOW"];
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [activity getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             DLog(@"Deleted following");
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];            
             [object deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (succeeded) {
                     self.isFollowing = NO;
@@ -291,8 +306,7 @@ NS_ENUM(int, ProfileDisplay) {
         activiy[@"fromUser"] = [PFUser currentUser];
         activiy[@"toUser"] = self.userProfile;
         activiy[@"type"] = @"FOLLOW";
-        
-        __weak TProfileViewController* weakself = self;
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             if (succeeded) {

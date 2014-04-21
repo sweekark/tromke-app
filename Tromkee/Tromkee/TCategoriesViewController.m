@@ -43,21 +43,23 @@
     self.currentSelectedItem = -1;
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    PFQuery* categoriesQuery = [PFQuery queryWithClassName:@"category"];
-    categoriesQuery.cachePolicy = kPFCachePolicyCacheElseNetwork;
-    categoriesQuery.maxCacheAge = 3600;
-    [categoriesQuery orderByAscending:SORTBY];
-    [categoriesQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        DLog(@"Categories received: %lu", (unsigned long)objects.count);
-        if (error) {
-            NSLog(@"Error in getting categories: %@", error.localizedDescription);
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.allCategories = objects;
-                [self.categoriesView reloadData];
-            });
-        }
-    }];
+    if ([Reachability isReachable]) {
+        PFQuery* categoriesQuery = [PFQuery queryWithClassName:@"category"];
+        categoriesQuery.cachePolicy = kPFCachePolicyCacheElseNetwork;
+        categoriesQuery.maxCacheAge = 3600;
+        [categoriesQuery orderByAscending:SORTBY];
+        [categoriesQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            DLog(@"Categories received: %lu", (unsigned long)objects.count);
+            if (error) {
+                NSLog(@"Error in getting categories: %@", error.localizedDescription);
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.allCategories = objects;
+                    [self.categoriesView reloadData];
+                });
+            }
+        }];        
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated {
