@@ -8,10 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol TUserActivity <NSObject>
+
+-(void)showProfile:(int)rowNumber;
+
+@end
+
 @interface TUserActivityCell : UITableViewCell
 
 @property (nonatomic, weak) IBOutlet PFImageView* userImage;
 @property (nonatomic, weak) IBOutlet UILabel* notificationMessage;
 @property (nonatomic, weak) IBOutlet UILabel* postedAt;
+
+@property (nonatomic) int rowNumber;
+@property (nonatomic, weak) id<TUserActivity> delegate;
 
 @end

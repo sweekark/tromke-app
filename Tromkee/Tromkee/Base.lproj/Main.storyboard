@@ -680,6 +680,13 @@
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Z8n-w2-TcY">
+                                                    <rect key="frame" x="5" y="9" width="80" height="80"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" title="Button">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="MMV-6t-G4T" firstAttribute="top" secondItem="kSs-YP-90j" secondAttribute="top" constant="5" id="0Uc-LJ-zXi"/>
@@ -694,7 +701,6 @@
                                             <outlet property="notificationMessage" destination="MMV-6t-G4T" id="yuA-2M-IGu"/>
                                             <outlet property="postedAt" destination="5Jp-pU-iKN" id="7or-Wb-oCr"/>
                                             <outlet property="userImage" destination="SL4-jS-aV6" id="gOv-f5-eAs"/>
-                                            <segue destination="XTB-9t-TTs" kind="push" identifier="PROFILE" id="csI-B0-Age"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="USERPOST" id="uWx-Ew-gTC" customClass="TUserActivityCell">
@@ -733,6 +739,16 @@
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VzO-W7-xae">
+                                                    <rect key="frame" x="5" y="9" width="80" height="80"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="showProfile:" destination="uWx-Ew-gTC" eventType="touchUpInside" id="plE-UF-MoH"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="aVs-DR-PgR" firstAttribute="top" secondItem="pIo-h1-nvO" secondAttribute="top" constant="5" id="3Hz-kO-dUM"/>
@@ -778,6 +794,7 @@
                     <connections>
                         <outlet property="noResultsLabel" destination="nP9-WI-xM5" id="jck-Z1-hWc"/>
                         <outlet property="userActivityTable" destination="D9c-Sr-nDa" id="dwl-74-Eos"/>
+                        <segue destination="XTB-9t-TTs" kind="push" identifier="PROFILE" id="COV-JJ-dRE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="icC-iP-0nJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1434,6 +1451,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="csI-B0-Age"/>
+        <segue reference="COV-JJ-dRE"/>
     </inferredMetricsTieBreakers>
 </document>

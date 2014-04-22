@@ -31,4 +31,9 @@
     // Configure the view for the selected state
 }
 
+- (IBAction)showProfile:(id)sender {
+    [self.delegate showProfile:self.rowNumber];
+}
+
+
 @end
