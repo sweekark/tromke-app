@@ -25,6 +25,7 @@
 		456DAE5618CC9394009E4FEC /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 456DAE5418CC9394009E4FEC /* FacebookSDK.framework */; };
 		456DAE5718CC9394009E4FEC /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 456DAE5518CC9394009E4FEC /* Parse.framework */; };
 		456DAE5A18CCA869009E4FEC /* TProfileCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 456DAE5918CCA869009E4FEC /* TProfileCell.m */; };
+		457A592E19067F1E007E63DD /* CRToast.m in Sources */ = {isa = PBXBuildFile; fileRef = 457A592D19067F1E007E63DD /* CRToast.m */; };
 		457C8A861893B02100D6DA40 /* TCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 457C8A851893B02100D6DA40 /* TCircleView.m */; };
 		45A2E87E18764FF1009A6171 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E87D18764FF1009A6171 /* Foundation.framework */; };
 		45A2E88018764FF1009A6171 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E87F18764FF1009A6171 /* CoreGraphics.framework */; };
@@ -109,6 +110,8 @@
 		456DAE5518CC9394009E4FEC /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		456DAE5818CCA869009E4FEC /* TProfileCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TProfileCell.h; sourceTree = "<group>"; };
 		456DAE5918CCA869009E4FEC /* TProfileCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TProfileCell.m; sourceTree = "<group>"; };
+		457A592C19067F1E007E63DD /* CRToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRToast.h; sourceTree = "<group>"; };
+		457A592D19067F1E007E63DD /* CRToast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRToast.m; sourceTree = "<group>"; };
 		457C8A841893B02100D6DA40 /* TCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCircleView.h; sourceTree = "<group>"; };
 		457C8A851893B02100D6DA40 /* TCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCircleView.m; sourceTree = "<group>"; };
 		45A2E87A18764FF1009A6171 /* Tromke.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tromke.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -252,6 +255,15 @@
 			name = Activity;
 			sourceTree = "<group>";
 		};
+		457A592B19067F1E007E63DD /* Toast */ = {
+			isa = PBXGroup;
+			children = (
+				457A592C19067F1E007E63DD /* CRToast.h */,
+				457A592D19067F1E007E63DD /* CRToast.m */,
+			);
+			path = Toast;
+			sourceTree = "<group>";
+		};
 		45A2E87118764FF1009A6171 = {
 			isa = PBXGroup;
 			children = (
@@ -391,6 +403,7 @@
 		45E54460188F934200FF8977 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				457A592B19067F1E007E63DD /* Toast */,
 				456DAE5418CC9394009E4FEC /* FacebookSDK.framework */,
 				456DAE5518CC9394009E4FEC /* Parse.framework */,
 				45FC755918A017E10089255A /* UIImage */,
@@ -538,6 +551,7 @@
 				450544B918B284B600529015 /* TActivityCell.m in Sources */,
 				45A2E88E18764FF1009A6171 /* TAppDelegate.m in Sources */,
 				455B796B19003DEC00D4AAD2 /* TPostCell.m in Sources */,
+				457A592E19067F1E007E63DD /* CRToast.m in Sources */,
 				45FC756218A017E10089255A /* UIImage+RoundedCornerAdditions.m in Sources */,
 				45E54467188F934200FF8977 /* Reachability.m in Sources */,
 				45A2E89418764FF1009A6171 /* TViewController.m in Sources */,

@@ -47,10 +47,16 @@
         self.postsArray = [[NSMutableArray alloc] init];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         PFQuery* activityQuery = [PFQuery queryWithClassName:@"NotifyActivity"];
-        [activityQuery includeKey:@"toUser"];
         [activityQuery includeKey:@"activity"];
+        [activityQuery includeKey:@"activity.fromUser"];
         [activityQuery includeKey:@"post"];
+        [activityQuery includeKey:@"post.sticker"];
+        [activityQuery includeKey:@"post.fromUser"];
+        
+        [activityQuery whereKey:@"notifyUser" equalTo:[PFUser currentUser]];
+        [activityQuery whereKeyDoesNotExist:@"notifyUser"];
         [activityQuery orderByDescending:SORTBY];
+        
         __weak TUserActivityViewController* weakSelf = self;
         [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             DLog(@"Received activities in profile: %lu", (unsigned long)objects.count);
@@ -130,6 +136,31 @@
     } else {
         static NSString* cellIdentifier = @"USERPOST";
         TUserActivityCell* cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+        cell.postedAt.text = [TUtility computePostedTime:notifyObj.updatedAt];
+        PFObject* postObj = notifyObj[@"post"];
+//        NSLog(@"%@", postObj);
+        PFObject* stickerObj = postObj[@"sticker"];
+//        NSLog(@"%@", stickerObj);
+        
+        
+        
+        PFObject* fromUser = postObj[@"fromUser"];
+        
+        NSString* str = [NSString stringWithFormat:@"%@ posted %@", fromUser[@"displayName"], postObj[@"data"]];
+        NSMutableAttributedString* msgString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ posted %@", fromUser[@"displayName"], postObj[@"data"]]];
+        NSRange postedRange = [str rangeOfString:@"posted"];
+        
+        [msgString addAttribute:NSFontAttributeName value:[UIFont italicSystemFontOfSize:14] range:postedRange];
+        [msgString addAttribute:NSForegroundColorAttributeName value:[UIColor greenColor] range:postedRange];
+        
+        cell.notificationMessage.attributedText = msgString;
+        PFFile* imgFile = fromUser[FACEBOOK_SMALLPIC_KEY];
+        cell.userImage.image = [UIImage imageNamed:@"Personholder"];
+        if (imgFile) {
+            [cell.userImage setFile:imgFile];
+            [cell.userImage loadInBackground];
+        }
+
         return cell;
     }
 }
