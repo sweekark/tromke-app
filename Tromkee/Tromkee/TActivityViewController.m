@@ -226,7 +226,8 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [self performSegueWithIdentifier:@"PROFILE" sender:nil];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];    
 }
 
 #pragma mark - TextView methods
@@ -418,10 +419,16 @@
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:PROFILE]) {
         NSIndexPath* indxPath = [self.activitiesTable indexPathForSelectedRow];
-        PFObject* comment = self.activities[indxPath.row - 1];
-        PFUser* fromUser = comment[@"fromUser"];
-        TProfileViewController* profileVC = segue.destinationViewController;
-        profileVC.userProfile = fromUser;
+        if (indxPath.row == 0) {
+            PFUser* fromUser = self.stickerObject[@"fromUser"];
+            TProfileViewController* profileVC = segue.destinationViewController;
+            profileVC.userProfile = fromUser;
+        } else {
+            PFObject* comment = self.activities[indxPath.row - 1];
+            PFUser* fromUser = comment[@"fromUser"];
+            TProfileViewController* profileVC = segue.destinationViewController;
+            profileVC.userProfile = fromUser;
+        }
     } else if ([segue.identifier isEqualToString:STICKER_POSTED_PROFILE]) {
         PFUser* user = self.stickerObject[@"fromUser"];
         TProfileViewController* profileVC = segue.destinationViewController;

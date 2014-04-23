@@ -1023,7 +1023,6 @@
                                             <outlet property="personImage" destination="Lna-WX-oFS" id="ODG-9p-1uV"/>
                                             <outlet property="personName" destination="1Qa-Li-W5I" id="tSQ-4T-Dsy"/>
                                             <outlet property="updatedTime" destination="3k4-bV-CpW" id="FFa-d8-9Vu"/>
-                                            <segue destination="XTB-9t-TTs" kind="push" identifier="PROFILE" id="gc3-sF-TX1"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="COMMENT_IMAGE" rowHeight="300" id="a8b-a1-fQI" customClass="TActivityCell">
@@ -1452,6 +1451,7 @@
                         <outlet property="activitiesTable" destination="9eq-ma-Lxw" id="fR4-h3-44c"/>
                         <outlet property="activityDescription" destination="T0O-ci-wgz" id="Qqi-RG-XTP"/>
                         <outlet property="bottomView" destination="oQI-bq-ukl" id="TT7-t3-f09"/>
+                        <segue destination="XTB-9t-TTs" kind="push" identifier="PROFILE" id="l0l-lO-hqx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="q8H-kJ-PTi" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1497,6 +1497,6 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="Jaa-Qq-CdW"/>
-        <segue reference="gc3-sF-TX1"/>
+        <segue reference="l0l-lO-hqx"/>
     </inferredMetricsTieBreakers>
 </document>
