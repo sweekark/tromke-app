@@ -9,6 +9,7 @@
 #import "TUserActivityViewController.h"
 #import "TUserActivityCell.h"
 #import "TProfileViewController.h"
+#import "TActivityViewController.h"
 
 #define SORTBY @"updatedAt"
 
@@ -54,8 +55,8 @@
         [activityQuery includeKey:@"post.sticker"];
         [activityQuery includeKey:@"post.fromUser"];
         
-        [activityQuery whereKey:@"notifyUser" equalTo:[PFUser currentUser]];
         [activityQuery whereKeyDoesNotExist:@"notifyUser"];
+        [activityQuery whereKey:@"notifyUser" equalTo:[PFUser currentUser]];        
         [activityQuery orderByDescending:SORTBY];
         
         __weak TUserActivityViewController* weakSelf = self;
@@ -185,6 +186,12 @@
         
         TProfileViewController* profileVC = segue.destinationViewController;
         profileVC.userProfile = fromUser;
+    } else if ([segue.identifier isEqualToString:@"ACTIVITY"]) {
+        NSIndexPath* indxPath = [self.userActivityTable indexPathForSelectedRow];
+        PFObject* notifyObj = self.postsArray[indxPath.row];
+
+        TActivityViewController* activityVC = segue.destinationViewController;
+        activityVC.postObjectID = [notifyObj[@"post"] objectId];
     }
 }
 

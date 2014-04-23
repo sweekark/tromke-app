@@ -62,7 +62,7 @@
     self.fromPostedMessage.text = stickerObject[@"data"];
     //                [weakSelf.fromPostedMessage sizeToFit];
     //Compute Thanks objects posted
-    
+    self.postedLocation.text = stickerObject[@"usrlocation"];
     PFObject* stickerObj = stickerObject[@"sticker"];
     
     PFFile* stickerImage = stickerObj[@"image"];
@@ -73,7 +73,7 @@
     
     self.fromStickerIntensity.green = [stickerObject[@"severity"] floatValue];
     [self.fromStickerIntensity setNeedsDisplay];
-    
+
     PFObject* images = stickerObject[@"images"];
     if (images) {
         PFFile* imgFile = images[@"image"];
