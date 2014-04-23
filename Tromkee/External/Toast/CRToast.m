@@ -1202,8 +1202,8 @@ CRToastAnimationStepBlock CRToastOutwardAnimationsSetupBlock(CRToastManager *wea
 
 - (void)addNotification:(CRToast*)notification {
     BOOL showingNotification = self.showingNotification;
-    [_notifications addObject:notification];
     if (!showingNotification) {
+        [_notifications addObject:notification];        
         [self displayNotification:notification];
     }
 }

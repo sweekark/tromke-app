@@ -55,6 +55,7 @@
 #import <CoreFoundation/CoreFoundation.h>
 
 #import "Reachability.h"
+#import "CRToast.h"
 
 #define kShouldPrintReachabilityFlags 0
 
@@ -270,6 +271,34 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 	return retVal;
 }
 
++ (NSDictionary*)options {
+    NSMutableDictionary *options = [@{kCRToastNotificationTypeKey               : @(CRToastTypeNavigationBar),
+                                      kCRToastNotificationPresentationTypeKey   : @(CRToastPresentationTypeCover),
+                                      kCRToastUnderStatusBarKey                 : @YES,
+                                      kCRToastTextKey                           : @"There's no network connection. Try again",
+                                      kCRToastTextAlignmentKey                  : @(NSTextAlignmentCenter),
+                                      kCRToastTimeIntervalKey                   : @(1),
+                                      kCRToastAnimationInTypeKey                : @(CRToastAnimationTypeLinear),
+                                      kCRToastAnimationOutTypeKey               : @(CRToastAnimationTypeLinear),
+                                      kCRToastAnimationInDirectionKey           : @(0),
+                                      kCRToastAnimationOutDirectionKey          : @(0)} mutableCopy];
+    
+//    if (![self.txtSubtitleMessage.text isEqualToString:@""]) {
+//        options[kCRToastSubtitleTextKey] = self.txtSubtitleMessage.text;
+//        options[kCRToastSubtitleTextAlignmentKey] = @(self.subtitleAlignment);
+//    }
+    
+//    if (_dismissibleWithTapSwitch.on) {
+//        options[kCRToastInteractionRespondersKey] = @[[CRToastInteractionResponder interactionResponderWithInteractionType:CRToastInteractionTypeTap
+//                                        automaticallyDismiss:YES
+//                                        block:^(CRToastInteractionType interactionType){
+//                                            NSLog(@"Dismissed with %@ interaction", NSStringFromCRToastInteractionType(interactionType));
+//                                        }]];
+//    }
+    
+    return [NSDictionary dictionaryWithDictionary:options];
+}
+
 +(BOOL)isReachable{
     
     Reachability *r = [Reachability reachabilityForInternetConnection];
@@ -279,8 +308,13 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
     {
         return YES;
     }
-    
-    [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"There's no network connection. Try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+
+
+    [CRToastManager showNotificationWithOptions:[self options]
+                                completionBlock:^(void) {
+                                    NSLog(@"Completed");
+                                }];
+//    [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"There's no network connection. Try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
     return  NO;
 }
 
