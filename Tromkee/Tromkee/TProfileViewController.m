@@ -173,8 +173,8 @@ NS_ENUM(int, ProfileDisplay) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         
         PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
-        [followersQuery whereKey:@"fromUser" equalTo:self.userProfile];
-        [followersQuery whereKey:@"toUser" equalTo:[PFUser currentUser]];
+//        [followersQuery whereKey:@"fromUser" equalTo:self.userProfile];
+        [followersQuery whereKey:@"toUser" equalTo:self.userProfile];
         [followersQuery whereKey:@"type" equalTo:@"FOLLOW"];
         
         
@@ -208,8 +208,8 @@ NS_ENUM(int, ProfileDisplay) {
     if ([Reachability isReachable]) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
-        [followersQuery whereKey:@"fromUser" equalTo:[PFUser currentUser]];
-        [followersQuery whereKey:@"toUser" equalTo:self.userProfile];
+        [followersQuery whereKey:@"fromUser" equalTo:self.userProfile];
+//        [followersQuery whereKey:@"toUser" equalTo:self.userProfile];
         [followersQuery whereKey:@"type" equalTo:@"FOLLOW"];
         
         [followersQuery includeKey:@"toUser"];
