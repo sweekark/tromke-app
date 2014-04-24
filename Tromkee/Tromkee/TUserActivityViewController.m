@@ -55,8 +55,8 @@
         [activityQuery includeKey:@"post.sticker"];
         [activityQuery includeKey:@"post.fromUser"];
         
-        [activityQuery whereKeyDoesNotExist:@"notifyUser"];
-        [activityQuery whereKey:@"notifyUser" equalTo:[PFUser currentUser]];        
+//        [activityQuery whereKeyDoesNotExist:@"notifyUser"];
+        [activityQuery whereKey:@"notifyUser" equalTo:[PFUser currentUser]];
         [activityQuery orderByDescending:SORTBY];
         
         __weak TUserActivityViewController* weakSelf = self;
