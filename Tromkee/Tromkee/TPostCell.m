@@ -50,12 +50,9 @@
     PFFile *imageFile = [user objectForKey:FACEBOOK_SMALLPIC_KEY];
     self.fromImage.image = [UIImage imageNamed:@"Personholder"];
     if (imageFile) {
-        NSLog(@"Showing sticker user image");
         [self.fromImage setFile:imageFile];
         [self.fromImage loadInBackground];
-    } else {
-        NSLog(@"No image found");
-    }
+    } 
     
     self.fromName.text = user[@"displayName"];
     self.fromPostedTime.text = [TUtility computePostedTime:stickerObject.updatedAt];

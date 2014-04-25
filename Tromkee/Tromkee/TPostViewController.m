@@ -188,6 +188,8 @@
             }
         }];
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:STICKER_POSTED object:nil];
 }
 
 -(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {

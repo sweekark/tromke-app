@@ -21,6 +21,7 @@ NS_ENUM(int, ProfileDisplay) {
 
 @interface TProfileViewController () <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
+@property (weak, nonatomic) IBOutlet UIView *buttonsView;
 @property (weak, nonatomic) IBOutlet UIButton *submitBtn;
 @property (weak, nonatomic) IBOutlet UILabel *noResultsLabel;
 @property (weak, nonatomic) IBOutlet UITextField *userName;
@@ -37,6 +38,15 @@ NS_ENUM(int, ProfileDisplay) {
 
 @property (nonatomic) BOOL isFollowing;
 @property (nonatomic) int currentDisplay;
+
+@property (nonatomic) int totalFollowers;
+@property (nonatomic) int totalFollowing;
+
+
+@property (weak, nonatomic) IBOutlet UIButton *activityButton;
+@property (weak, nonatomic) IBOutlet UIButton *followersButton;
+@property (weak, nonatomic) IBOutlet UIButton *followingButton;
+
 
 @end
 
@@ -139,6 +149,10 @@ NS_ENUM(int, ProfileDisplay) {
 
 -(void)updateActivity {
     if ([Reachability isReachable]) {
+        self.activityButton.backgroundColor = [UIColor greenColor];
+        self.followersButton.backgroundColor = self.followingButton.backgroundColor = [UIColor yellowColor];
+        
+        self.buttonsView.userInteractionEnabled = NO;
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"fromUser == %@", self.userProfile]];
         activityQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
@@ -148,6 +162,7 @@ NS_ENUM(int, ProfileDisplay) {
         __weak TProfileViewController* weakSelf = self;
         [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             DLog(@"Received activities in profile: %lu", (unsigned long)objects.count);
+            self.buttonsView.userInteractionEnabled = YES;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 if (error) {
@@ -170,33 +185,42 @@ NS_ENUM(int, ProfileDisplay) {
 
 -(void)updateFollowerUsers {
     if ([Reachability isReachable]) {
+        self.activityButton.backgroundColor = [UIColor yellowColor];
+        self.followersButton.backgroundColor = [UIColor greenColor];
+        self.followingButton.backgroundColor = [UIColor yellowColor];
+        
+        self.buttonsView.userInteractionEnabled = NO;
+        self.noResultsLabel.hidden = self.collectionView.hidden = YES;
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         
         PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
 //        [followersQuery whereKey:@"fromUser" equalTo:self.userProfile];
         [followersQuery whereKey:@"toUser" equalTo:self.userProfile];
         [followersQuery whereKey:@"type" equalTo:@"FOLLOW"];
-        
-        
         [followersQuery includeKey:@"fromUser"];
+        [followersQuery selectKeys:@[@"fromUser"]];
         followersQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
         followersQuery.maxCacheAge = 300;
         __weak TProfileViewController* weakSelf = self;
         [followersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            self.buttonsView.userInteractionEnabled = YES;
             DLog(@"Followers count is : %lu", (unsigned long)objects.count);
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 if (error) {
                     NSLog(@"Error in getting activities: %@", error.localizedDescription);
                 } else {
-                    weakSelf.postsArray = [objects mutableCopy];
-                    if ([weakSelf.postsArray count]) {
+//                    weakSelf.postsArray = [objects mutableCopy];
+                    if ([objects count]) {
                         weakSelf.noResultsLabel.hidden = YES;
                         weakSelf.collectionView.hidden = NO;
+                        weakSelf.postsArray = [[objects valueForKeyPath:@"fromUser"] mutableCopy];
                         [weakSelf.collectionView reloadData];
                     } else {
-                        weakSelf.noResultsLabel.hidden = NO;
-                        weakSelf.collectionView.hidden = YES;
+                        [weakSelf.postsArray removeAllObjects];
+                        [weakSelf.collectionView reloadData];
+//                        weakSelf.noResultsLabel.hidden = NO;
+//                        weakSelf.collectionView.hidden = YES;
                     }
                 }
             });
@@ -206,31 +230,41 @@ NS_ENUM(int, ProfileDisplay) {
 
 -(void)updateFollowingUsers {
     if ([Reachability isReachable]) {
+        self.activityButton.backgroundColor = [UIColor yellowColor];
+        self.followersButton.backgroundColor = [UIColor yellowColor];
+        self.followingButton.backgroundColor = [UIColor greenColor];
+        
+        self.buttonsView.userInteractionEnabled = NO;
+        self.noResultsLabel.hidden = self.collectionView.hidden = YES;
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
         [followersQuery whereKey:@"fromUser" equalTo:self.userProfile];
 //        [followersQuery whereKey:@"toUser" equalTo:self.userProfile];
         [followersQuery whereKey:@"type" equalTo:@"FOLLOW"];
-        
         [followersQuery includeKey:@"toUser"];
+        [followersQuery selectKeys:@[@"toUser"]];
         followersQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
         followersQuery.maxCacheAge = 300;
         __weak TProfileViewController* weakSelf = self;
         [followersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            self.buttonsView.userInteractionEnabled = YES;
             DLog(@"Following count is : %lu", (unsigned long)objects.count);
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 if (error) {
                     NSLog(@"Error in getting activities: %@", error.localizedDescription);
                 } else {
-                    weakSelf.postsArray = [objects mutableCopy];
-                    if ([weakSelf.postsArray count]) {
+//                    weakSelf.postsArray = [objects mutableCopy];
+                    if ([objects count]) {
                         weakSelf.noResultsLabel.hidden = YES;
                         weakSelf.collectionView.hidden = NO;
+                        weakSelf.postsArray = [[objects valueForKeyPath:@"toUser"] mutableCopy];
                         [weakSelf.collectionView reloadData];
                     } else {
-                        weakSelf.noResultsLabel.hidden = NO;
-                        weakSelf.collectionView.hidden = YES;
+                        [weakSelf.postsArray removeAllObjects];
+                        [weakSelf.collectionView reloadData];
+//                        weakSelf.noResultsLabel.hidden = NO;
+//                        weakSelf.collectionView.hidden = YES;
                     }
                 }
             });
@@ -246,7 +280,9 @@ NS_ENUM(int, ProfileDisplay) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 PFUser* usr = (PFUser*)object;
                 DLog(@"Followers Value: %d, Following Value: %d", [usr[@"followers"] intValue],  [usr[@"following"] intValue]);
+                weakSelf.totalFollowers = [usr[@"followers"] intValue];
                 weakSelf.followersValue.text = [NSString stringWithFormat:@"%d", [usr[@"followers"] intValue]];
+                weakSelf.totalFollowing = [usr[@"following"] intValue];
                 weakSelf.followingValue.text = [NSString stringWithFormat:@"%d", [usr[@"following"] intValue]];
             });
         }];
@@ -285,7 +321,28 @@ NS_ENUM(int, ProfileDisplay) {
         return;
     }
     
+    self.followButton.userInteractionEnabled = NO;
     if (self.isFollowing) {
+        if (self.currentDisplay == ProfileDisplayFollowers) {
+            NSInteger indx = [self.postsArray indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+                return [[(PFUser*)obj objectId] isEqualToString:[[PFUser currentUser] objectId]];
+            }];
+            
+            if (indx != NSNotFound) {
+                [self.postsArray removeObjectAtIndex:indx];
+                //            [self.postsArray removeObject:[PFUser currentUser]];
+                [self.collectionView reloadData];
+            }
+            
+            if (self.totalFollowers > 0) {
+                self.totalFollowers--;
+                self.followersValue.text = [NSString stringWithFormat:@"%d", self.totalFollowers];
+            }
+        }
+
+        self.isFollowing = NO;
+        [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
+        
         PFQuery* activity = [PFQuery queryWithClassName:@"Activity"];
         [activity whereKey:@"fromUser" equalTo:[PFUser currentUser]];
         [activity whereKey:@"toUser" equalTo:self.userProfile];
@@ -293,15 +350,27 @@ NS_ENUM(int, ProfileDisplay) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [activity getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             DLog(@"Deleted following");
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];            
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             [object deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (succeeded) {
-                    self.isFollowing = NO;
-                    [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
-                }
+                self.followButton.userInteractionEnabled = YES;                
+//                if (succeeded) {
+//                    self.isFollowing = NO;
+//                    [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
+//                }
             }];
         }];
     } else {
+        if (self.currentDisplay == ProfileDisplayFollowers) {
+            [self.postsArray addObject:[PFUser currentUser]];
+            [self.collectionView reloadData];
+            
+            self.totalFollowers++;
+            self.followersValue.text = [NSString stringWithFormat:@"%d", self.totalFollowers];
+        }
+
+        self.isFollowing = YES;
+        [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
+        
         PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
         activiy[@"fromUser"] = [PFUser currentUser];
         activiy[@"toUser"] = self.userProfile;
@@ -309,10 +378,11 @@ NS_ENUM(int, ProfileDisplay) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-            if (succeeded) {
-                self.isFollowing = YES;
-                [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
-            }
+            self.followButton.userInteractionEnabled = YES;
+//            if (succeeded) {
+//                self.isFollowing = YES;
+//                [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
+//            }
         }];
     }
 }
@@ -325,6 +395,15 @@ NS_ENUM(int, ProfileDisplay) {
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    
+    if (self.postsArray.count == 0) {
+        self.noResultsLabel.hidden = NO;
+        self.collectionView.hidden = YES;
+    } else {
+        self.noResultsLabel.hidden = YES;
+        self.collectionView.hidden = NO;
+    }
+    
     return self.postsArray.count;
 }
 
@@ -363,14 +442,15 @@ NS_ENUM(int, ProfileDisplay) {
         TFollowCell* cell = (TFollowCell*)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
         cell.personImage.image = [UIImage imageNamed:@"Personholder"];
         
-        PFObject* act = self.postsArray[indexPath.row];
-        PFUser* usr;
-        if (self.currentDisplay == ProfileDisplayFollowers) {
-            usr = act[@"fromUser"];
-        } else if (self.currentDisplay == ProfileDisplayFollowing) {
-            usr = act[@"toUser"];
-        }
+//        PFObject* act = self.postsArray[indexPath.row];
+        PFUser* usr = self.postsArray[indexPath.row];
+//        if (self.currentDisplay == ProfileDisplayFollowers) {
+//            usr = act[@"fromUser"];
+//        } else if (self.currentDisplay == ProfileDisplayFollowing) {
+//            usr = act[@"toUser"];
+//        }
 
+        
         PFFile *imageFile = [usr objectForKey:FACEBOOK_SMALLPIC_KEY];
         cell.personImage.image = [UIImage imageNamed:@"Personholder"];
         if (imageFile) {

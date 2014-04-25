@@ -40,7 +40,7 @@
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     if (currentInstallation.badge != 0) {
         currentInstallation.badge = 0;
-        [currentInstallation saveEventually:^(BOOL succeeded, NSError *error) {
+        [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
         }];
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ZXd-sE-E8Y">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ZXd-sE-E8Y">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -351,6 +351,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="106" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" title="Activity">
+                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
@@ -577,9 +578,13 @@
                     </view>
                     <navigationItem key="navigationItem" id="HWN-v2-tYb"/>
                     <connections>
+                        <outlet property="activityButton" destination="H5x-pP-L4i" id="xK1-mf-dYQ"/>
+                        <outlet property="buttonsView" destination="8Hj-Yy-vcK" id="6Nk-MD-4SX"/>
                         <outlet property="collectionView" destination="zo2-nQ-rMv" id="aY2-r6-Xq2"/>
                         <outlet property="followButton" destination="5B0-Ea-6nY" id="kAZ-rZ-aIQ"/>
+                        <outlet property="followersButton" destination="7qj-d1-BBb" id="5Nn-rp-ehI"/>
                         <outlet property="followersValue" destination="zpT-aZ-qlO" id="jgL-y2-Y0B"/>
+                        <outlet property="followingButton" destination="zuT-jM-i9o" id="mbq-co-ent"/>
                         <outlet property="followingValue" destination="Pge-Vg-Dag" id="CFJ-bd-3Wc"/>
                         <outlet property="noResultsLabel" destination="8r3-bp-Q30" id="mKX-5u-QiR"/>
                         <outlet property="submitBtn" destination="e2b-JO-EcI" id="9Bm-7f-oQs"/>
@@ -1343,6 +1348,8 @@
                                             <outlet property="fromStickerIntensity" destination="Jfn-xG-FZX" id="PqT-SF-cqA"/>
                                             <outlet property="postImage" destination="K0i-5G-ymo" id="c0N-Mw-1u5"/>
                                             <outlet property="postedLocation" destination="mCt-IC-7XF" id="het-4u-fCc"/>
+                                            <outlet property="thanksButton" destination="f2W-zP-wTV" id="8D6-kn-NVa"/>
+                                            <outlet property="totalThanks" destination="Mt5-bu-nJt" id="H5E-Nh-lPR"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

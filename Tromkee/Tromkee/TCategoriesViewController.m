@@ -43,6 +43,9 @@
     self.currentSelectedItem = -1;
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideCategories:) name:STICKER_POSTED object:nil];
+    
     if ([Reachability isReachable]) {
         PFQuery* categoriesQuery = [PFQuery queryWithClassName:@"category"];
         categoriesQuery.cachePolicy = kPFCachePolicyCacheElseNetwork;

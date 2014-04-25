@@ -138,11 +138,10 @@
     if ([view isKindOfClass:[MKPinAnnotationView class]]) {
         return;
     }
-    NSLog(@"Clicked Annotation");    
+
     TStickerAnnotation* annotation = view.annotation;
     [self performSegueWithIdentifier:ACTIVITY sender:annotation.annotationObject];
     
-//    NSLog(@"Clicked Annotation");
 //    if ([view isKindOfClass:[TStickerAnnotationView class]]) {
 //        TStickerAnnotation* annotation = [(TStickerAnnotationView*)view annotation];
 //        [self performSegueWithIdentifier:ACTIVITY sender:annotation.annotationObject];

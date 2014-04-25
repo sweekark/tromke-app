@@ -65,3 +65,6 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 #define PROFILEVIEW @"Profile"
 
 #define UPDATE_NOTIFICATION_COUNT @"UPDATE_NOTIFICATION_COUNT"
+
+//Notifications
+#define STICKER_POSTED @"STICKER_POSTED"

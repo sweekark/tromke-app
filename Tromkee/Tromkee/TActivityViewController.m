@@ -196,7 +196,6 @@
     
     PFFile* perImg = fromUser[FACEBOOK_SMALLPIC_KEY];
     if (perImg) {
-        NSLog(@"Showing from user image");
         cell.personImage.file = perImg;
         [cell.personImage loadInBackground];
     }
@@ -356,7 +355,7 @@
     activiy[@"content"] = self.activityDescription.text;
     activiy[@"post"] = self.stickerObject;
 
-    [activiy saveEventually];
+    [activiy saveInBackground];
 }
 
 - (IBAction)takePicture:(id)sender {
