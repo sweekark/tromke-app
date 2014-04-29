@@ -158,6 +158,7 @@ NS_ENUM(int, ProfileDisplay) {
         activityQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
         activityQuery.maxCacheAge = 300;
         [activityQuery includeKey:@"fromUser"];
+        [activityQuery includeKey:@"toUser"];
         [activityQuery orderByDescending:SORT_KEY];
         __weak TProfileViewController* weakSelf = self;
         [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
@@ -196,7 +197,7 @@ NS_ENUM(int, ProfileDisplay) {
         PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
 //        [followersQuery whereKey:@"fromUser" equalTo:self.userProfile];
         [followersQuery whereKey:@"toUser" equalTo:self.userProfile];
-        [followersQuery whereKey:@"type" equalTo:@"FOLLOW"];
+        [followersQuery whereKey:@"type" equalTo:FOLLOW];
         [followersQuery includeKey:@"fromUser"];
         [followersQuery selectKeys:@[@"fromUser"]];
         followersQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
@@ -240,7 +241,7 @@ NS_ENUM(int, ProfileDisplay) {
         PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
         [followersQuery whereKey:@"fromUser" equalTo:self.userProfile];
 //        [followersQuery whereKey:@"toUser" equalTo:self.userProfile];
-        [followersQuery whereKey:@"type" equalTo:@"FOLLOW"];
+        [followersQuery whereKey:@"type" equalTo:FOLLOW];
         [followersQuery includeKey:@"toUser"];
         [followersQuery selectKeys:@[@"toUser"]];
         followersQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
@@ -298,7 +299,7 @@ NS_ENUM(int, ProfileDisplay) {
                 weakself.followButton.hidden = NO;
                 if (objects.count) {
                     self.isFollowing = YES;
-                    [weakself.followButton setTitle:@"Following" forState:UIControlStateNormal];
+                    [weakself.followButton setTitle:@"Unfollow" forState:UIControlStateNormal];
                 } else {
                     self.isFollowing = NO;
                     [weakself.followButton setTitle:@"Follow" forState:UIControlStateNormal];
@@ -346,7 +347,7 @@ NS_ENUM(int, ProfileDisplay) {
         PFQuery* activity = [PFQuery queryWithClassName:@"Activity"];
         [activity whereKey:@"fromUser" equalTo:[PFUser currentUser]];
         [activity whereKey:@"toUser" equalTo:self.userProfile];
-        [activity whereKey:@"type" equalTo:@"FOLLOW"];
+        [activity whereKey:@"type" equalTo:FOLLOW];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [activity getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             DLog(@"Deleted following");
@@ -369,12 +370,12 @@ NS_ENUM(int, ProfileDisplay) {
         }
 
         self.isFollowing = YES;
-        [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
+        [self.followButton setTitle:@"Unfollow" forState:UIControlStateNormal];
         
         PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
         activiy[@"fromUser"] = [PFUser currentUser];
         activiy[@"toUser"] = self.userProfile;
-        activiy[@"type"] = @"FOLLOW";
+        activiy[@"type"] = FOLLOW;
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
@@ -424,6 +425,9 @@ NS_ENUM(int, ProfileDisplay) {
             cell.comment.text = [NSString stringWithFormat:@"Posted image with %@", post[@"content"]];
         } else if ([post[@"type"] isEqualToString:IMAGE_ONLY]) {
             cell.comment.text = @"Posted Image";
+        } else if ([post[@"type"] isEqualToString:FOLLOW]) {
+            PFUser* touser = post[@"toUser"];
+            cell.comment.text = [NSString stringWithFormat:@"Following %@", touser[@"displayName"]];
         }
         //    [cell.comment sizeToFit];
         

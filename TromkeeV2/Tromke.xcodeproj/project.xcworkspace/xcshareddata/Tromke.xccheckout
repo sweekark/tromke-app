@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>0A83B91F-A4DD-4E6E-940A-CEDF09A5D650</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Tromke</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>88655981-A0B7-40EA-AAA7-F010F94EF690</key>
+		<string>https://github.com/sweekark/tromke-app.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Tromkee/Tromke.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>88655981-A0B7-40EA-AAA7-F010F94EF690</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/sweekark/tromke-app.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>88655981-A0B7-40EA-AAA7-F010F94EF690</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>88655981-A0B7-40EA-AAA7-F010F94EF690</string>
+			<key>IDESourceControlWCCName</key>
+			<string>tromke-app</string>
+		</dict>
+	</array>
+</dict>
+</plist>
