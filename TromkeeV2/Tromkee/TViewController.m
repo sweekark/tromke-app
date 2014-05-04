@@ -20,6 +20,7 @@
 #import "TProfileViewController.h"
 #import "CustomViewMV.h"
 #import "CustomPin.h"
+#import <Crashlytics/Crashlytics.h>
 
 @interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate, TStickerAnnotationDelegate>
 
@@ -39,8 +40,16 @@
 
 @property (nonatomic, strong) NSArray* stickerLocations;
 
-- (IBAction)eyeClicked:(id)sender;
+@property (weak, nonatomic) IBOutlet UIView *askQuestionView;
+@property (weak, nonatomic) IBOutlet UILabel *textCount;
+@property (weak, nonatomic) IBOutlet UITextView *askText;
+@property (weak, nonatomic) IBOutlet UIButton *sendButton;
+@property (weak, nonatomic) IBOutlet UIButton *onlyCameraButton;
+
+
+- (IBAction)menuClicked:(id)sender;
 - (IBAction)searchClicked:(id)sender;
+
 
 @end
 
@@ -54,6 +63,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation:) name:TROMKE_USER_LOCATION_UPDATED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePostedStickers) name:TROMKEE_UPDATE_STICKERS object:nil];
+    
+    self.askQuestionView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"RedBox"]];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -110,6 +121,14 @@
     [self.map setRegion:region animated:NO];
     
     [self updatePostedStickers];
+}
+
+-(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
+    if ([identifier isEqualToString:CAMERA]) {
+        return [Reachability isReachable];
+    }
+    
+    return YES;
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -186,7 +205,6 @@
         [annotationView1.stickerImage loadInBackground];
         annotationView1.stickerColor = [postObj[@"severity"] floatValue];
         
-        
 //    [stickerImage getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
 //        dispatch_async(dispatch_get_main_queue(), ^{
 //            if (!error) {
@@ -195,14 +213,12 @@
 //            }
 //        });
 //    }];
-
-        
         
         annotationView.frame = annotationView1.frame;
         [annotationView addSubview:annotationView1];
         
         annotationView.canShowCallout = NO;
-    }else {
+    } else {
         annotationView.annotation = annotation;
     }
     return annotationView;
@@ -255,7 +271,7 @@
 #pragma mark - Actions
 
 -(void)showCategoriesView {
-    [UIView animateWithDuration:1.0 animations:^{
+    [UIView animateWithDuration:0.5 animations:^{
         CGRect r = self.categoryContainer.frame;
         r.origin.y = self.view.frame.size.height - r.size.height;
         self.categoryContainer.frame = r;
@@ -266,7 +282,7 @@
 }
 
 -(void)hideCategoriesView {
-    [UIView animateWithDuration:1.0 animations:^{
+    [UIView animateWithDuration:0.5 animations:^{
         CGRect r = self.categoryContainer.frame;
         r.origin.y = self.view.frame.size.height;
         self.categoryContainer.frame = r;
@@ -313,13 +329,17 @@
     }
 }
 
-- (IBAction)eyeClicked:(id)sender {
+- (IBAction)menuClicked:(id)sender {
     if (self.isMenuExpanded) {
         //hide
         [UIView animateWithDuration:0.5 animations:^{
             CGRect r = self.menuContainer.frame;
             r.origin.y = -568;
             self.menuContainer.frame = r;
+            
+//            CGRect vr = self.view.frame;
+//            vr.origin.x = 0;
+//            self.view.frame = vr;
         }];
     } else {
         //show
@@ -327,6 +347,10 @@
             CGRect r = self.menuContainer.frame;
             r.origin.y = 64;
             self.menuContainer.frame = r;
+            
+//            CGRect vr = self.view.frame;
+//            vr.origin.x = 280;
+//            self.view.frame = vr;
         }];
     }
     self.isMenuExpanded = !self.isMenuExpanded;
@@ -342,49 +366,146 @@
 
 
 -(void)userClickedMenu:(NSInteger)rowNumber {
-    [self eyeClicked:nil];
+    [self menuClicked:nil];
     switch (rowNumber) {
-        case MenuItemNearMe:
-            [self updateUserLocation:nil];
-            break;
-        case MenuItemChooseMyRoute:
-            break;
-        case MenuItemChats:
-            break;
-        case MenuItemProfile:
-            if ([[PFUser currentUser] isAuthenticated]) {
-                [self performSegueWithIdentifier:PROFILE sender:nil];
-            } else {
-                [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You need to login first" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-            }
-
-            break;
-        case MenuItemTopTromers:
-            break;
-        case MenuItemSettings:
-            break;
-        case MenuItemLogout:
-            [PFUser logOut];
+//        case MenuItemNearMe:
+//            [self updateUserLocation:nil];
+//            break;
+//        case MenuItemChooseMyRoute:
+//            break;
+//        case MenuItemChats:
+//            break;
+//        case MenuItemProfile:
+//            if ([[PFUser currentUser] isAuthenticated]) {
+//                [self performSegueWithIdentifier:PROFILE sender:nil];
+//            } else {
+//                [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You need to login first" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+//            }
+//
+//            break;
+//        case MenuItemTopTromers:
+//            break;
+//        case MenuItemSettings:
+//            break;
+//        case MenuItemLogout:
+//            [PFUser logOut];
+//            break;
+        default:
             break;
     }
 }
 
 
 - (IBAction)postStickerOnly:(id)sender {
-    [UIView animateWithDuration:1.0 animations:^{
+
+    if (![Reachability isReachable]) {
+        return;
+    }
+
+    [UIView animateWithDuration:0.5 animations:^{
         CGRect r = self.categoryContainer.frame;
         r.origin.y = self.view.frame.size.height - r.size.height;
         self.categoryContainer.frame = r;
     } completion:^(BOOL finished) {
         self.categoriesVC.hideButton.hidden = NO;
         self.isCategoriesExpanded = YES;
-    }];    
+    }];
 }
 
 - (IBAction)askAQuestion:(id)sender {
+    if (![Reachability isReachable]) {
+        return;
+    }
+    
+    self.askText.text = @"Type your question here";
+    self.sendButton.enabled = NO;
+    self.onlyCameraButton.enabled = NO;
+    self.textCount.text = @"0";
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        CGRect r = self.askQuestionView.frame;
+        self.askQuestionView.frame = CGRectMake(0, 64, r.size.width, r.size.height);
+    }];
 }
 
-- (IBAction)postStickerWithImage:(id)sender {
+- (IBAction)hideAskQuestionView:(id)sender {
+    [UIView animateWithDuration:0.5 animations:^{
+        CGRect r = self.askQuestionView.frame;
+        self.askQuestionView.frame = CGRectMake(0, -130, r.size.width, r.size.height);
+        [self.askText resignFirstResponder];
+    }];
+}
+
+
+- (IBAction)postAskQuestion:(id)sender {
+    
+    if (![PFUser currentUser]) {
+        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You must login in order to post a sticker !!!" delegate:self cancelButtonTitle:@"Not Now" otherButtonTitles: @"Login", nil] show];
+        return;
+    }
+    
+    if (![Reachability isReachable]) {
+        return;
+    }
+    
+    CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
+    
+    PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
+    stickerPost[@"data"] = self.askText.text;
+    stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
+    stickerPost[@"fromUser"] = [PFUser currentUser];
+    stickerPost[@"usrlocation"] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
+    stickerPost[@"type"] = @"ASK";
+    
+    [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks" delegate:nil cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
+            });
+        } else {
+            NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
+        }
+    }];
+
+    [self hideAskQuestionView:nil];
+}
+
+#pragma mark - Ask question delegate
+
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    if ([textView.text isEqualToString:@"Type your question here"]) {
+        textView.text = @"";
+    }
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+    if([text isEqualToString:@"\n"])
+    {
+        [self postAskQuestion:nil];
+        [textView resignFirstResponder];
+        return YES;
+    }
+    
+    unsigned long charCount = textView.text.length + (text.length - range.length);
+    
+    if (charCount == 0) {
+        self.onlyCameraButton.enabled = NO;
+        self.sendButton.enabled = NO;
+    } else {
+        self.onlyCameraButton.enabled = YES;
+        self.sendButton.enabled = YES;
+    }
+    
+    if (charCount <= POSTDATA_LENGTH) {
+        self.textCount.text = [NSString stringWithFormat:@"%ld", charCount];
+    }
+    
+    return  charCount <= POSTDATA_LENGTH;
+}
+
+
+-(void)hideMenu {
     
 }
 

@@ -64,7 +64,12 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 #define CATEGORIES @"Categories"
 #define PROFILEVIEW @"Profile"
 
-#define UPDATE_NOTIFICATION_COUNT @"UPDATE_NOTIFICATION_COUNT"
+
+//VIEW or Segue Identifiers
+#define CAMERA @"CAMERA"
+#define ASKCAMERA @"ASKCAMERA"
+
 
 //Notifications
 #define STICKER_POSTED @"STICKER_POSTED"
+#define UPDATE_NOTIFICATION_COUNT @"UPDATE_NOTIFICATION_COUNT"

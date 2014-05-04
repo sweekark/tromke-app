@@ -938,6 +938,7 @@ static CGFloat const CRStatusBarViewUnderStatusBarYOffsetAdjustment = -5;
         self.imageView = imageView;
         
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        label.font = [UIFont boldSystemFontOfSize:12];
         label.userInteractionEnabled = NO;
         [self addSubview:label];
         self.label = label;

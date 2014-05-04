@@ -10,6 +10,8 @@
 		450544B618B284A500529015 /* TActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 450544B518B284A500529015 /* TActivityViewController.m */; };
 		450544B918B284B600529015 /* TActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 450544B818B284B600529015 /* TActivityCell.m */; };
 		451AF9A61885314300811899 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451AF9A51885314300811899 /* MapKit.framework */; };
+		451C1B121910CF54001E619D /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451C1B111910CF54001E619D /* Crashlytics.framework */; };
+		451C1B161910D181001E619D /* TCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 451C1B151910D181001E619D /* TCameraViewController.m */; };
 		451C522118C2418F00386C63 /* TProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 451C522018C2418F00386C63 /* TProfileViewController.m */; };
 		45309872187DBBD0005B3B5F /* TLogInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45309871187DBBD0005B3B5F /* TLogInViewController.m */; };
 		453AE94E188423F00099D8B0 /* TLocationUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 453AE94D188423F00099D8B0 /* TLocationUtility.m */; };
@@ -88,6 +90,9 @@
 		450544B818B284B600529015 /* TActivityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TActivityCell.m; sourceTree = "<group>"; };
 		451AF9A4188530B100811899 /* Tromke-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Tromke-Prefix.pch"; sourceTree = "<group>"; };
 		451AF9A51885314300811899 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		451C1B111910CF54001E619D /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		451C1B141910D181001E619D /* TCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCameraViewController.h; sourceTree = "<group>"; };
+		451C1B151910D181001E619D /* TCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCameraViewController.m; sourceTree = "<group>"; };
 		451C521F18C2418F00386C63 /* TProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TProfileViewController.h; sourceTree = "<group>"; };
 		451C522018C2418F00386C63 /* TProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TProfileViewController.m; sourceTree = "<group>"; };
 		45309870187DBBD0005B3B5F /* TLogInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLogInViewController.h; sourceTree = "<group>"; };
@@ -198,6 +203,7 @@
 				45A2E8C1187650CE009A6171 /* AdSupport.framework in Frameworks */,
 				45A2E8C4187650CE009A6171 /* AudioToolbox.framework in Frameworks */,
 				45A2E88218764FF1009A6171 /* UIKit.framework in Frameworks */,
+				451C1B121910CF54001E619D /* Crashlytics.framework in Frameworks */,
 				45A2E8CD187650CE009A6171 /* SystemConfiguration.framework in Frameworks */,
 				456DAE5718CC9394009E4FEC /* Parse.framework in Frameworks */,
 				45A2E8C6187650CE009A6171 /* CoreLocation.framework in Frameworks */,
@@ -221,6 +227,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		451C1B131910D159001E619D /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				451C1B141910D181001E619D /* TCameraViewController.h */,
+				451C1B151910D181001E619D /* TCameraViewController.m */,
+			);
+			name = Camera;
+			sourceTree = "<group>";
+		};
 		451C521E18C2418400386C63 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
@@ -299,6 +314,7 @@
 		45A2E87C18764FF1009A6171 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				451C1B111910CF54001E619D /* Crashlytics.framework */,
 				451AF9A51885314300811899 /* MapKit.framework */,
 				45A2E8B4187650CE009A6171 /* AdSupport.framework */,
 				45A2E8B5187650CE009A6171 /* Social.framework */,
@@ -324,6 +340,7 @@
 		45A2E88318764FF1009A6171 /* Tromkee */ = {
 			isa = PBXGroup;
 			children = (
+				451C1B131910D159001E619D /* Camera */,
 				45B95C8618F6A0B9004D7568 /* UserActivity */,
 				451C521E18C2418400386C63 /* Profile */,
 				45E54460188F934200FF8977 /* External */,
@@ -554,7 +571,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./Crashlytics.framework/run 9b1f05649071058a7d1b708a7fd391a636e0cee0 bb6d4f5ca411caf0b6391be19ec79e38e5253c6db12aab60227f7b082291a6f0";
+			shellScript = "./Crashlytics.framework/run 2ae8a966d3e8305dd050a9dcfbd6466b468527fa e02d16306fdff650cc5260785608034d4211fd5783ca1ac886077fdb73c4c35a";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -573,6 +590,7 @@
 				455B796B19003DEC00D4AAD2 /* TPostCell.m in Sources */,
 				457A592E19067F1E007E63DD /* CRToast.m in Sources */,
 				45FC756218A017E10089255A /* UIImage+RoundedCornerAdditions.m in Sources */,
+				451C1B161910D181001E619D /* TCameraViewController.m in Sources */,
 				45E54467188F934200FF8977 /* Reachability.m in Sources */,
 				45A2E89418764FF1009A6171 /* TViewController.m in Sources */,
 				453CB8F31885B65100D7019D /* TCategoryCell.m in Sources */,
@@ -723,6 +741,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					$SRCROOT/External,
+					"$(PROJECT_DIR)/External",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tromkee/Tromke-Prefix.pch";
@@ -744,6 +764,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					$SRCROOT/External,
+					"$(PROJECT_DIR)/External",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tromkee/Tromke-Prefix.pch";

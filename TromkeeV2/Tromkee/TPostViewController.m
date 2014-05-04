@@ -20,27 +20,23 @@
 #define STICKER_POINTS @"postPoints"
 #define CAMERA_POINTS @"imagePoints"
 
-@interface TPostViewController () <PFLogInViewControllerDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface TPostViewController () <PFLogInViewControllerDelegate> {
+    BOOL isSingleBuddy;
+}
+
+@property (weak, nonatomic) IBOutlet UIButton *oneBuddy;
+@property (weak, nonatomic) IBOutlet UIButton *groupBuddy;
 
 @property (weak, nonatomic) IBOutlet TCircleView *circleView;
 @property (weak, nonatomic) IBOutlet UIImageView *stickerImage;
 @property (weak, nonatomic) IBOutlet UISlider *stickerSeverity;
-@property (weak, nonatomic) IBOutlet UILabel *stickerPoints;
-@property (weak, nonatomic) IBOutlet UILabel *cameraPoints;
 @property (weak, nonatomic) IBOutlet UITextView *stickerDescription;
-@property (weak, nonatomic) IBOutlet UIView* bottomView;
+@property (weak, nonatomic) IBOutlet UIView* commentView;
+@property (weak, nonatomic) IBOutlet UIView* postView;
 
-@property (nonatomic, strong) PFFile* photoFile;
-@property (nonatomic, strong) PFFile* thumbnailFile;
-
-@property (nonatomic, strong) UIImagePickerController* imagePickerController;
 @property (nonatomic) BOOL isCommentEditing;
 
-@property (nonatomic, assign) UIBackgroundTaskIdentifier fileUploadBackgroundTaskId;
-@property (nonatomic, assign) UIBackgroundTaskIdentifier photoPostBackgroundTaskId;
-
 - (IBAction)postSticker:(id)sender;
-- (IBAction)takePicture:(id)sender;
 
 @end
 
@@ -59,14 +55,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    isSingleBuddy = NO;
     self.stickerDescription.contentInset = UIEdgeInsetsMake(-4, 0, 0, 0);
 	// Do any additional setup after loading the view.
-    self.view.backgroundColor = STICKERS_BG_COLOR;
-    self.bottomView.backgroundColor = STICKER_POST_BOTTOM_COLOR;
+    self.commentView.backgroundColor = STICKER_POST_BOTTOM_COLOR;
     
     [self updateSeverityColor:0.5];
-    self.fileUploadBackgroundTaskId = UIBackgroundTaskInvalid;
-    self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -76,14 +70,13 @@
         if (!error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.stickerImage.image = [UIImage imageWithData:imageData];
-                self.stickerPoints.text = [NSString stringWithFormat:@"%@", self.postSticker[STICKER_POINTS]];
-                self.cameraPoints.text = [NSString stringWithFormat:@"%@", self.postSticker[CAMERA_POINTS]];
             });
         }
     }];
 
     [super viewWillAppear:animated];
 }
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -99,8 +92,7 @@
 -(void)updateSeverityColor : (CGFloat)greenValue {
     self.circleView.green = greenValue;
     [self.circleView setNeedsDisplay];
-
-    self.stickerSeverity.minimumTrackTintColor = self.stickerSeverity.maximumTrackTintColor = self.stickerSeverity.thumbTintColor = [UIColor colorWithRed:1.0 - greenValue green:greenValue blue:0.0 alpha:1.0];
+//    self.stickerSeverity.minimumTrackTintColor = self.stickerSeverity.maximumTrackTintColor = self.stickerSeverity.thumbTintColor = [UIColor colorWithRed:1.0 - greenValue green:greenValue blue:0.0 alpha:1.0];
 }
 
 - (IBAction)postSticker:(id)sender {
@@ -122,74 +114,31 @@
 //        return;
 //    }
     NSLog(@"User available");
-    if (self.photoFile && self.thumbnailFile) {
-        self.photoPostBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-        }];
-        
-        NSLog(@"Requested background expiration task with id %lu for Anypic photo upload", (unsigned long)self.photoPostBackgroundTaskId);
-        
-        __block PFObject *imagesObject = [PFObject objectWithClassName:@"Image"];
-        imagesObject[@"image"] = self.photoFile;
-        imagesObject[@"thumbnail"] = self.thumbnailFile;
-        [imagesObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (succeeded) {
-                CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
-                
-                PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
-                stickerPost[@"data"] = self.stickerDescription.text;
-                stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
-                stickerPost[@"fromUser"] = [PFUser currentUser];
-                stickerPost[@"sticker"] = self.postSticker;
-                stickerPost[@"severity"] = [NSNumber numberWithFloat:self.stickerSeverity.value];
-                stickerPost[@"points"] = @([self.postSticker[@"postPoints"] integerValue] + [self.postSticker[@"imagePoints"] integerValue]);
-                stickerPost[@"images"] = imagesObject;
-                stickerPost[@"usrlocation"] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
-                stickerPost[@"type"] = @"STICKER";
-                
-                [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                    if (succeeded) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Sticker posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-                            [self.navigationController popViewControllerAnimated:YES];
-                            [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
-                        });
-                        
-                    } else {
-                        NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
-                    }
-                }];
-            } else {
-                NSLog(@"Failed with Image object Error: %@", error.localizedDescription);
-            }
-        }];
-    }
-    else {
-        //Post only content
-        CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
-        
-        PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
-        stickerPost[@"data"] = self.stickerDescription.text;
-        stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
-        stickerPost[@"fromUser"] = [PFUser currentUser];
-        stickerPost[@"sticker"] = self.postSticker;
-        stickerPost[@"severity"] = [NSNumber numberWithFloat:self.stickerSeverity.value];
-        stickerPost[@"points"] = self.postSticker[@"postPoints"];
-        stickerPost[@"usrlocation"] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
-        stickerPost[@"type"] = @"STICKER";
-        
-        [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (succeeded) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Sticker posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-                    [self.navigationController popViewControllerAnimated:YES];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
-                });
-            } else {
-                NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
-            }
-        }];
-    }
+
+    //Post only content
+    CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
+    
+    PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
+    stickerPost[@"data"] = self.stickerDescription.text;
+    stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
+    stickerPost[@"fromUser"] = [PFUser currentUser];
+    stickerPost[@"sticker"] = self.postSticker;
+    stickerPost[@"severity"] = [NSNumber numberWithFloat:self.stickerSeverity.value];
+    stickerPost[@"points"] = self.postSticker[@"postPoints"];
+    stickerPost[@"usrlocation"] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
+    stickerPost[@"type"] = @"STICKER";
+    
+    [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Sticker posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                [self.navigationController popViewControllerAnimated:YES];
+                [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
+            });
+        } else {
+            NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
+        }
+    }];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:STICKER_POSTED object:nil];
 }
@@ -198,56 +147,6 @@
     if (buttonIndex == 1) {
         [(TAppDelegate*)[[UIApplication sharedApplication] delegate] presentLoginViewControllerAnimated:NO];
     }
-}
-
-- (IBAction)takePicture:(id)sender {
-    if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
-    {
-        [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-    } else {
-        UIActionSheet* sourceSelection = [[UIActionSheet alloc] initWithTitle:@"Select source type" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Camera", @"Photo Library", nil];
-        [sourceSelection showInView:self.view];
-    }
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 0) {
-        [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
-    } else {
-        [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-    }
-}
-
-- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType
-{
-    if (self.isCommentEditing) {
-        [self.stickerDescription resignFirstResponder];
-    }
-    
-    UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
-    imagePickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
-    imagePickerController.sourceType = sourceType;
-    imagePickerController.delegate = self;
-    
-    self.imagePickerController = imagePickerController;
-    [self presentViewController:self.imagePickerController animated:YES completion:nil];
-}
-
-#pragma mark - UIImagePickerControllerDelegate
-
-// This method is called when an image has been chosen from the library or taken from the camera.
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-{
-    UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
-    [self shouldUploadImage:image];
-    [self dismissViewControllerAnimated:YES completion:nil];
-    self.imagePickerController = nil;
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-{
-    [self dismissViewControllerAnimated:YES completion:NULL];
-    self.imagePickerController = nil;
 }
 
 #pragma mark - TextView methods
@@ -296,34 +195,31 @@
     return topController;
 }
 
-- (void)shouldUploadImage:(UIImage *)anImage {
-    UIImage *img = [anImage resizedImageWithContentMode:UIViewContentModeScaleAspectFit bounds:CGSizeMake(560.0f, 560.0f) interpolationQuality:kCGInterpolationHigh];
-    UIImage *thumbnailImage = [img thumbnailImage:86.0f transparentBorder:0.0f cornerRadius:10.0f interpolationQuality:kCGInterpolationDefault];
+- (IBAction)showCommentsView:(id)sender {
     
-    NSData *imageData = UIImageJPEGRepresentation(img, 0.8f);
-    NSData* thumbnailData = UIImagePNGRepresentation(thumbnailImage);
-    
-    self.photoFile = [PFFile fileWithData:imageData];
-    self.thumbnailFile = [PFFile fileWithData:thumbnailData];
-    
-    // Request a background execution task to allow us to finish uploading the photo even if the app is backgrounded
-    self.fileUploadBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-        [[UIApplication sharedApplication] endBackgroundTask:self.fileUploadBackgroundTaskId];
-    }];
-    
-    NSLog(@"Requested background expiration task with id %lu for Anypic photo upload", (unsigned long)self.fileUploadBackgroundTaskId);
-    [self.photoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (succeeded) {
-            NSLog(@"Photo uploaded successfully");
-            [self.thumbnailFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (succeeded) {
-                    NSLog(@"Thumbnail uploaded successfully");
-                }
-                [[UIApplication sharedApplication] endBackgroundTask:self.fileUploadBackgroundTaskId];
-            }];
-        } else {
-            [[UIApplication sharedApplication] endBackgroundTask:self.fileUploadBackgroundTaskId];
-        }
-    }];
+    [UIView animateWithDuration:0.2 animations:^{
+        CGRect r = self.commentView.frame;
+        self.commentView.frame = CGRectMake(0, r.origin.y, r.size.width, r.size.height);
+        
+        CGRect r2 = self.postView.frame;
+        self.postView.frame = CGRectMake(320, r2.origin.y, r2.size.width, r2.size.height);
+    }];    
 }
+
+- (IBAction)handleOneBuddy:(id)sender {
+    if (!isSingleBuddy) {
+        [self.oneBuddy setImage:[UIImage imageNamed:@"NewOneBuddySelected"] forState:UIControlStateNormal];
+        [self.groupBuddy setImage:[UIImage imageNamed:@"NewGrBuddyUnSelected"] forState:UIControlStateNormal];
+        isSingleBuddy = NO;
+    }
+}
+
+- (IBAction)handleGroupBuddy:(id)sender {
+    if (isSingleBuddy) {
+        [self.oneBuddy setImage:[UIImage imageNamed:@"NewOneBuddyUnSelected"] forState:UIControlStateNormal];
+        [self.groupBuddy setImage:[UIImage imageNamed:@"NewGrBuddySelected"] forState:UIControlStateNormal];
+        isSingleBuddy = YES;
+    }
+}
+
 @end

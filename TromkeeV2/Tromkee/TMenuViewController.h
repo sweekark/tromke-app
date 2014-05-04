@@ -14,7 +14,7 @@
 
 @end
 
-@interface TMenuViewController : UITableViewController
+@interface TMenuViewController : UIViewController
 
 @property(nonatomic, weak) id<TMenuDelegate> delegate;
 

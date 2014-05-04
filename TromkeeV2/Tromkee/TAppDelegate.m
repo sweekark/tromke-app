@@ -11,6 +11,7 @@
 #import "TLocationUtility.h"
 #import "TLogInViewController.h"
 #import "TActivityViewController.h"
+#import <Crashlytics/Crashlytics.h>
 
 @interface TAppDelegate() <PFLogInViewControllerDelegate> {
     NSMutableData *_data;
@@ -29,6 +30,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [Crashlytics startWithAPIKey:@"2ae8a966d3e8305dd050a9dcfbd6466b468527fa"];
     //Sticker posted
     //    {
     //	    aps =     {

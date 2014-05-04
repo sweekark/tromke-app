@@ -59,6 +59,7 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.allCategories = objects;
                     [self.categoriesView reloadData];
+                    self.stickersVC.category = self.allCategories[0];                        
                 });
             }
         }];        
