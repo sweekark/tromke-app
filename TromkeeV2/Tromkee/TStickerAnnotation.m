@@ -13,10 +13,23 @@
 - (id)initWithObject:(PFObject *)aObject {
     self = [super init];
     if (self) {
-        PFGeoPoint *geoPoint = aObject[@"location"];
+        PFGeoPoint *geoPoint = aObject[POST_LOCATION];
         [self setGeoPoint:geoPoint];
         self.annotationObject = aObject;
+        if (aObject[POST_DATA]) {
+            self.title = aObject[POST_DATA];
+        } else {
+            PFUser* postedUser = aObject[POST_FROMUSER];
+            if ([aObject[POST_TYPE] isEqualToString:POST_TYPE_ASK]) {
+                self.title = [NSString stringWithFormat:@"%@ asking question", postedUser[@"displayName"]];
+            } else if ([aObject[POST_TYPE] isEqualToString:POST_TYPE_IMAGE]) {
+                self.title = [NSString stringWithFormat:@"%@ posted image", postedUser[@"displayName"]];
+            } else if ([aObject[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
+                self.title = [NSString stringWithFormat:@"%@ posted sticker", postedUser[@"displayName"]];
+            }
+        }
     }
+    
     return self;
 }
 

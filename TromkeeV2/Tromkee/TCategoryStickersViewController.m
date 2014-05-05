@@ -10,8 +10,6 @@
 #import "TCategoryStickerCell.h"
 #import "TPostViewController.h"
 
-#define IMAGE @"image"
-
 @interface TCategoryStickersViewController ()
 
 @property (nonatomic, strong) NSArray* stickers;
@@ -83,7 +81,7 @@
     
     PFObject* sticker = self.stickers[indexPath.item];
     
-    PFFile *userImageFile = sticker[IMAGE];
+    PFFile *userImageFile = sticker[STICKER_IMAGE];
     [userImageFile getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (!error) {

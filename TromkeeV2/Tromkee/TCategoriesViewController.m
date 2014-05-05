@@ -10,7 +10,7 @@
 #import "TCategoryCell.h"
 #import "TCategoryStickersViewController.h"
 
-#define IMAGE @"Image"
+#define IMAGE STICKER_IMAGE
 #define NAME @"name"
 #define SORTBY @"sort_no"
 

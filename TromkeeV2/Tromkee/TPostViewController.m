@@ -16,7 +16,7 @@
 #import "UIImage+AlphaAdditions.h"
 
 
-#define IMAGE @"image"
+#define IMAGE STICKER_IMAGE
 #define STICKER_POINTS @"postPoints"
 #define CAMERA_POINTS @"imagePoints"
 
@@ -118,15 +118,15 @@
     //Post only content
     CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
     
-    PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
-    stickerPost[@"data"] = self.stickerDescription.text;
-    stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
-    stickerPost[@"fromUser"] = [PFUser currentUser];
+    PFObject *stickerPost = [PFObject objectWithClassName:POST];
+    stickerPost[POST_DATA] = self.stickerDescription.text;
+    stickerPost[POST_LOCATION] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
+    stickerPost[POST_FROMUSER] = [PFUser currentUser];
     stickerPost[@"sticker"] = self.postSticker;
-    stickerPost[@"severity"] = [NSNumber numberWithFloat:self.stickerSeverity.value];
+    stickerPost[STICKER_SEVERITY] = [NSNumber numberWithFloat:self.stickerSeverity.value];
     stickerPost[@"points"] = self.postSticker[@"postPoints"];
-    stickerPost[@"usrlocation"] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
-    stickerPost[@"type"] = @"STICKER";
+    stickerPost[POST_USERLOCATION] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
+    stickerPost[POST_TYPE] = @"STICKER";
     
     [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {

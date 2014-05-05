@@ -157,7 +157,7 @@ NS_ENUM(int, ProfileDisplay) {
         PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"fromUser == %@", self.userProfile]];
         activityQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
         activityQuery.maxCacheAge = 300;
-        [activityQuery includeKey:@"fromUser"];
+        [activityQuery includeKey:POST_FROMUSER];
         [activityQuery includeKey:@"toUser"];
         [activityQuery orderByDescending:SORT_KEY];
         __weak TProfileViewController* weakSelf = self;
@@ -195,11 +195,11 @@ NS_ENUM(int, ProfileDisplay) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         
         PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
-//        [followersQuery whereKey:@"fromUser" equalTo:self.userProfile];
+//        [followersQuery whereKey:POST_FROMUSER equalTo:self.userProfile];
         [followersQuery whereKey:@"toUser" equalTo:self.userProfile];
-        [followersQuery whereKey:@"type" equalTo:FOLLOW];
-        [followersQuery includeKey:@"fromUser"];
-        [followersQuery selectKeys:@[@"fromUser"]];
+        [followersQuery whereKey:POST_TYPE equalTo:FOLLOW];
+        [followersQuery includeKey:POST_FROMUSER];
+        [followersQuery selectKeys:@[POST_FROMUSER]];
         followersQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
         followersQuery.maxCacheAge = 300;
         __weak TProfileViewController* weakSelf = self;
@@ -215,7 +215,7 @@ NS_ENUM(int, ProfileDisplay) {
                     if ([objects count]) {
                         weakSelf.noResultsLabel.hidden = YES;
                         weakSelf.collectionView.hidden = NO;
-                        weakSelf.postsArray = [[objects valueForKeyPath:@"fromUser"] mutableCopy];
+                        weakSelf.postsArray = [[objects valueForKeyPath:POST_FROMUSER] mutableCopy];
                         [weakSelf.collectionView reloadData];
                     } else {
                         [weakSelf.postsArray removeAllObjects];
@@ -239,9 +239,9 @@ NS_ENUM(int, ProfileDisplay) {
         self.noResultsLabel.hidden = self.collectionView.hidden = YES;
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
-        [followersQuery whereKey:@"fromUser" equalTo:self.userProfile];
+        [followersQuery whereKey:POST_FROMUSER equalTo:self.userProfile];
 //        [followersQuery whereKey:@"toUser" equalTo:self.userProfile];
-        [followersQuery whereKey:@"type" equalTo:FOLLOW];
+        [followersQuery whereKey:POST_TYPE equalTo:FOLLOW];
         [followersQuery includeKey:@"toUser"];
         [followersQuery selectKeys:@[@"toUser"]];
         followersQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
@@ -345,9 +345,9 @@ NS_ENUM(int, ProfileDisplay) {
         [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
         
         PFQuery* activity = [PFQuery queryWithClassName:@"Activity"];
-        [activity whereKey:@"fromUser" equalTo:[PFUser currentUser]];
+        [activity whereKey:POST_FROMUSER equalTo:[PFUser currentUser]];
         [activity whereKey:@"toUser" equalTo:self.userProfile];
-        [activity whereKey:@"type" equalTo:FOLLOW];
+        [activity whereKey:POST_TYPE equalTo:FOLLOW];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [activity getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             DLog(@"Deleted following");
@@ -373,9 +373,9 @@ NS_ENUM(int, ProfileDisplay) {
         [self.followButton setTitle:@"Unfollow" forState:UIControlStateNormal];
         
         PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
-        activiy[@"fromUser"] = [PFUser currentUser];
+        activiy[POST_FROMUSER] = [PFUser currentUser];
         activiy[@"toUser"] = self.userProfile;
-        activiy[@"type"] = FOLLOW;
+        activiy[POST_TYPE] = FOLLOW;
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
@@ -417,22 +417,22 @@ NS_ENUM(int, ProfileDisplay) {
         
         PFObject* post = self.postsArray[indexPath.row];
         cell.postedTime.text = [TUtility computePostedTime:post.updatedAt];
-        if ([post[@"type"] isEqualToString:COMMENT]) {
+        if ([post[POST_TYPE] isEqualToString:COMMENT]) {
             cell.comment.text = [NSString stringWithFormat:@"Commented %@", post[@"content"]];
-        } else if ([post[@"type"] isEqualToString:THANKS]) {
+        } else if ([post[POST_TYPE] isEqualToString:THANKS]) {
             cell.comment.text = @"Conveyed Thanks";
-        } else if ([post[@"type"] isEqualToString:IMAGE_COMMENT]) {
+        } else if ([post[POST_TYPE] isEqualToString:IMAGE_COMMENT]) {
             cell.comment.text = [NSString stringWithFormat:@"Posted image with %@", post[@"content"]];
-        } else if ([post[@"type"] isEqualToString:IMAGE_ONLY]) {
+        } else if ([post[POST_TYPE] isEqualToString:IMAGE_ONLY]) {
             cell.comment.text = @"Posted Image";
-        } else if ([post[@"type"] isEqualToString:FOLLOW]) {
+        } else if ([post[POST_TYPE] isEqualToString:FOLLOW]) {
             PFUser* touser = post[@"toUser"];
             cell.comment.text = [NSString stringWithFormat:@"Following %@", touser[@"displayName"]];
         }
         //    [cell.comment sizeToFit];
         
         
-        PFObject* fromUser = post[@"fromUser"];
+        PFObject* fromUser = post[POST_FROMUSER];
         cell.personName.text = fromUser[@"displayName"];
         PFFile* imgFile = fromUser[FACEBOOK_SMALLPIC_KEY];
         if (imgFile) {
@@ -449,7 +449,7 @@ NS_ENUM(int, ProfileDisplay) {
 //        PFObject* act = self.postsArray[indexPath.row];
         PFUser* usr = self.postsArray[indexPath.row];
 //        if (self.currentDisplay == ProfileDisplayFollowers) {
-//            usr = act[@"fromUser"];
+//            usr = act[POST_FROMUSER];
 //        } else if (self.currentDisplay == ProfileDisplayFollowing) {
 //            usr = act[@"toUser"];
 //        }
@@ -532,7 +532,7 @@ NS_ENUM(int, ProfileDisplay) {
         PFObject* act = self.postsArray[indxPath.row];
         PFUser* usr;
         if (self.currentDisplay == ProfileDisplayFollowers) {
-            usr = act[@"fromUser"];
+            usr = act[POST_FROMUSER];
         } else if (self.currentDisplay == ProfileDisplayFollowing) {
             usr = act[@"toUser"];
         }

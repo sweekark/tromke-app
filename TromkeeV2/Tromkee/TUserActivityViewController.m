@@ -120,17 +120,17 @@
         PFObject* activityObj = notifyObj[@"activity"];
         
         NSString* comment;
-        if ([activityObj[@"type"] isEqualToString:COMMENT]) {
+        if ([activityObj[POST_TYPE] isEqualToString:COMMENT]) {
             comment = [NSString stringWithFormat:@"Commented %@", activityObj[@"content"]];
-        } else if ([activityObj[@"type"] isEqualToString:THANKS]) {
+        } else if ([activityObj[POST_TYPE] isEqualToString:THANKS]) {
             comment = @"Conveyed Thanks";
-        } else if ([activityObj[@"type"] isEqualToString:IMAGE_COMMENT]) {
+        } else if ([activityObj[POST_TYPE] isEqualToString:IMAGE_COMMENT]) {
             comment = [NSString stringWithFormat:@"Posted image with %@", activityObj[@"content"]];
-        } else if ([activityObj[@"type"] isEqualToString:IMAGE_ONLY]) {
+        } else if ([activityObj[POST_TYPE] isEqualToString:IMAGE_ONLY]) {
             comment = @"Posted Image";
         }
         
-        PFObject* fromUser = activityObj[@"fromUser"];
+        PFObject* fromUser = activityObj[POST_FROMUSER];
         
         NSString* str = [NSString stringWithFormat:@"%@ %@", fromUser[@"displayName"], comment];
         NSMutableAttributedString* msgStr = [[NSMutableAttributedString alloc] initWithString:str];
@@ -152,9 +152,9 @@
         PFObject* postObj = notifyObj[@"post"];
         PFObject* stickerObj = postObj[@"sticker"];
         
-        PFObject* fromUser = postObj[@"fromUser"];
+        PFObject* fromUser = postObj[POST_FROMUSER];
         
-        NSString* str = [NSString stringWithFormat:@"%@ posted sticker %@ @ %@", fromUser[@"displayName"], stickerObj[@"name"], postObj[@"usrlocation"]];
+        NSString* str = [NSString stringWithFormat:@"%@ posted sticker %@ @ %@", fromUser[@"displayName"], stickerObj[@"name"], postObj[POST_USERLOCATION]];
         NSMutableAttributedString* msgString = [[NSMutableAttributedString alloc] initWithString:str];
         NSRange postedRange = [str rangeOfString:@"posted"];
         
@@ -182,7 +182,7 @@
     if ([segue.identifier isEqualToString:@"PROFILE"]) {
         PFObject* notifyObj = self.postsArray[self.row];
         PFObject* postObj = notifyObj[@"post"];
-        PFUser* fromUser = postObj[@"fromUser"];
+        PFUser* fromUser = postObj[POST_FROMUSER];
         
         TProfileViewController* profileVC = segue.destinationViewController;
         profileVC.userProfile = fromUser;

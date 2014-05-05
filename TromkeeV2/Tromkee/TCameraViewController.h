@@ -11,5 +11,8 @@
 
 @interface TCameraViewController : UIViewController
 
+@property (nonatomic) BOOL isAsking;
+@property (nonatomic, strong) NSString* askMessage;
+
 @end
 

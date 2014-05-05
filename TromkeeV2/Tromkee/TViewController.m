@@ -21,6 +21,9 @@
 #import "CustomViewMV.h"
 #import "CustomPin.h"
 #import <Crashlytics/Crashlytics.h>
+#import "TCameraViewController.h"
+
+#define USER_LOCATION_TEXT @"User Location"
 
 @interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate, TStickerAnnotationDelegate>
 
@@ -38,7 +41,7 @@
 @property (nonatomic) CLLocationCoordinate2D currentMapLocation;
 @property (nonatomic) CLLocationCoordinate2D currentCenterLocation;
 
-@property (nonatomic, strong) NSArray* stickerLocations;
+//@property (nonatomic, strong) NSArray* stickerLocations;
 
 @property (weak, nonatomic) IBOutlet UIView *askQuestionView;
 @property (weak, nonatomic) IBOutlet UILabel *textCount;
@@ -109,7 +112,7 @@
     
     MKPointAnnotation* point = [[MKPointAnnotation alloc] init];
     point.coordinate = self.currentMapLocation;
-    point.title = @"User Location";
+    point.title = USER_LOCATION_TEXT;
     [self.map addAnnotation:point];
     
     MKCoordinateRegion region;
@@ -144,6 +147,11 @@
     } else if ([segue.identifier isEqualToString:PROFILE]) {
         TProfileViewController* profileVC = segue.destinationViewController;
         profileVC.userProfile = [PFUser currentUser];
+    } else if ([segue.identifier isEqualToString:ASKCAMERA]) {
+        TCameraViewController* cameraVC = segue.destinationViewController;
+        [self.askText resignFirstResponder];
+        cameraVC.isAsking = YES;
+        cameraVC.askMessage = self.askText.text;
     }
 }
 
@@ -194,28 +202,35 @@
     if (!annotationView)
     {
         annotationView = [[CustomViewMV alloc]initWithAnnotation:annotation reuseIdentifier:identifier];
-        CustomPin *annotationView1 = (CustomPin *)[[[NSBundle mainBundle] loadNibNamed:@"CustomPin" owner:self options:nil] objectAtIndex:0];
-        annotationView1.coOrdinate2D = ((TStickerAnnotation*)annotation).coordinate;
-        annotationView1.tag = 100;
+        CustomPin *annotationPin = (CustomPin *)[[[NSBundle mainBundle] loadNibNamed:@"CustomPin" owner:self options:nil] objectAtIndex:0];
+        annotationPin.coOrdinate2D = ((TStickerAnnotation*)annotation).coordinate;
+        annotationPin.tag = 100;
         
         
         PFObject* postObj = [(TStickerAnnotation*)annotation annotationObject];
-        PFObject* stickerObj = postObj[@"sticker"];
-        annotationView1.stickerImage.file = stickerObj[@"image"];
-        [annotationView1.stickerImage loadInBackground];
-        annotationView1.stickerColor = [postObj[@"severity"] floatValue];
+        if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
+            PFObject* stickerObj = postObj[@"sticker"];
+            annotationPin.stickerImage.file = stickerObj[STICKER_IMAGE];
+            [annotationPin.stickerImage loadInBackground];
+            annotationPin.stickerColor = [postObj[STICKER_SEVERITY] floatValue];
+        } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_IMAGE]) {
+            annotationPin.stickerImage.file = postObj[POST_THUMBNAIL_IMAGE];
+            [annotationPin.stickerImage loadInBackground];
+        } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_ASK]) {
+            annotationPin.stickerImage.image = [UIImage imageNamed:@"NewMapAsk"];
+        }
         
 //    [stickerImage getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
 //        dispatch_async(dispatch_get_main_queue(), ^{
 //            if (!error) {
 //                annotationView.image = [UIImage imageWithData:imageData];
-//                annotationView.stickerColor = [postObj[@"severity"] floatValue];
+//                annotationView.stickerColor = [postObj[STICKER_SEVERITY] floatValue];
 //            }
 //        });
 //    }];
         
-        annotationView.frame = annotationView1.frame;
-        [annotationView addSubview:annotationView1];
+        annotationView.frame = annotationPin.frame;
+        [annotationView addSubview:annotationPin];
         
         annotationView.canShowCallout = NO;
     } else {
@@ -241,12 +256,12 @@
 //    
 //    PFObject* postObj = [(TStickerAnnotation*)annotation annotationObject];
 //    PFObject* stickerObj = postObj[@"sticker"];
-//    PFFile* stickerImage = stickerObj[@"image"];
+//    PFFile* stickerImage = stickerObj[STICKER_IMAGE];
 //    [stickerImage getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
 //        dispatch_async(dispatch_get_main_queue(), ^{
 //            if (!error) {
 //                annotationView.image = [UIImage imageWithData:imageData];
-//                annotationView.stickerColor = [postObj[@"severity"] floatValue];
+//                annotationView.stickerColor = [postObj[STICKER_SEVERITY] floatValue];
 //            }
 //        });
 //    }];
@@ -295,21 +310,21 @@
 -(void)updatePostedStickersOnMapWithCenter:(CGFloat)latitude andLongitude:(CGFloat)longitude {
     if ([Reachability isReachable]) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        PFQuery* stickersQuery = [PFQuery queryWithClassName:@"Post"];
+        PFQuery* stickersQuery = [PFQuery queryWithClassName:POST];
         [stickersQuery includeKey:@"sticker"];
-        [stickersQuery includeKey:@"images"];
-        [stickersQuery includeKey:@"fromUser"];
-        [stickersQuery whereKey:@"location" nearGeoPoint:[PFGeoPoint geoPointWithLatitude:latitude longitude:longitude] withinMiles:STICKER_QUERY_RADIUS];
+//        [stickersQuery includeKey:@"images"];
+        [stickersQuery includeKey:POST_FROMUSER];
+        [stickersQuery whereKey:POST_LOCATION nearGeoPoint:[PFGeoPoint geoPointWithLatitude:latitude longitude:longitude] withinMiles:STICKER_QUERY_RADIUS];
         stickersQuery.limit = 15;
         
-        __weak TViewController* weakSelf = self;
+//        __weak TViewController* weakSelf = self;
         [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             DLog(@"Stickers received: %lu", (unsigned long)objects.count);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (!error) {
-                    weakSelf.stickerLocations = objects;
-                    [self updateMapWithStickers];
+//                    weakSelf.stickerLocations = objects;
+                    [self updateMapWithStickers:objects];
                 } else {
                     [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Error in retrieving stickers" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
                 }
@@ -322,8 +337,8 @@
     [self updatePostedStickersOnMapWithCenter:self.currentMapLocation.latitude andLongitude:self.currentMapLocation.longitude];
 }
 
--(void)updateMapWithStickers {
-    for (PFObject* sticker in self.stickerLocations) {
+-(void)updateMapWithStickers:(NSArray*)stickerLocations {
+    for (PFObject* sticker in stickerLocations) {
         TStickerAnnotation *annotation = [[TStickerAnnotation alloc] initWithObject:sticker];
         [self.map addAnnotation:annotation];
     }
@@ -438,6 +453,7 @@
 
 
 - (IBAction)postAskQuestion:(id)sender {
+    [self.askText resignFirstResponder];
     
     if (![PFUser currentUser]) {
         [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You must login in order to post a sticker !!!" delegate:self cancelButtonTitle:@"Not Now" otherButtonTitles: @"Login", nil] show];
@@ -450,12 +466,12 @@
     
     CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
     
-    PFObject *stickerPost = [PFObject objectWithClassName:@"Post"];
-    stickerPost[@"data"] = self.askText.text;
-    stickerPost[@"location"] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
-    stickerPost[@"fromUser"] = [PFUser currentUser];
-    stickerPost[@"usrlocation"] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
-    stickerPost[@"type"] = @"ASK";
+    PFObject *stickerPost = [PFObject objectWithClassName:POST];
+    stickerPost[POST_DATA] = self.askText.text;
+    stickerPost[POST_LOCATION] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
+    stickerPost[POST_FROMUSER] = [PFUser currentUser];
+    stickerPost[POST_USERLOCATION] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
+    stickerPost[POST_TYPE] = POST_TYPE_ASK;
     
     [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {

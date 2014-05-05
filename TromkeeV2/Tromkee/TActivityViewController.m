@@ -71,10 +71,10 @@
     _postObjectID = postObjectID;
     if ([Reachability isReachable]) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        PFQuery* postQuery = [PFQuery queryWithClassName:@"Post"];
+        PFQuery* postQuery = [PFQuery queryWithClassName:POST];
         [postQuery includeKey:@"sticker"];
         [postQuery includeKey:@"images"];
-        [postQuery includeKey:@"fromUser"];
+        [postQuery includeKey:POST_FROMUSER];
         [postQuery whereKey:@"objectId" equalTo:self.postObjectID];
         [postQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
@@ -93,8 +93,8 @@
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity"];
         [activityQuery whereKey:@"post" equalTo:self.stickerObject];
-        [activityQuery whereKey:@"type" containedIn:@[@"IMAGE_COMMENT", @"COMMENT", @"THANKS"]];
-        [activityQuery includeKey:@"fromUser"];
+        [activityQuery whereKey:POST_TYPE containedIn:@[@"IMAGE_COMMENT", @"COMMENT", @"THANKS"]];
+        [activityQuery includeKey:POST_FROMUSER];
         [activityQuery orderByDescending:SORT_ACTIVITIES_KEY];
         
         __weak TActivityViewController* weakSelf = self;
@@ -104,7 +104,7 @@
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             
             NSIndexSet* indexes = [objects indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-                return [[(PFObject*)obj valueForKey:@"type"] isEqualToString:THANKS];
+                return [[(PFObject*)obj valueForKey:POST_TYPE] isEqualToString:THANKS];
             }];
             
             weakSelf.postCell.totalThanks.text = [NSString stringWithFormat:@"%lu", (unsigned long)(indexes ? indexes.count : 0)];
@@ -125,8 +125,8 @@
 -(void)updateThanksButton {
     PFQuery* thanksQuery = [PFQuery queryWithClassName:@"Activity"];
     [thanksQuery whereKey:@"post" equalTo:self.stickerObject];
-    [thanksQuery whereKey:@"fromUser" equalTo:[PFUser currentUser]];
-    [thanksQuery whereKey:@"type" equalTo:@"THANKS"];
+    [thanksQuery whereKey:POST_FROMUSER equalTo:[PFUser currentUser]];
+    [thanksQuery whereKey:POST_TYPE equalTo:@"THANKS"];
     [thanksQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         if (!error && object) {
             [self.postCell.thanksButton setTitle:@"Thanked" forState:UIControlStateNormal];
@@ -136,7 +136,7 @@
 }
 
 -(void)share {
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:[NSArray arrayWithObjects: self.stickerObject[@"data"], nil] applicationActivities:nil];
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:[NSArray arrayWithObjects: self.stickerObject[POST_DATA], nil] applicationActivities:nil];
     activityVC.excludedActivityTypes = @[ UIActivityTypeMessage ,UIActivityTypeAssignToContact,UIActivityTypeSaveToCameraRoll];
     [self presentViewController:activityVC animated:YES completion:nil];
 }
@@ -175,10 +175,10 @@
     }
     
     PFObject* comment = self.activities[indexPath.row - 1];
-    PFObject* fromUser = comment[@"fromUser"];
+    PFObject* fromUser = comment[POST_FROMUSER];
     
     TActivityCell* cell;
-    if ([comment[@"type"] isEqualToString:COMMENT]) {
+    if ([comment[POST_TYPE] isEqualToString:COMMENT]) {
         cell = [tableView dequeueReusableCellWithIdentifier:@"ONLY_COMMENT"];
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"COMMENT_IMAGE"];
@@ -215,7 +215,7 @@
     } else {
         if (self.activities && self.activities.count) {
             PFObject* comment = self.activities[indexPath.row - 1];
-            if ([comment[@"type"] isEqualToString:IMAGE_COMMENT]) {
+            if ([comment[POST_TYPE] isEqualToString:IMAGE_COMMENT]) {
                 height = 300;
             }
         }
@@ -285,10 +285,10 @@
             if (succeeded) {
                 NSLog(@"Saved image file");
                 PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
-                activiy[@"fromUser"] = [PFUser currentUser];
+                activiy[POST_FROMUSER] = [PFUser currentUser];
                 activiy[@"commentImage"] = imageFile;
-                activiy[@"toUser"] = self.stickerObject[@"fromUser"];
-                activiy[@"type"] = IMAGE_COMMENT;
+                activiy[@"toUser"] = self.stickerObject[POST_FROMUSER];
+                activiy[POST_TYPE] = IMAGE_COMMENT;
                 activiy[@"content"] = self.activityDescription.text;
                 activiy[@"post"] = self.stickerObject;
                 
@@ -315,9 +315,9 @@
         }];
         
         PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
-        activiy[@"fromUser"] = [PFUser currentUser];
-        activiy[@"toUser"] = self.stickerObject[@"fromUser"];
-        activiy[@"type"] = COMMENT;
+        activiy[POST_FROMUSER] = [PFUser currentUser];
+        activiy[@"toUser"] = self.stickerObject[POST_FROMUSER];
+        activiy[POST_TYPE] = COMMENT;
         activiy[@"content"] = self.activityDescription.text;
         activiy[@"post"] = self.stickerObject;
 
@@ -349,9 +349,9 @@
     [self.activityDescription resignFirstResponder];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
-    activiy[@"fromUser"] = [PFUser currentUser];
-    activiy[@"toUser"] = self.stickerObject[@"fromUser"];
-    activiy[@"type"] = @"THANKS";
+    activiy[POST_FROMUSER] = [PFUser currentUser];
+    activiy[@"toUser"] = self.stickerObject[POST_FROMUSER];
+    activiy[POST_TYPE] = @"THANKS";
     activiy[@"content"] = self.activityDescription.text;
     activiy[@"post"] = self.stickerObject;
 
@@ -419,17 +419,17 @@
     if ([segue.identifier isEqualToString:PROFILE]) {
         NSIndexPath* indxPath = [self.activitiesTable indexPathForSelectedRow];
         if (indxPath.row == 0) {
-            PFUser* fromUser = self.stickerObject[@"fromUser"];
+            PFUser* fromUser = self.stickerObject[POST_FROMUSER];
             TProfileViewController* profileVC = segue.destinationViewController;
             profileVC.userProfile = fromUser;
         } else {
             PFObject* comment = self.activities[indxPath.row - 1];
-            PFUser* fromUser = comment[@"fromUser"];
+            PFUser* fromUser = comment[POST_FROMUSER];
             TProfileViewController* profileVC = segue.destinationViewController;
             profileVC.userProfile = fromUser;
         }
     } else if ([segue.identifier isEqualToString:STICKER_POSTED_PROFILE]) {
-        PFUser* user = self.stickerObject[@"fromUser"];
+        PFUser* user = self.stickerObject[POST_FROMUSER];
         TProfileViewController* profileVC = segue.destinationViewController;
         profileVC.userProfile = user;
     }
@@ -451,13 +451,13 @@
 
 - (IBAction)share:(id)sender {
     NSMutableArray* actItems = [[NSMutableArray alloc] init];
-    NSString* comment = self.stickerObject[@"data"];
+    NSString* comment = self.stickerObject[POST_DATA];
     if (comment && comment.length) {
         [actItems addObject:comment];
     }
     
     PFObject* stickerObj = self.stickerObject[@"sticker"];
-    PFFile* stickerImage = stickerObj[@"image"];
+    PFFile* stickerImage = stickerObj[STICKER_IMAGE];
     UIImage* img = [UIImage imageWithData:[stickerImage getData]];
     [actItems addObject:img];
     

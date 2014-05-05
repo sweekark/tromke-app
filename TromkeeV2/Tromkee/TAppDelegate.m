@@ -252,7 +252,7 @@
     NSLog(@"Facebook error: %@", error);
     
     if ([PFUser currentUser]) {
-        if ([[error userInfo][@"error"][@"type"] isEqualToString:@"OAuthException"]) {
+        if ([[error userInfo][@"error"][POST_TYPE] isEqualToString:@"OAuthException"]) {
             NSLog(@"The Facebook token was invalidated. Logging out.");
             [self logOut];
         }

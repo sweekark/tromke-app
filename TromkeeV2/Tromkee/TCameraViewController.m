@@ -7,6 +7,8 @@
 //
 
 #import "TCameraViewController.h"
+#import "UIImage+ResizeAdditions.h"
+#import "TLocationUtility.h"
 
 #define DEFAULT_TEXT @"Say Something"
 
@@ -20,7 +22,6 @@
     AVCaptureSession *session;
     AVCaptureVideoPreviewLayer *captureVideoPreviewLayer;
     AVCaptureStillImageOutput *stillImageOutput;
-    UIImage *croppedImageWithoutOrientation;
 }
 
 @property (nonatomic, weak) IBOutlet UIButton *photoCaptureButton;
@@ -69,9 +70,7 @@
     // Today Implementation
     isSingleBuddy = NO;
     FrontCamera = NO;
-    self.captureImage.hidden = YES;
-    
-    croppedImageWithoutOrientation = [[UIImage alloc] init];
+//    self.captureImage.hidden = YES;
     
     initializeCamera = YES;
     photoFromCam = YES;
@@ -92,6 +91,10 @@
         [self initializeCamera];
     }
 
+    if (self.isAsking) {
+        self.postMessage.text = self.askMessage;
+        self.textCount.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.askMessage.length];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
@@ -116,7 +119,7 @@
         session=nil;
     
     session = [[AVCaptureSession alloc] init];
-	session.sessionPreset = AVCaptureSessionPresetPhoto;
+	session.sessionPreset = AVCaptureSessionPresetMedium;
 	
     if (captureVideoPreviewLayer)
         captureVideoPreviewLayer=nil;
@@ -218,13 +221,13 @@
     
     if (!haveImage) {
         self.captureImage.image = nil; //remove old image from view
-        self.captureImage.hidden = NO; //show the captured image view
-        self.imagePreview.hidden = YES; //hide the live video feed
+//        self.captureImage.hidden = NO; //show the captured image view
+//        self.imagePreview.hidden = YES; //hide the live video feed
         [self capImage];
     }
     else {
-        self.captureImage.hidden = YES;
-        self.imagePreview.hidden = NO;
+//        self.captureImage.hidden = YES;
+//        self.imagePreview.hidden = NO;
         haveImage = NO;
     }
 }
@@ -252,81 +255,108 @@
         if (imageSampleBuffer != NULL) {
             
             NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
-            [self processImage:[UIImage imageWithData:imageData]];
+            [self.captureImage setImage:[self cropImage:[UIImage imageWithData:imageData]]];
+            [self setCapturedImage];
+//            [self processImage:[UIImage imageWithData:imageData]];
         }
     }];
 }
 
-- (UIImage*)imageWithImage:(UIImage *)sourceImage scaledToWidth:(float) i_width
-{
-    float oldWidth = sourceImage.size.width;
-    float scaleFactor = i_width / oldWidth;
-    
-    float newHeight = sourceImage.size.height * scaleFactor;
-    float newWidth = oldWidth * scaleFactor;
-    
-    UIGraphicsBeginImageContext(CGSizeMake(newWidth, newHeight));
-    [sourceImage drawInRect:CGRectMake(0, 0, newWidth, newHeight)];
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
+//- (UIImage*)imageWithImage:(UIImage *)sourceImage scaledToWidth:(float) i_width
+//{
+//    float oldWidth = sourceImage.size.width;
+//    float scaleFactor = i_width / oldWidth;
+//    
+//    float newHeight = sourceImage.size.height * scaleFactor;
+//    float newWidth = oldWidth * scaleFactor;
+//    
+//    UIGraphicsBeginImageContext(CGSizeMake(newWidth, newHeight));
+//    [sourceImage drawInRect:CGRectMake(0, 0, newWidth, newHeight)];
+//    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+//    return newImage;
+//}
+
+- (UIImage *)cropImage:(UIImage *)imageToCrop {
+    CGSize size = [imageToCrop size];
+    int padding = 0;
+    int pictureSize;
+    int startCroppingPosition;
+    if (size.height > size.width) {
+        pictureSize = size.width - (2.0 * padding);
+        startCroppingPosition = (size.height - pictureSize) / 2.0;
+    } else {
+        pictureSize = size.height - (2.0 * padding);
+        startCroppingPosition = (size.width - pictureSize) / 2.0;
+    }
+    CGRect cropRect = CGRectMake(startCroppingPosition, padding, pictureSize, pictureSize);
+    CGImageRef imageRef = CGImageCreateWithImageInRect([imageToCrop CGImage], cropRect);
+    UIImage *newImage = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:imageToCrop.imageOrientation];
     return newImage;
+    
+    
+//    CGRect cropRect = CGRectMake(0, 105, 640, 640);
+//    CGImageRef imageRef = CGImageCreateWithImageInRect([imageToCrop CGImage], cropRect);
+//    UIImage *newImage = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:imageToCrop.imageOrientation];
+//    return newImage;
 }
 
-- (void) processImage:(UIImage *)image { //process captured image, crop, resize and rotate
-    haveImage = YES;
-    photoFromCam = YES;
-    
-    // Resize image to 640x640
-    // Resize image
-//    NSLog(@"Image size %@",NSStringFromCGSize(image.size));
-    
-    UIImage *smallImage = [self imageWithImage:image scaledToWidth:640.0f]; //UIGraphicsGetImageFromCurrentImageContext();
-    
-    CGRect cropRect = CGRectMake(0, 105, 640, 640);
-    CGImageRef imageRef = CGImageCreateWithImageInRect([smallImage CGImage], cropRect);
-    
-    croppedImageWithoutOrientation = [[UIImage imageWithCGImage:imageRef] copy];
-    
-    UIImage *croppedImage = nil;
-    // adjust image orientation
-    switch ([[UIDevice currentDevice] orientation]) {
-        case UIDeviceOrientationLandscapeLeft:
-            croppedImage = [[UIImage alloc] initWithCGImage: imageRef
-                                                        scale: 1.0
-                                                  orientation: UIImageOrientationLeft];
-            break;
-        case UIDeviceOrientationLandscapeRight:
-            croppedImage = [[UIImage alloc] initWithCGImage: imageRef
-                                                        scale: 1.0
-                                                  orientation: UIImageOrientationRight];
-            break;
-            
-        case UIDeviceOrientationFaceUp:
-            croppedImage = [[UIImage alloc] initWithCGImage: imageRef
-                                                        scale: 1.0
-                                                  orientation: UIImageOrientationUp];
-            break;
-        
-        case UIDeviceOrientationPortraitUpsideDown:
-            croppedImage = [[UIImage alloc] initWithCGImage: imageRef
-                                                      scale: 1.0
-                                                orientation: UIImageOrientationDown];
-            break;
-            
-        default:
-            croppedImage = [UIImage imageWithCGImage:imageRef];
-            break;
-    }
-    CGImageRelease(imageRef);
-    
-    [self.captureImage setImage:croppedImage];
-    
-    [self setCapturedImage];
-}
+//- (void) processImage:(UIImage *)image { //process captured image, crop, resize and rotate
+//    haveImage = YES;
+//    photoFromCam = YES;
+//    
+//    // Resize image to 640x640
+//    // Resize image
+////    NSLog(@"Image size %@",NSStringFromCGSize(image.size));
+//    
+//    UIImage *smallImage = [self imageWithImage:image scaledToWidth:640.0f]; //UIGraphicsGetImageFromCurrentImageContext();
+//    
+//    CGRect cropRect = CGRectMake(0, 105, 640, 640);
+//    CGImageRef imageRef = CGImageCreateWithImageInRect([smallImage CGImage], cropRect);
+//    
+////    UIImage *croppedImageWithoutOrientation = [[UIImage imageWithCGImage:imageRef] copy];
+//    
+//    UIImage *croppedImage = nil;
+//    // adjust image orientation
+//    switch ([[UIDevice currentDevice] orientation]) {
+//        case UIDeviceOrientationLandscapeLeft:
+//            croppedImage = [[UIImage alloc] initWithCGImage: imageRef
+//                                                        scale: 1.0
+//                                                  orientation: UIImageOrientationLeft];
+//            break;
+//        case UIDeviceOrientationLandscapeRight:
+//            croppedImage = [[UIImage alloc] initWithCGImage: imageRef
+//                                                        scale: 1.0
+//                                                  orientation: UIImageOrientationRight];
+//            break;
+//            
+//        case UIDeviceOrientationFaceUp:
+//            croppedImage = [[UIImage alloc] initWithCGImage: imageRef
+//                                                        scale: 1.0
+//                                                  orientation: UIImageOrientationUp];
+//            break;
+//        
+//        case UIDeviceOrientationPortraitUpsideDown:
+//            croppedImage = [[UIImage alloc] initWithCGImage: imageRef
+//                                                      scale: 1.0
+//                                                orientation: UIImageOrientationDown];
+//            break;
+//            
+//        default:
+//            croppedImage = [UIImage imageWithCGImage:imageRef];
+//            break;
+//    }
+//    CGImageRelease(imageRef);
+//    
+//    [self.captureImage setImage:croppedImage];
+//    
+//    [self setCapturedImage];
+//}
+//
 
 - (void)setCapturedImage{
     // Stop capturing image
-    [session stopRunning];
+//    [session stopRunning];
     
     // Hide Top/Bottom controller after taking photo for editing
     [self hideControllers];
@@ -341,37 +371,30 @@
 
 #pragma mark - Button clicks
 
--(IBAction) cancel:(id)sender {
-//    if ([delegate respondsToSelector:@selector(yCameraControllerDidCancel)]) {
-//        [delegate yCameraControllerDidCancel];
-//    }
-    
-    // Dismiss self view controller
-    //[self dismissViewControllerAnimated:YES completion:nil];
+-(void)goBack {
+    [session stopRunning];
+    [self.postMessage resignFirstResponder];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+-(IBAction) cancel:(id)sender {
+    [self goBack];
+}
+
 - (IBAction)cancelPhotoCapture:(id)sender{
-
-//    if ([delegate respondsToSelector:@selector(didFinishPickingImage:)]) {
-//        [delegate didFinishPickingImage:self.captureImage.image];
-//    }
-
-    // Dismiss self view controller
-//    [self dismissViewControllerAnimated:YES completion:nil];
-    [self.navigationController popViewControllerAnimated:YES];
+    [self goBack];
 }
 
 - (IBAction)retakePhoto:(id)sender{
     [self.photoCaptureButton setEnabled:YES];
     self.captureImage.image = nil;
-    self.imagePreview.hidden = NO;
+//    self.imagePreview.hidden = NO;
     // Show Camera device controls
     [self showControllers];
     
     haveImage=NO;
     FrontCamera = NO;
-    [self performSelector:@selector(initializeCamera) withObject:nil afterDelay:0.001];
+//    [self performSelector:@selector(initializeCamera) withObject:nil afterDelay:0.001];
 }
 
 - (IBAction)switchCamera:(UIButton *)sender { //switch cameras front and rear cameras
@@ -466,7 +489,61 @@
 }
 
 - (IBAction)postImage:(id)sender {
+
+    if (![PFUser currentUser]) {
+        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You must login in order to post a sticker !!!" delegate:self cancelButtonTitle:@"Not Now" otherButtonTitles: @"Login", nil] show];
+        return;
+    }
+
+    if (![Reachability isReachable]) {
+        return;
+    }
+    
     NSLog(@"Posting image");
+    
+    UIImage* imgToPost = self.captureImage.image;
+    UIImage *thumbnailImage = [imgToPost thumbnailImage:60.0f transparentBorder:0.0f cornerRadius:10.0f interpolationQuality:kCGInterpolationLow];
+    NSData *imageData = UIImageJPEGRepresentation(imgToPost, 0.8f);
+    NSData* thumbnailData = UIImagePNGRepresentation(thumbnailImage);
+    
+    PFFile* photoFile = [PFFile fileWithData:imageData];
+    PFFile* thumbnailFile = [PFFile fileWithData:thumbnailData];
+    
+    [photoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            [thumbnailFile saveInBackground];
+        }
+    }];
+
+    
+    
+    CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
+    
+    PFObject *stickerPost = [PFObject objectWithClassName:POST];
+    stickerPost[POST_DATA] = self.postMessage.text;
+    stickerPost[POST_LOCATION] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
+    stickerPost[POST_FROMUSER] = [PFUser currentUser];
+    stickerPost[POST_USERLOCATION] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
+    stickerPost[POST_ORIGINAL_IMAGE] = photoFile;
+    stickerPost[POST_THUMBNAIL_IMAGE] = thumbnailFile;
+    if (self.isAsking) {
+        stickerPost[POST_TYPE] = POST_TYPE_ASK;
+    } else {
+        stickerPost[POST_TYPE] = POST_TYPE_IMAGE;
+    }
+    
+
+    [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks" delegate:nil cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
+            });
+        } else {
+            NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
+        }
+    }];
+    
+    [self goBack];
 }
 
 - (IBAction)handleOneBuddy:(id)sender {

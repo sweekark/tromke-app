@@ -63,7 +63,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 #define MENU @"Menu"
 #define CATEGORIES @"Categories"
 #define PROFILEVIEW @"Profile"
-
+#define ASKCAMERA @"ASKCAMERA"
 
 //VIEW or Segue Identifiers
 #define CAMERA @"CAMERA"
@@ -73,3 +73,22 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 //Notifications
 #define STICKER_POSTED @"STICKER_POSTED"
 #define UPDATE_NOTIFICATION_COUNT @"UPDATE_NOTIFICATION_COUNT"
+
+
+//Posting Sticker, Image, Ask
+#define POST @"Post"
+#define POST_DATA @"data"
+#define POST_LOCATION @"location"
+#define POST_FROMUSER @"fromUser"
+#define POST_USERLOCATION @"usrlocation"
+#define POST_ORIGINAL_IMAGE @"OriginalImage"
+#define POST_THUMBNAIL_IMAGE @"ThumbnailImage"
+#define POST_TYPE @"type"
+
+#define POST_TYPE_STICKER @"STICKER"
+#define POST_TYPE_ASK @"ASK"
+#define POST_TYPE_IMAGE @"IMAGE"
+
+//Sticker Object
+#define STICKER_IMAGE @"image"
+#define STICKER_SEVERITY @"severity"

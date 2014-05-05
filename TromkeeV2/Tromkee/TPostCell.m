@@ -46,7 +46,7 @@
 }
 
 -(void)update:(PFObject*)stickerObject {
-    PFUser* user = stickerObject[@"fromUser"];
+    PFUser* user = stickerObject[POST_FROMUSER];
     PFFile *imageFile = [user objectForKey:FACEBOOK_SMALLPIC_KEY];
     self.fromImage.image = [UIImage imageNamed:@"Personholder"];
     if (imageFile) {
@@ -56,24 +56,24 @@
     
     self.fromName.text = user[@"displayName"];
     self.fromPostedTime.text = [TUtility computePostedTime:stickerObject.updatedAt];
-    self.fromPostedMessage.text = stickerObject[@"data"];
+    self.fromPostedMessage.text = stickerObject[POST_DATA];
     //                [weakSelf.fromPostedMessage sizeToFit];
     //Compute Thanks objects posted
-    self.postedLocation.text = stickerObject[@"usrlocation"];
+    self.postedLocation.text = stickerObject[POST_USERLOCATION];
     PFObject* stickerObj = stickerObject[@"sticker"];
     
-    PFFile* stickerImage = stickerObj[@"image"];
+    PFFile* stickerImage = stickerObj[STICKER_IMAGE];
     if (stickerImage) {
         self.fromStickerImage.file = stickerImage;
         [self.fromStickerImage loadInBackground];
     }
     
-    self.fromStickerIntensity.green = [stickerObject[@"severity"] floatValue];
+    self.fromStickerIntensity.green = [stickerObject[STICKER_SEVERITY] floatValue];
     [self.fromStickerIntensity setNeedsDisplay];
 
     PFObject* images = stickerObject[@"images"];
     if (images) {
-        PFFile* imgFile = images[@"image"];
+        PFFile* imgFile = images[STICKER_IMAGE];
         if (imgFile) {
             self.postImage.file = imgFile;
             [self.postImage loadInBackground];
