@@ -84,6 +84,8 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 #define POST_ORIGINAL_IMAGE @"OriginalImage"
 #define POST_THUMBNAIL_IMAGE @"ThumbnailImage"
 #define POST_TYPE @"type"
+#define POST_COMMENTS_COUNT @"comments_count"
+#define POST_THANKS_COUNT @"thanks_count"
 
 #define POST_TYPE_STICKER @"STICKER"
 #define POST_TYPE_ASK @"ASK"

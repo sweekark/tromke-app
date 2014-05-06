@@ -230,6 +230,14 @@
             annotationPin.bottomBar.backgroundColor = [UIColor darkGrayColor];
             annotationPin.stickerImage.image = [UIImage imageNamed:@"NewMapAsk"];
         }
+
+        
+        NSNumber* commentsCount = postObj[POST_COMMENTS_COUNT];
+        if (commentsCount) {
+            annotationPin.commentsCount.text = [NSString stringWithFormat:@"%@",commentsCount];
+        } else {
+            annotationPin.commentsCount.text = @"0";
+        }
         
 //    [stickerImage getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
 //        dispatch_async(dispatch_get_main_queue(), ^{
