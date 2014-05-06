@@ -41,7 +41,7 @@
 @property (nonatomic) CLLocationCoordinate2D currentMapLocation;
 @property (nonatomic) CLLocationCoordinate2D currentCenterLocation;
 
-//@property (nonatomic, strong) NSArray* stickerLocations;
+@property (nonatomic, strong) NSMutableArray* stickerLocations;
 
 @property (weak, nonatomic) IBOutlet UIView *askQuestionView;
 @property (weak, nonatomic) IBOutlet UILabel *textCount;
@@ -49,6 +49,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *sendButton;
 @property (weak, nonatomic) IBOutlet UIButton *onlyCameraButton;
 
+@property (nonatomic) BOOL isFirstTime;
 
 - (IBAction)menuClicked:(id)sender;
 - (IBAction)searchClicked:(id)sender;
@@ -61,8 +62,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.isFirstTime = YES;
     self.firstTimeLogin = YES;
     self.isMenuExpanded = NO;
+    self.stickerLocations = [[NSMutableArray alloc] initWithCapacity:10];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation:) name:TROMKE_USER_LOCATION_UPDATED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePostedStickers) name:TROMKEE_UPDATE_STICKERS object:nil];
@@ -84,7 +87,10 @@
         [self showCategoriesView];
     }
     
-    [self updatePostedStickersOnMapWithCenter:self.currentCenterLocation.latitude andLongitude:self.currentCenterLocation.longitude];
+    if (!self.isFirstTime) {
+        [self updatePostedStickersOnMapWithCenter:self.currentCenterLocation.latitude andLongitude:self.currentCenterLocation.longitude];
+    }
+    self.isFirstTime = NO;
     [super viewDidAppear:animated];
 }
 
@@ -118,8 +124,8 @@
     MKCoordinateRegion region;
     region.center = self.currentMapLocation;
     MKCoordinateSpan span;
-    span.latitudeDelta = 0.0144927536 * STICKER_QUERY_RADIUS; //1 mile
-    span.longitudeDelta = 0.0144927536  * STICKER_QUERY_RADIUS; //1 mile
+    span.latitudeDelta = 0.0144927536 * 20;// * STICKER_QUERY_RADIUS; //1 mile
+    span.longitudeDelta = 0.0144927536 * 20;//  * STICKER_QUERY_RADIUS; //1 mile
     region.span = span;
     [self.map setRegion:region animated:NO];
     
@@ -212,11 +218,16 @@
             PFObject* stickerObj = postObj[@"sticker"];
             annotationPin.stickerImage.file = stickerObj[STICKER_IMAGE];
             [annotationPin.stickerImage loadInBackground];
-            annotationPin.stickerColor = [postObj[STICKER_SEVERITY] floatValue];
+
+            CGFloat severity = [postObj[STICKER_SEVERITY] floatValue];
+            annotationPin.bottomBar.backgroundColor = [UIColor colorWithRed:1.0 - severity green:severity blue:0 alpha:1.0];
+            
+            annotationPin.stickerColor = severity;
         } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_IMAGE]) {
             annotationPin.stickerImage.file = postObj[POST_THUMBNAIL_IMAGE];
             [annotationPin.stickerImage loadInBackground];
         } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_ASK]) {
+            annotationPin.bottomBar.backgroundColor = [UIColor darkGrayColor];
             annotationPin.stickerImage.image = [UIImage imageNamed:@"NewMapAsk"];
         }
         
@@ -269,13 +280,16 @@
 //    return annotationView;
 }
 
-- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated{
-
+//- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated{
+- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
+//    if (!animated) {
+//        return;
+//    }
     CLLocationCoordinate2D mapCenter2D = mapView.centerCoordinate;
     CLLocation* mapCenter = [[CLLocation alloc] initWithLatitude:mapCenter2D.latitude longitude:mapCenter2D.longitude];
     
     CLLocation* oldCenter = [[CLLocation alloc] initWithLatitude:self.currentCenterLocation.latitude longitude:self.currentCenterLocation.longitude];
-    NSLog(@"Distance is: %f", [mapCenter distanceFromLocation:oldCenter]);
+    DLog(@"Distance is: %f", [mapCenter distanceFromLocation:oldCenter]);
     if ([mapCenter distanceFromLocation:oldCenter] > 1000) {
         CLLocationCoordinate2D center = mapView.centerCoordinate;
         self.currentCenterLocation = center;
@@ -317,16 +331,20 @@
         [stickersQuery whereKey:POST_LOCATION nearGeoPoint:[PFGeoPoint geoPointWithLatitude:latitude longitude:longitude] withinMiles:STICKER_QUERY_RADIUS];
         stickersQuery.limit = 15;
         
+        if ([self.stickerLocations count] == 0) {
+            stickersQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
+        }
 //        __weak TViewController* weakSelf = self;
         [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             DLog(@"Stickers received: %lu", (unsigned long)objects.count);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (!error) {
-//                    weakSelf.stickerLocations = objects;
+//                    self.stickerLocations = [objects mutableCopy];
                     [self updateMapWithStickers:objects];
                 } else {
-                    [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Error in retrieving stickers" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                    NSLog(@"No stickers Found");
+//                    [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Error in retrieving stickers" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
                 }
             });
         }];
@@ -337,11 +355,49 @@
     [self updatePostedStickersOnMapWithCenter:self.currentMapLocation.latitude andLongitude:self.currentMapLocation.longitude];
 }
 
--(void)updateMapWithStickers:(NSArray*)stickerLocations {
-    for (PFObject* sticker in stickerLocations) {
-        TStickerAnnotation *annotation = [[TStickerAnnotation alloc] initWithObject:sticker];
-        [self.map addAnnotation:annotation];
+-(void)updateMapWithStickers:(NSArray*)stickers {
+//    for (PFObject* sticker in stickers) {
+//        TStickerAnnotation *annotation = [[TStickerAnnotation alloc] initWithObject:sticker];
+//        [self.map addAnnotation:annotation];
+//    }
+    
+    
+    NSMutableArray* newPosts = [[NSMutableArray alloc] initWithCapacity:10];
+    NSMutableArray* allNewPosts = [[NSMutableArray alloc] initWithCapacity:10];
+    for (PFObject* obj in stickers) {
+        TStickerAnnotation* newObj = [[TStickerAnnotation alloc] initWithObject:obj];
+        [allNewPosts addObject:newObj];
+        BOOL found = NO;
+        for (TStickerAnnotation* currentObj in self.stickerLocations) {
+            if ([newObj equalToPost:currentObj]) {
+                found = YES;
+                break;
+            }
+        }
+        
+        if (!found) {
+            [newPosts addObject:newObj];
+        }
     }
+    
+    NSMutableArray *postsToRemove = [[NSMutableArray alloc] initWithCapacity:10];
+    for (TStickerAnnotation* currentObj in self.stickerLocations) {
+        BOOL found = NO;
+        for (TStickerAnnotation* allNewPost in allNewPosts) {
+            if ([currentObj equalToPost:allNewPost]) {
+                found = YES;
+            }
+        }
+        
+        if (!found) {
+            [postsToRemove addObject:currentObj];
+        }
+    }
+    
+    [self.map removeAnnotations:postsToRemove];
+    [self.map addAnnotations:newPosts];
+    [self.stickerLocations addObjectsFromArray:newPosts];
+    [self.stickerLocations removeObjectsInArray:postsToRemove];
 }
 
 - (IBAction)menuClicked:(id)sender {
@@ -445,9 +501,9 @@
 
 - (IBAction)hideAskQuestionView:(id)sender {
     [UIView animateWithDuration:0.5 animations:^{
+        [self.askText resignFirstResponder];
         CGRect r = self.askQuestionView.frame;
         self.askQuestionView.frame = CGRectMake(0, -130, r.size.width, r.size.height);
-        [self.askText resignFirstResponder];
     }];
 }
 
@@ -476,7 +532,7 @@
     [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks" delegate:nil cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
+                [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks" delegate:self cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
             });
         } else {
             NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
@@ -484,6 +540,10 @@
     }];
 
     [self hideAskQuestionView:nil];
+}
+
+-(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    [self updatePostedStickers];
 }
 
 #pragma mark - Ask question delegate

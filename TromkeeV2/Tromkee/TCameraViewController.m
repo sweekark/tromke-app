@@ -501,6 +501,7 @@
     
     NSLog(@"Posting image");
     
+    
     UIImage* imgToPost = self.captureImage.image;
     UIImage *thumbnailImage = [imgToPost thumbnailImage:60.0f transparentBorder:0.0f cornerRadius:10.0f interpolationQuality:kCGInterpolationLow];
     NSData *imageData = UIImageJPEGRepresentation(imgToPost, 0.8f);
@@ -515,6 +516,9 @@
         }
     }];
 
+    if ([self.postMessage.text isEqualToString:DEFAULT_TEXT]) {
+        self.postMessage.text = @"";
+    }
     
     
     CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
@@ -536,7 +540,15 @@
     [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks" delegate:nil cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
+                NSString* msg;
+                if (self.isAsking) {
+                    msg = @"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks";
+                } else {
+                    msg = @"Image is posted successfully. We will inform you if anyoneon on Tromke will comment, thanks";
+                }
+                
+                [[[UIAlertView alloc] initWithTitle:@"Successful" message:msg delegate:self cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
+//                [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
             });
         } else {
             NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
@@ -544,6 +556,10 @@
     }];
     
     [self goBack];
+}
+
+-(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
 }
 
 - (IBAction)handleOneBuddy:(id)sender {

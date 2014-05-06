@@ -92,3 +92,10 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 //Sticker Object
 #define STICKER_IMAGE @"image"
 #define STICKER_SEVERITY @"severity"
+
+
+//Category Object
+#define CATEGORY @"category"
+#define CATEGORY_IMAGE @"Image"
+#define CATEGORY_NAME @"name"
+#define CATEGORY_SORTBY @"sort_no"

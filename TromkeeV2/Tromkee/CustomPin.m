@@ -9,7 +9,10 @@
 #import "CustomPin.h"
 
 @interface CustomPin ()
+
 @property (nonatomic, weak) IBOutlet TCircleView* circleView;
+@property (weak, nonatomic) IBOutlet TCircleView *labelBackground;
+
 @end
 
 @implementation CustomPin
@@ -28,8 +31,9 @@
 
 
 - (void)setStickerColor:(float)color {
-    _circleView.green = color;
+    _circleView.green = _labelBackground.green = color;
     [_circleView setNeedsDisplay];
+    [_labelBackground setNeedsDisplay];
 }
 
 

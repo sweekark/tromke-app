@@ -10,7 +10,7 @@
 
 @interface TCategoryCell : UICollectionViewCell
 
-@property(nonatomic, weak) IBOutlet UIImageView* categoryImage;
+@property(nonatomic, weak) IBOutlet PFImageView* categoryImage;
 @property(nonatomic, weak) IBOutlet UILabel* categoryTitle;
 
 @end

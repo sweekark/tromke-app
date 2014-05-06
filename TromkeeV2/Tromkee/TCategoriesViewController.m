@@ -10,9 +10,6 @@
 #import "TCategoryCell.h"
 #import "TCategoryStickersViewController.h"
 
-#define IMAGE STICKER_IMAGE
-#define NAME @"name"
-#define SORTBY @"sort_no"
 
 @interface TCategoriesViewController () <UICollectionViewDataSource, UICollectionViewDelegate, TStickersDelegate>
 
@@ -47,10 +44,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideCategories:) name:STICKER_POSTED object:nil];
     
     if ([Reachability isReachable]) {
-        PFQuery* categoriesQuery = [PFQuery queryWithClassName:@"category"];
+        PFQuery* categoriesQuery = [PFQuery queryWithClassName:CATEGORY];
         categoriesQuery.cachePolicy = kPFCachePolicyCacheElseNetwork;
         categoriesQuery.maxCacheAge = 3600;
-        [categoriesQuery orderByAscending:SORTBY];
+        [categoriesQuery orderByAscending:CATEGORY_SORTBY];
         [categoriesQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             DLog(@"Categories received: %lu", (unsigned long)objects.count);
             if (error) {
@@ -89,18 +86,25 @@
     TCategoryCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellID forIndexPath:indexPath];
     
     PFObject* category = self.allCategories[indexPath.item];
+    PFFile *userImageFile = category[CATEGORY_IMAGE];
+    cell.categoryImage.image = [UIImage imageNamed:@"Placeholder"];
+    if (userImageFile) {
+        [cell.categoryImage setFile:userImageFile];
+        [cell.categoryImage loadInBackground];
+    }
+
+//    [userImageFile getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            if (!error) {
+//                TCategoryCell* tempCell = (TCategoryCell*)[collectionView cellForItemAtIndexPath:indexPath];
+//                tempCell.categoryImage.image = [UIImage imageWithData:imageData];
+//            } else {
+//                NSLog(@"Error in getting ")
+//            }
+//        });
+//    }];
     
-    PFFile *userImageFile = category[IMAGE];
-    [userImageFile getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (!error) {
-                TCategoryCell* tempCell = (TCategoryCell*)[collectionView cellForItemAtIndexPath:indexPath];
-                tempCell.categoryImage.image = [UIImage imageWithData:imageData];
-            }
-        });
-    }];
-    
-    cell.categoryTitle.text = category[NAME];
+    cell.categoryTitle.text = category[CATEGORY_NAME];
     
     return cell;
 }

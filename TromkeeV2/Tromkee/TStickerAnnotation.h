@@ -12,11 +12,19 @@
 
 @interface TStickerAnnotation : NSObject <MKAnnotation>
 
-- (id)initWithObject:(PFObject *)aObject;
+
+@property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
+@property (nonatomic, copy) NSString* title;
+
+
 
 @property (nonatomic, strong) PFObject* annotationObject;
-@property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
 @property (nonatomic, strong) TStickerAnnotationView* calloutAnnotation;
-@property (nonatomic, copy) NSString* title;
+@property (nonatomic, assign) BOOL animatesDrop;
+@property (nonatomic, readonly) MKPinAnnotationColor pinColor;
+
+- (id)initWithObject:(PFObject *)aObject;
+- (void)setTitleAndSubtitleOutsideDistance:(BOOL)outside;
+- (BOOL)equalToPost:(TStickerAnnotation *)aPost;
 
 @end

@@ -15,5 +15,6 @@
 @property (nonatomic, weak) IBOutlet PFImageView* stickerImage;
 @property (nonatomic, weak) IBOutlet UILabel* commentsCount;
 @property (nonatomic) float stickerColor;
+@property (weak, nonatomic) UIView *bottomBar;
 
 @end
