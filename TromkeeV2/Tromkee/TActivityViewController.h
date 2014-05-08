@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "TBaseViewController.h"
 
-@interface TActivityViewController : TBaseViewController
+@interface TActivityViewController : UIViewController
 
 @property(nonatomic, strong) PFObject* stickerObject;
 @property (nonatomic, strong) NSString* postObjectID;

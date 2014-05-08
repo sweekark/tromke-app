@@ -13,5 +13,6 @@
 + (void)processFacebookProfilePictureData:(NSData *)data;
 + (void)uploadUserImage:(UIImage*)image withCompletionHandler:(void (^)(BOOL,UIImage*))handler;
 + (NSString*)computePostedTime :(NSDate*)date;
++ (UIColor *)colorFromHexString:(NSString *)hexString;
 
 @end

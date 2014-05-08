@@ -18,6 +18,9 @@
 
 @interface TActivityViewController () <UITableViewDataSource, UITableViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, TPostCellDelegate>
 
+@property (weak, nonatomic) IBOutlet UIView *topBar;
+@property (weak, nonatomic) IBOutlet UILabel *activityTitle;
+
 @property (nonatomic, strong) NSMutableArray* activities;
 @property (nonatomic, weak) IBOutlet UITableView* activitiesTable;
 @property (nonatomic, weak) IBOutlet UITextView* activityDescription;
@@ -60,6 +63,22 @@
     self.stickerImages = [@[] mutableCopy];
 }
 
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    NSString* stickerType = self.stickerObject[POST_TYPE];
+    if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
+        self.activityTitle.text = ACTIVITY_STICKER;
+        self.activityTitle.textColor = [UIColor darkGrayColor];
+        self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_STICKER_COLOR];
+    } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
+        self.activityTitle.text = ACTIVITY_ASK;
+        self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_PICTURE_COLOR];
+    } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
+        self.activityTitle.text = ACTIVITY_PICTURE;
+        self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_QUESTION_COLOR];
+    }
+}
 
 -(void)setStickerObject:(PFObject *)stickerObject {
     _stickerObject = stickerObject;
@@ -88,6 +107,20 @@
 }
 
 -(void)update {
+    
+    NSString* stickerType = self.stickerObject[POST_TYPE];
+    if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
+        self.activityTitle.text = ACTIVITY_STICKER;
+        self.activityTitle.textColor = [UIColor darkGrayColor];
+        self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_STICKER_COLOR];
+    } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
+        self.activityTitle.text = ACTIVITY_ASK;
+        self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_PICTURE_COLOR];
+    } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
+        self.activityTitle.text = ACTIVITY_PICTURE;
+        self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_QUESTION_COLOR];
+    }
+    
     if ([Reachability isReachable]) {
         [self updateThanksButton];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];

@@ -23,13 +23,28 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 //Notifications
 #define TROMKE_USER_LOCATION_UPDATED @"TROMKE_USER_LOCATION_UPDATED"
 #define TROMKEE_UPDATE_STICKERS @"TROMEE_UPDATE_STICKERS"
+#define STICKER_POSTED @"STICKER_POSTED"
+#define UPDATE_NOTIFICATION_COUNT @"UPDATE_NOTIFICATION_COUNT"
 
+//Colors
 #define STICKERS_BG_COLOR [UIColor colorWithRed:240/255.0f green:242/255.0f blue:242/255.0f alpha:1.0f]
 #define STICKER_POST_BOTTOM_COLOR [UIColor colorWithRed:226/255.0f green:226/255.0f blue:226/255.0f alpha:1.0f]
 
+#define ACTIVITY_PICTURE_COLOR @"#993366"
+#define ACTIVITY_QUESTION_COLOR @"#D393BC"
+#define ACTIVITY_STICKER_COLOR @"#FFFFFF"
 
+#define YELLOW_COLOR @"#FDD17D"
+
+
+//GENERAL
 #define POSTDATA_LENGTH 140
 #define STICKER_QUERY_RADIUS 40.0 //In miles
+
+//STRINGS
+#define ACTIVITY_STICKER @"Sticker"
+#define ACTIVITY_ASK @"Question"
+#define ACTIVITY_PICTURE @"Picture"
 
 //FACEBOOK
 #define FACEBOOK_ID_KEY @"facebookId"
@@ -68,11 +83,6 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 //VIEW or Segue Identifiers
 #define CAMERA @"CAMERA"
 #define ASKCAMERA @"ASKCAMERA"
-
-
-//Notifications
-#define STICKER_POSTED @"STICKER_POSTED"
-#define UPDATE_NOTIFICATION_COUNT @"UPDATE_NOTIFICATION_COUNT"
 
 
 //Posting Sticker, Image, Ask
