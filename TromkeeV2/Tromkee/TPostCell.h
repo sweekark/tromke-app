@@ -20,6 +20,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *totalThanks;
 @property (weak, nonatomic) id<TPostCellDelegate> delegate;
 
--(void)update:(PFObject*)stickerObject;
+-(void)update:(PFObject*)postObj;
 
 @end

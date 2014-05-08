@@ -83,7 +83,7 @@ NS_ENUM(int, ProfileDisplay) {
     } else {
         NSLog(@"No image found");
     }
-    self.userName.text = self.userProfile[@"displayName"];
+    self.userName.text = self.userProfile[USER_DISPLAY_NAME];
     self.postsArray = [[NSMutableArray alloc] init];
 
     [self updateFollowersAndFollowingValues];
@@ -427,13 +427,13 @@ NS_ENUM(int, ProfileDisplay) {
             cell.comment.text = @"Posted Image";
         } else if ([post[POST_TYPE] isEqualToString:FOLLOW]) {
             PFUser* touser = post[@"toUser"];
-            cell.comment.text = [NSString stringWithFormat:@"Following %@", touser[@"displayName"]];
+            cell.comment.text = [NSString stringWithFormat:@"Following %@", touser[USER_DISPLAY_NAME]];
         }
         //    [cell.comment sizeToFit];
         
         
         PFObject* fromUser = post[POST_FROMUSER];
-        cell.personName.text = fromUser[@"displayName"];
+        cell.personName.text = fromUser[USER_DISPLAY_NAME];
         PFFile* imgFile = fromUser[FACEBOOK_SMALLPIC_KEY];
         if (imgFile) {
             [cell.personImage setFile:imgFile];
@@ -545,10 +545,10 @@ NS_ENUM(int, ProfileDisplay) {
 - (IBAction)updateUserName:(id)sender {
     [self.userName resignFirstResponder];
     
-    NSString* actualDispName = self.userProfile[@"displayName"];
+    NSString* actualDispName = self.userProfile[USER_DISPLAY_NAME];
     NSString* latestDispName = self.userName.text;
     if (latestDispName && ![latestDispName isEqual:[NSNull null]] && latestDispName.length && ![latestDispName isEqualToString:actualDispName]) {
-        [[PFUser currentUser] setObject:latestDispName forKey:@"displayName"];
+        [[PFUser currentUser] setObject:latestDispName forKey:USER_DISPLAY_NAME];
         [[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
                 [[PFUser currentUser] refresh];

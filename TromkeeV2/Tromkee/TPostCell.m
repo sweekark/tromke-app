@@ -11,6 +11,7 @@
 
 @interface TPostCell ()
 
+@property (weak, nonatomic) IBOutlet UILabel *stickerName;
 @property (weak, nonatomic) IBOutlet PFImageView *fromImage;
 @property (weak, nonatomic) IBOutlet UILabel *fromName;
 @property (weak, nonatomic) IBOutlet UILabel *fromPostedTime;
@@ -45,8 +46,8 @@
     // Configure the view for the selected state
 }
 
--(void)update:(PFObject*)stickerObject {
-    PFUser* user = stickerObject[POST_FROMUSER];
+-(void)update:(PFObject*)postObj {
+    PFUser* user = postObj[POST_FROMUSER];
     PFFile *imageFile = [user objectForKey:FACEBOOK_SMALLPIC_KEY];
     self.fromImage.image = [UIImage imageNamed:@"Personholder"];
     if (imageFile) {
@@ -54,13 +55,13 @@
         [self.fromImage loadInBackground];
     } 
     
-    self.fromName.text = user[@"displayName"];
-    self.fromPostedTime.text = [TUtility computePostedTime:stickerObject.updatedAt];
-    self.fromPostedMessage.text = stickerObject[POST_DATA];
+    self.fromName.text = user[USER_DISPLAY_NAME];
+    self.fromPostedTime.text = [TUtility computePostedTime:postObj.updatedAt];
+    self.fromPostedMessage.text = postObj[POST_DATA];
     //                [weakSelf.fromPostedMessage sizeToFit];
     //Compute Thanks objects posted
-    self.postedLocation.text = stickerObject[POST_USERLOCATION];
-    PFObject* stickerObj = stickerObject[@"sticker"];
+    self.postedLocation.text = postObj[POST_USERLOCATION];
+    PFObject* stickerObj = postObj[STICKER];
     
     PFFile* stickerImage = stickerObj[STICKER_IMAGE];
     if (stickerImage) {
@@ -68,10 +69,12 @@
         [self.fromStickerImage loadInBackground];
     }
     
-    self.fromStickerIntensity.green = [stickerObject[STICKER_SEVERITY] floatValue];
+    self.fromStickerIntensity.green = [postObj[STICKER_SEVERITY] floatValue];
     [self.fromStickerIntensity setNeedsDisplay];
-
-    PFObject* images = stickerObject[@"images"];
+    
+    self.stickerName.text = stickerObj[STICKER_NAME];
+    
+    PFObject* images = postObj[@"images"];
     if (images) {
         PFFile* imgFile = images[STICKER_IMAGE];
         if (imgFile) {

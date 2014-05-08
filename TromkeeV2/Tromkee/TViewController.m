@@ -215,7 +215,7 @@
         
         PFObject* postObj = [(TStickerAnnotation*)annotation annotationObject];
         if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
-            PFObject* stickerObj = postObj[@"sticker"];
+            PFObject* stickerObj = postObj[STICKER];
             annotationPin.stickerImage.file = stickerObj[STICKER_IMAGE];
             [annotationPin.stickerImage loadInBackground];
 
@@ -274,7 +274,7 @@
 //    }
 //    
 //    PFObject* postObj = [(TStickerAnnotation*)annotation annotationObject];
-//    PFObject* stickerObj = postObj[@"sticker"];
+//    PFObject* stickerObj = postObj[STICKER];
 //    PFFile* stickerImage = stickerObj[STICKER_IMAGE];
 //    [stickerImage getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
 //        dispatch_async(dispatch_get_main_queue(), ^{
@@ -333,7 +333,7 @@
     if ([Reachability isReachable]) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         PFQuery* stickersQuery = [PFQuery queryWithClassName:POST];
-        [stickersQuery includeKey:@"sticker"];
+        [stickersQuery includeKey:STICKER];
 //        [stickersQuery includeKey:@"images"];
         [stickersQuery includeKey:POST_FROMUSER];
         [stickersQuery whereKey:POST_LOCATION nearGeoPoint:[PFGeoPoint geoPointWithLatitude:latitude longitude:longitude] withinMiles:STICKER_QUERY_RADIUS];

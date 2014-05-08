@@ -61,6 +61,8 @@
     self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
     self.activities = [@[] mutableCopy];
     self.stickerImages = [@[] mutableCopy];
+    
+    self.bottomView.backgroundColor = [TUtility colorFromHexString:YELLOW_COLOR];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -91,7 +93,7 @@
     if ([Reachability isReachable]) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         PFQuery* postQuery = [PFQuery queryWithClassName:POST];
-        [postQuery includeKey:@"sticker"];
+        [postQuery includeKey:STICKER];
         [postQuery includeKey:@"images"];
         [postQuery includeKey:POST_FROMUSER];
         [postQuery whereKey:@"objectId" equalTo:self.postObjectID];
@@ -223,7 +225,7 @@
         }
     }
 
-    cell.personName.text = fromUser[@"displayName"];
+    cell.personName.text = fromUser[USER_DISPLAY_NAME];
     cell.comment.text = comment[@"content"];
     cell.updatedTime.text = [TUtility computePostedTime:comment.updatedAt];
     
@@ -243,7 +245,7 @@
         if (images) {
             height = 325;
         } else {
-            height = 135;
+            height = 150;
         }
     } else {
         if (self.activities && self.activities.count) {
@@ -489,7 +491,7 @@
         [actItems addObject:comment];
     }
     
-    PFObject* stickerObj = self.stickerObject[@"sticker"];
+    PFObject* stickerObj = self.stickerObject[STICKER];
     PFFile* stickerImage = stickerObj[STICKER_IMAGE];
     UIImage* img = [UIImage imageWithData:[stickerImage getData]];
     [actItems addObject:img];

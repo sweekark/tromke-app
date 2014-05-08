@@ -132,7 +132,7 @@
         
         PFObject* fromUser = activityObj[POST_FROMUSER];
         
-        NSString* str = [NSString stringWithFormat:@"%@ %@", fromUser[@"displayName"], comment];
+        NSString* str = [NSString stringWithFormat:@"%@ %@", fromUser[USER_DISPLAY_NAME], comment];
         NSMutableAttributedString* msgStr = [[NSMutableAttributedString alloc] initWithString:str];
         cell.notificationMessage.attributedText = msgStr;
         
@@ -150,11 +150,11 @@
         cell.delegate = self;
         cell.postedAt.text = [TUtility computePostedTime:notifyObj.updatedAt];
         PFObject* postObj = notifyObj[@"post"];
-        PFObject* stickerObj = postObj[@"sticker"];
+        PFObject* stickerObj = postObj[STICKER];
         
         PFObject* fromUser = postObj[POST_FROMUSER];
         
-        NSString* str = [NSString stringWithFormat:@"%@ posted sticker %@ @ %@", fromUser[@"displayName"], stickerObj[@"name"], postObj[POST_USERLOCATION]];
+        NSString* str = [NSString stringWithFormat:@"%@ posted sticker %@ @ %@", fromUser[USER_DISPLAY_NAME], stickerObj[@"name"], postObj[POST_USERLOCATION]];
         NSMutableAttributedString* msgString = [[NSMutableAttributedString alloc] initWithString:str];
         NSRange postedRange = [str rangeOfString:@"posted"];
         

@@ -38,7 +38,7 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 
 
 //GENERAL
-#define POSTDATA_LENGTH 140
+#define POSTDATA_LENGTH 100
 #define STICKER_QUERY_RADIUS 40.0 //In miles
 
 //STRINGS
@@ -102,6 +102,8 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 #define POST_TYPE_IMAGE @"IMAGE"
 
 //Sticker Object
+#define STICKER @"sticker"
+#define STICKER_NAME @"name"
 #define STICKER_IMAGE @"image"
 #define STICKER_SEVERITY @"severity"
 
@@ -111,3 +113,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 #define CATEGORY_IMAGE @"Image"
 #define CATEGORY_NAME @"name"
 #define CATEGORY_SORTBY @"sort_no"
+
+//User Object
+#define USER_DISPLAY_NAME @"displayName"
+

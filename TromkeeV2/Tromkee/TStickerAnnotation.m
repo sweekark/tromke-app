@@ -55,11 +55,11 @@ static NSString * const kPAWWallCantViewPost = @"Can’t view post! Get closer."
 	} else {
         PFUser* postedUser = self.annotationObject[POST_FROMUSER];
         if ([self.annotationObject[POST_TYPE] isEqualToString:POST_TYPE_ASK]) {
-            self.title = [NSString stringWithFormat:@"%@ asking question", postedUser[@"displayName"]];
+            self.title = [NSString stringWithFormat:@"%@ asking question", postedUser[USER_DISPLAY_NAME]];
         } else if ([self.annotationObject[POST_TYPE] isEqualToString:POST_TYPE_IMAGE]) {
-            self.title = [NSString stringWithFormat:@"%@ posted image", postedUser[@"displayName"]];
+            self.title = [NSString stringWithFormat:@"%@ posted image", postedUser[USER_DISPLAY_NAME]];
         } else if ([self.annotationObject[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
-            self.title = [NSString stringWithFormat:@"%@ posted sticker", postedUser[@"displayName"]];
+            self.title = [NSString stringWithFormat:@"%@ posted sticker", postedUser[USER_DISPLAY_NAME]];
         }
         
 		self.pinColor = MKPinAnnotationColorGreen;

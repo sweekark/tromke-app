@@ -122,7 +122,7 @@
     stickerPost[POST_DATA] = self.stickerDescription.text;
     stickerPost[POST_LOCATION] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
     stickerPost[POST_FROMUSER] = [PFUser currentUser];
-    stickerPost[@"sticker"] = self.postSticker;
+    stickerPost[STICKER] = self.postSticker;
     stickerPost[STICKER_SEVERITY] = [NSNumber numberWithFloat:self.stickerSeverity.value];
     stickerPost[@"points"] = self.postSticker[@"postPoints"];
     stickerPost[POST_USERLOCATION] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
