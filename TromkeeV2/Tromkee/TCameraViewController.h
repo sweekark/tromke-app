@@ -11,8 +11,9 @@
 
 @interface TCameraViewController : UIViewController
 
-@property (nonatomic) BOOL isAsking;
-@property (nonatomic, strong) NSString* askMessage;
+@property (nonatomic) int activityName;
+@property (nonatomic, strong) NSString* cameraMessage;
+@property(nonatomic, strong) PFObject* postedObject;
 
 @end
 

@@ -91,9 +91,9 @@
         [self initializeCamera];
     }
 
-    if (self.isAsking) {
-        self.postMessage.text = self.askMessage;
-        self.textCount.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.askMessage.length];
+    if (self.activityName != CameraForImage) {
+        self.postMessage.text = self.cameraMessage;
+        self.textCount.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.cameraMessage.length];
     }
 }
 
@@ -523,43 +523,69 @@
     
     CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
     
-    PFObject *stickerPost = [PFObject objectWithClassName:POST];
-    stickerPost[POST_DATA] = self.postMessage.text;
-    stickerPost[POST_LOCATION] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
-    stickerPost[POST_FROMUSER] = [PFUser currentUser];
-    stickerPost[POST_USERLOCATION] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
-    stickerPost[POST_ORIGINAL_IMAGE] = photoFile;
-    stickerPost[POST_THUMBNAIL_IMAGE] = thumbnailFile;
-    if (self.isAsking) {
-        stickerPost[POST_TYPE] = POST_TYPE_ASK;
-    } else {
-        stickerPost[POST_TYPE] = POST_TYPE_IMAGE;
-    }
-    
+    if (self.activityName == CameraForComment) {
+        PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
+        activiy[ACTIVITY_FROMUSER] = [PFUser currentUser];
+        activiy[ACTIVITY_TOUSER] = self.postedObject[POST_FROMUSER];
+        activiy[ACTIVITY_TYPE] = COMMENT;
+        activiy[ACTIVITY_CONTENT] = self.postMessage.text;
+        activiy[ACTIVITY_POST] = self.postedObject;
+        activiy[ACTIVITY_ORIGINAL_IMAGE] = photoFile;
+        activiy[ACTIVITY_THUMBNAIL_IMAGE] = thumbnailFile;
 
-    [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (succeeded) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSString* msg;
-                if (self.isAsking) {
-                    msg = @"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks";
-                } else {
-                    msg = @"Image is posted successfully. We will inform you if anyoneon on Tromke will comment, thanks";
-                }
-                
-                [[[UIAlertView alloc] initWithTitle:@"Successful" message:msg delegate:self cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
-//                [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
-            });
-        } else {
-            NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
+        [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                });
+            }
+        }];
+
+    } else {
+        PFObject *stickerPost = [PFObject objectWithClassName:POST];
+        stickerPost[POST_DATA] = self.postMessage.text;
+        stickerPost[POST_LOCATION] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
+        stickerPost[POST_FROMUSER] = [PFUser currentUser];
+        stickerPost[POST_USERLOCATION] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
+        stickerPost[POST_ORIGINAL_IMAGE] = photoFile;
+        stickerPost[POST_THUMBNAIL_IMAGE] = thumbnailFile;
+        if (self.activityName == CameraForAsk) {
+            stickerPost[POST_TYPE] = POST_TYPE_ASK;
+        } else if (self.activityName == CameraForImage){
+            stickerPost[POST_TYPE] = POST_TYPE_IMAGE;
+        } else if (self.activityName == CameraForComment) {
+            
         }
-    }];
+
+        [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSString* msg;
+                    if (self.activityName == CameraForAsk) {
+                        msg = @"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks";
+                    } else {
+                        msg = @"Image is posted successfully. We will inform you if anyoneon on Tromke will comment, thanks";
+                    }
+                    
+                    [[[UIAlertView alloc] initWithTitle:@"Successful" message:msg delegate:self cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
+    //                [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
+                });
+            } else {
+                NSLog(@"Failed with Comment to post: %@", error.localizedDescription);
+            }
+        }];
+    }
     
     [self goBack];
 }
 
 -(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
+    if (self.activityName != CameraForComment) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_COMMENTS object:nil];
+    }
+
 }
 
 - (IBAction)handleOneBuddy:(id)sender {

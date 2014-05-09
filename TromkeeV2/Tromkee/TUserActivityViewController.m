@@ -191,7 +191,7 @@
         PFObject* notifyObj = self.postsArray[indxPath.row];
 
         TActivityViewController* activityVC = segue.destinationViewController;
-        activityVC.postObjectID = [notifyObj[@"post"] objectId];
+        activityVC.postedObjectID = [notifyObj[@"post"] objectId];
     }
 }
 

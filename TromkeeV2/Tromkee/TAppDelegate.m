@@ -91,7 +91,7 @@
 //    if ([userInfo[@"p"] isEqualToString:@"p"]) {
         UIStoryboard *mainstoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         TActivityViewController* pvc = [mainstoryboard instantiateViewControllerWithIdentifier:@"Activity"];
-        pvc.postObjectID = userInfo[@"pid"];
+        pvc.postedObjectID = userInfo[@"pid"];
         UINavigationController* navController = (UINavigationController*)self.window.rootViewController;
         [navController pushViewController:pvc animated:YES];
 //    }

@@ -13,25 +13,28 @@
 #import "UIImage+ResizeAdditions.h"
 #import "TProfileViewController.h"
 #import "TPostCell.h"
+#import "TCameraViewController.h"
 
 #define SORT_ACTIVITIES_KEY @"updatedAt"
 
-@interface TActivityViewController () <UITableViewDataSource, UITableViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, TPostCellDelegate>
+@interface TActivityViewController () <UITableViewDataSource, UITableViewDelegate, TPostCellDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *topBar;
 @property (weak, nonatomic) IBOutlet UILabel *activityTitle;
 
 @property (nonatomic, strong) NSMutableArray* activities;
 @property (nonatomic, weak) IBOutlet UITableView* activitiesTable;
-@property (nonatomic, weak) IBOutlet UITextView* activityDescription;
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
-@property (nonatomic, strong) NSMutableArray* stickerImages;
-@property (nonatomic, strong) UIImagePickerController* imagePickerController;
 @property (nonatomic) BOOL isCommentEditing;
 
-@property (nonatomic, assign) UIBackgroundTaskIdentifier photoPostBackgroundTaskId;
-
 @property (nonatomic, strong) TPostCell* postCell;
+
+
+@property (weak, nonatomic) IBOutlet UIView *askQuestionView;
+@property (weak, nonatomic) IBOutlet UILabel *textCount;
+@property (weak, nonatomic) IBOutlet UITextView *askText;
+    @property (weak, nonatomic) IBOutlet UIButton *onlyCameraButton;
+
 
 - (IBAction)postActivityDescription:(id)sender;
 
@@ -44,8 +47,8 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        self.stickerObject = nil;
-        self.postObjectID = nil;
+        self.postedObject = nil;
+        self.postedObjectID = nil;
     }
     return self;
 }
@@ -55,20 +58,20 @@
     [super viewDidLoad];
     self.postCell = nil;
 	// Do any additional setup after loading the view.
-    UIBarButtonItem* forwardButton = [[UIBarButtonItem alloc] initWithTitle:@"Forward" style:UIBarButtonItemStyleBordered target:self action:@selector(share)];
-    self.navigationController.navigationItem.rightBarButtonItem = forwardButton;
-    
-    self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
+//    UIBarButtonItem* forwardButton = [[UIBarButtonItem alloc] initWithTitle:@"Forward" style:UIBarButtonItemStyleBordered target:self action:@selector(share)];
+//    self.navigationController.navigationItem.rightBarButtonItem = forwardButton;
     self.activities = [@[] mutableCopy];
-    self.stickerImages = [@[] mutableCopy];
     
     self.bottomView.backgroundColor = [TUtility colorFromHexString:YELLOW_COLOR];
+    self.askQuestionView.backgroundColor = [TUtility colorFromHexString:YELLOW_COLOR];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:TROMKEE_UPDATE_COMMENTS object:nil];    
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    NSString* stickerType = self.stickerObject[POST_TYPE];
+    NSString* stickerType = self.postedObject[POST_TYPE];
     if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
         self.activityTitle.text = ACTIVITY_STICKER;
         self.activityTitle.textColor = [UIColor darkGrayColor];
@@ -82,26 +85,27 @@
     }
 }
 
--(void)setStickerObject:(PFObject *)stickerObject {
-    _stickerObject = stickerObject;
+
+-(void)setPostedObject:(PFObject *)stickerObject {
+    _postedObject = stickerObject;
     [self update];
 }
 
 
--(void)setPostObjectID:(NSString *)postObjectID {
-    _postObjectID = postObjectID;
+-(void)setPostedObjectID:(NSString *)postObjectID {
+    _postedObjectID = postObjectID;
     if ([Reachability isReachable]) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         PFQuery* postQuery = [PFQuery queryWithClassName:POST];
         [postQuery includeKey:STICKER];
         [postQuery includeKey:@"images"];
         [postQuery includeKey:POST_FROMUSER];
-        [postQuery whereKey:@"objectId" equalTo:self.postObjectID];
+        [postQuery whereKey:@"objectId" equalTo:self.postedObjectID];
         [postQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             if (!error) {
-                self.stickerObject = [objects firstObject];
+                self.postedObject = [objects firstObject];
                 [self update];
             }
         }];
@@ -109,8 +113,7 @@
 }
 
 -(void)update {
-    
-    NSString* stickerType = self.stickerObject[POST_TYPE];
+    NSString* stickerType = self.postedObject[POST_TYPE];
     if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
         self.activityTitle.text = ACTIVITY_STICKER;
         self.activityTitle.textColor = [UIColor darkGrayColor];
@@ -127,7 +130,7 @@
         [self updateThanksButton];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity"];
-        [activityQuery whereKey:@"post" equalTo:self.stickerObject];
+        [activityQuery whereKey:@"post" equalTo:self.postedObject];
         [activityQuery whereKey:POST_TYPE containedIn:@[@"IMAGE_COMMENT", @"COMMENT", @"THANKS"]];
         [activityQuery includeKey:POST_FROMUSER];
         [activityQuery orderByDescending:SORT_ACTIVITIES_KEY];
@@ -159,7 +162,7 @@
 
 -(void)updateThanksButton {
     PFQuery* thanksQuery = [PFQuery queryWithClassName:@"Activity"];
-    [thanksQuery whereKey:@"post" equalTo:self.stickerObject];
+    [thanksQuery whereKey:@"post" equalTo:self.postedObject];
     [thanksQuery whereKey:POST_FROMUSER equalTo:[PFUser currentUser]];
     [thanksQuery whereKey:POST_TYPE equalTo:@"THANKS"];
     [thanksQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
@@ -171,7 +174,7 @@
 }
 
 -(void)share {
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:[NSArray arrayWithObjects: self.stickerObject[POST_DATA], nil] applicationActivities:nil];
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:[NSArray arrayWithObjects: self.postedObject[POST_DATA], nil] applicationActivities:nil];
     activityVC.excludedActivityTypes = @[ UIActivityTypeMessage ,UIActivityTypeAssignToContact,UIActivityTypeSaveToCameraRoll];
     [self presentViewController:activityVC animated:YES completion:nil];
 }
@@ -196,14 +199,14 @@
     
     if (indexPath.row == 0) {
         if (self.postCell == nil) {
-            PFObject* images = self.stickerObject[@"images"];
+            PFObject* images = self.postedObject[@"images"];
             if (images) {
                 self.postCell = [tableView dequeueReusableCellWithIdentifier:@"POST_IMAGE"];
             } else {
                 self.postCell = [tableView dequeueReusableCellWithIdentifier:@"ONLY_POST"];
             }
             self.postCell.delegate = self;
-            [self.postCell update:self.stickerObject];
+            [self.postCell update:self.postedObject];
         }
         
         return self.postCell;
@@ -241,7 +244,7 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     CGFloat height = 100;
     if (indexPath.row == 0) {
-        PFObject* images = self.stickerObject[@"images"];
+        PFObject* images = self.postedObject[@"images"];
         if (images) {
             height = 325;
         } else {
@@ -266,107 +269,69 @@
 
 #pragma mark - TextView methods
 
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
-{
-    if([text isEqualToString:@"\n"])
-    {
-        [textView resignFirstResponder];
-        return YES;
-    }
-    
-    return textView.text.length + (text.length - range.length) <= POSTDATA_LENGTH;
-}
+//- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+//{
+//    if([text isEqualToString:@"\n"])
+//    {
+//        [textView resignFirstResponder];
+//        return YES;
+//    }
+//    
+//    return textView.text.length + (text.length - range.length) <= POSTDATA_LENGTH;
+//}
 
-- (void)textViewDidBeginEditing:(UITextView *)textView {
-    self.isCommentEditing = YES;
-    [UIView animateWithDuration:0.35 animations:^{
-        CGRect r = self.bottomView.frame;
-        r.origin.y -= 216;
-        self.bottomView.frame = r;
-    }];
-}
-
-- (void)textViewDidEndEditing:(UITextView *)textView {
-    self.isCommentEditing = NO;
-    [UIView animateWithDuration:0.1 animations:^{
-        CGRect r = self.bottomView.frame;
-        r.origin.y += 216;
-        self.bottomView.frame = r;
-    }];
-}
+//- (void)textViewDidBeginEditing:(UITextView *)textView {
+//    self.isCommentEditing = YES;
+//    [UIView animateWithDuration:0.35 animations:^{
+//        CGRect r = self.bottomView.frame;
+//        r.origin.y -= 216;
+//        self.bottomView.frame = r;
+//    }];
+//}
+//
+//- (void)textViewDidEndEditing:(UITextView *)textView {
+//    self.isCommentEditing = NO;
+//    [UIView animateWithDuration:0.1 animations:^{
+//        CGRect r = self.bottomView.frame;
+//        r.origin.y += 216;
+//        self.bottomView.frame = r;
+//    }];
+//}
 
 - (IBAction)postActivityDescription:(id)sender {
-    [self.activityDescription resignFirstResponder];
+//    if ([self.stickerImages count]) {
+//        UIImage *resizedImage = [self.stickerImages[0] resizedImageWithContentMode:UIViewContentModeScaleAspectFit bounds:CGSizeMake(560.0f, 560.0f) interpolationQuality:kCGInterpolationHigh];
+//        NSData *imageData = UIImageJPEGRepresentation(resizedImage, 0.8f);
+//        
+//        __block PFFile* imageFile = [PFFile fileWithData:imageData];
+//        [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+//            if (succeeded) {
+//                NSLog(@"Saved image file");
+//                PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
+//                activiy[POST_FROMUSER] = [PFUser currentUser];
+//                activiy[@"commentImage"] = imageFile;
+//                activiy[@"toUser"] = self.stickerObject[POST_FROMUSER];
+//                activiy[POST_TYPE] = IMAGE_COMMENT;
+//                activiy[@"content"] = self.activityDescription.text;
+//                activiy[@"post"] = self.stickerObject;
+//                
+//                [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+//                    if (succeeded) {
+//                        dispatch_async(dispatch_get_main_queue(), ^{
+//                            [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Comment posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+//                            [self update];
+//                        });
+//                    } else {
+//                        NSLog(@"Failed to post comment");
+//                    }
+//                }];
+//            } else {
+//                NSLog(@"Failed to upload image");
+//            }
+//        }];
+//    }
     
-    if ([self.activityDescription.text length] == 0) {
-        return;
-    }
-    
-    if (![PFUser currentUser]) {
-        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You must login in order to post a sticker !!!" delegate:self cancelButtonTitle:@"Not Now" otherButtonTitles: @"Login", nil] show];
-        return;
-    }
-    
-    if ([self.stickerImages count]) {
-        self.photoPostBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-        }];
 
-        UIImage *resizedImage = [self.stickerImages[0] resizedImageWithContentMode:UIViewContentModeScaleAspectFit bounds:CGSizeMake(560.0f, 560.0f) interpolationQuality:kCGInterpolationHigh];
-        NSData *imageData = UIImageJPEGRepresentation(resizedImage, 0.8f);
-        
-        __block PFFile* imageFile = [PFFile fileWithData:imageData];
-        [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (succeeded) {
-                NSLog(@"Saved image file");
-                PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
-                activiy[POST_FROMUSER] = [PFUser currentUser];
-                activiy[@"commentImage"] = imageFile;
-                activiy[@"toUser"] = self.stickerObject[POST_FROMUSER];
-                activiy[POST_TYPE] = IMAGE_COMMENT;
-                activiy[@"content"] = self.activityDescription.text;
-                activiy[@"post"] = self.stickerObject;
-                
-                [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                    if (succeeded) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Comment posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-                            [self update];
-                        });
-                    } else {
-                        NSLog(@"Failed to post comment");
-                    }
-                }];
-            } else {
-                NSLog(@"Failed to upload image");
-            }
-            
-            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-        }];
-    } else {
-
-        self.photoPostBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-        }];
-        
-        PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
-        activiy[POST_FROMUSER] = [PFUser currentUser];
-        activiy[@"toUser"] = self.stickerObject[POST_FROMUSER];
-        activiy[POST_TYPE] = COMMENT;
-        activiy[@"content"] = self.activityDescription.text;
-        activiy[@"post"] = self.stickerObject;
-
-        [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (succeeded) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-//                    [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Comment posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-                    [self update];
-                });
-            }
-            
-            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-        }];
-    }
 }
 
 -(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -381,80 +346,24 @@
 
 
 - (void)conveyThanks {
-    [self.activityDescription resignFirstResponder];
+    [self.askText resignFirstResponder];
+
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
     activiy[POST_FROMUSER] = [PFUser currentUser];
-    activiy[@"toUser"] = self.stickerObject[POST_FROMUSER];
+    activiy[@"toUser"] = self.postedObject[POST_FROMUSER];
     activiy[POST_TYPE] = @"THANKS";
-    activiy[@"content"] = self.activityDescription.text;
-    activiy[@"post"] = self.stickerObject;
+    activiy[@"content"] = self.askText.text;
+    activiy[@"post"] = self.postedObject;
 
     [activiy saveInBackground];
-}
-
-- (IBAction)takePicture:(id)sender {
-    if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
-    {
-        [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-    } else {
-        UIActionSheet* sourceSelection = [[UIActionSheet alloc] initWithTitle:@"Select source type" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Camera", @"Photo Library", nil];
-        [sourceSelection showInView:self.view];
-    }
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 0) {
-        [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
-    } else if (buttonIndex == 1) {
-        [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-    }
-}
-
-- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType
-{
-    if (self.isCommentEditing) {
-        [self.activityDescription resignFirstResponder];
-    }
-    
-    UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
-    imagePickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
-    imagePickerController.sourceType = sourceType;
-    imagePickerController.delegate = self;
-    
-    self.imagePickerController = imagePickerController;
-    [self presentViewController:self.imagePickerController animated:YES completion:nil];
-}
-
-#pragma mark - UIImagePickerControllerDelegate
-
-// This method is called when an image has been chosen from the library or taken from the camera.
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-{
-    UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
-//    [self.stickerImages addObject:image];
-    [self.stickerImages insertObject:image atIndex:0];
-    [self dismissViewControllerAnimated:YES completion:nil];
-    self.imagePickerController = nil;
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-{
-    [self dismissViewControllerAnimated:YES completion:NULL];
-    self.imagePickerController = nil;
-}
-
-- (void)updateLabelPreferredMaxLayoutWidthToCurrentWidth:(UILabel *)label
-{
-    label.preferredMaxLayoutWidth =
-    [label alignmentRectForFrame:label.frame].size.width;
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:PROFILE]) {
         NSIndexPath* indxPath = [self.activitiesTable indexPathForSelectedRow];
         if (indxPath.row == 0) {
-            PFUser* fromUser = self.stickerObject[POST_FROMUSER];
+            PFUser* fromUser = self.postedObject[POST_FROMUSER];
             TProfileViewController* profileVC = segue.destinationViewController;
             profileVC.userProfile = fromUser;
         } else {
@@ -464,9 +373,15 @@
             profileVC.userProfile = fromUser;
         }
     } else if ([segue.identifier isEqualToString:STICKER_POSTED_PROFILE]) {
-        PFUser* user = self.stickerObject[POST_FROMUSER];
+        PFUser* user = self.postedObject[POST_FROMUSER];
         TProfileViewController* profileVC = segue.destinationViewController;
         profileVC.userProfile = user;
+    } else if ([segue.identifier isEqualToString:ASKCAMERA]) {
+        TCameraViewController* cameraVC = segue.destinationViewController;
+        [self.askText resignFirstResponder];
+        cameraVC.activityName = YES;
+        cameraVC.cameraMessage = self.askText.text;
+        cameraVC.postedObject = self.postedObject;
     }
 }
 
@@ -486,12 +401,12 @@
 
 - (IBAction)share:(id)sender {
     NSMutableArray* actItems = [[NSMutableArray alloc] init];
-    NSString* comment = self.stickerObject[POST_DATA];
+    NSString* comment = self.postedObject[POST_DATA];
     if (comment && comment.length) {
         [actItems addObject:comment];
     }
     
-    PFObject* stickerObj = self.stickerObject[STICKER];
+    PFObject* stickerObj = self.postedObject[STICKER];
     PFFile* stickerImage = stickerObj[STICKER_IMAGE];
     UIImage* img = [UIImage imageWithData:[stickerImage getData]];
     [actItems addObject:img];
@@ -501,5 +416,89 @@
 }
 
 
+#pragma mark - Ask question delegate
+
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    if ([textView.text isEqualToString:@"Type your question here"]) {
+        textView.text = @"";
+    }
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+    if([text isEqualToString:@"\n"])
+    {
+        [self postAskQuestion:nil];
+        [textView resignFirstResponder];
+        return YES;
+    }
+    
+    unsigned long charCount = textView.text.length + (text.length - range.length);
+    
+    if (charCount == 0) {
+        self.onlyCameraButton.enabled = NO;
+    } else {
+        self.onlyCameraButton.enabled = YES;
+    }
+    
+    if (charCount <= POSTDATA_LENGTH) {
+        self.textCount.text = [NSString stringWithFormat:@"%ld", charCount];
+    }
+    
+    return  charCount <= POSTDATA_LENGTH;
+}
+
+- (IBAction)postAskQuestion:(id)sender {
+    [self.askText resignFirstResponder];
+    
+    if (![PFUser currentUser]) {
+        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You must login in order to post a sticker !!!" delegate:self cancelButtonTitle:@"Not Now" otherButtonTitles: @"Login", nil] show];
+        return;
+    }
+    
+    if (![Reachability isReachable]) {
+        return;
+    }
+    
+    PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
+    activiy[ACTIVITY_FROMUSER] = [PFUser currentUser];
+    activiy[ACTIVITY_TOUSER] = self.postedObject[POST_FROMUSER];
+    activiy[ACTIVITY_TYPE] = COMMENT;
+    activiy[ACTIVITY_CONTENT] = self.askText.text;
+    activiy[ACTIVITY_POST] = self.postedObject;
+    
+    [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self update];
+            });
+        }
+    }];
+}
+
+- (IBAction)askAQuestion:(id)sender {
+    if (![Reachability isReachable]) {
+        return;
+    }
+    
+    self.askText.text = @"Type your question here";
+    self.onlyCameraButton.enabled = NO;
+    self.textCount.text = @"0";
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        CGRect r = self.askQuestionView.frame;
+        self.askQuestionView.frame = CGRectMake(0, 64, r.size.width, r.size.height);
+    }];
+}
+
+- (IBAction)hideAskQuestionView:(id)sender {
+    [UIView animateWithDuration:0.5 animations:^{
+        [self.askText resignFirstResponder];
+        CGRect r = self.askQuestionView.frame;
+        self.askQuestionView.frame = CGRectMake(0, -130, r.size.width, r.size.height);
+    }];
+}
+
 
 @end
+

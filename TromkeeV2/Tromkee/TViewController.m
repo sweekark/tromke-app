@@ -149,15 +149,15 @@
         menuVC.delegate = self;
     } else if ([segue.identifier isEqualToString:ACTIVITY]) {
         TActivityViewController* activityVC = segue.destinationViewController;
-        activityVC.stickerObject = sender;
+        activityVC.postedObject = sender;
     } else if ([segue.identifier isEqualToString:PROFILE]) {
         TProfileViewController* profileVC = segue.destinationViewController;
         profileVC.userProfile = [PFUser currentUser];
     } else if ([segue.identifier isEqualToString:ASKCAMERA]) {
         TCameraViewController* cameraVC = segue.destinationViewController;
         [self.askText resignFirstResponder];
-        cameraVC.isAsking = YES;
-        cameraVC.askMessage = self.askText.text;
+        cameraVC.activityName = YES;
+        cameraVC.cameraMessage = self.askText.text;
     }
 }
 

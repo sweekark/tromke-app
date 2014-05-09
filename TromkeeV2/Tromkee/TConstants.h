@@ -23,6 +23,7 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 //Notifications
 #define TROMKE_USER_LOCATION_UPDATED @"TROMKE_USER_LOCATION_UPDATED"
 #define TROMKEE_UPDATE_STICKERS @"TROMEE_UPDATE_STICKERS"
+#define TROMKEE_UPDATE_COMMENTS @"TROMKEE_UPDATE_COMMENTS"
 #define STICKER_POSTED @"STICKER_POSTED"
 #define UPDATE_NOTIFICATION_COUNT @"UPDATE_NOTIFICATION_COUNT"
 
@@ -53,13 +54,6 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 #define FACEBOOK_MEDIUMPIC_KEY @"profilePictureMedium"
 
 
-//ACTIVITY
-#define THANKS @"THANKS"
-#define FOLLOW @"FOLLOW"
-#define COMMENT @"COMMENT"
-#define IMAGE_COMMENT @"IMAGE_COMMENT"
-#define IMAGE_ONLY @"IMAGE"
-
 
 //MENU IDENTIFIERS
 typedef NS_ENUM(NSInteger, MenuItem) {
@@ -70,6 +64,13 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     MenuItemTopTromers,
     MenuItemSettings,
     MenuItemLogout
+};
+
+typedef NS_ENUM(NSInteger, Camera) {
+    CameraForAsk = 0,
+    CameraForImage,
+    CameraForSticker,
+    CameraForComment
 };
 
 #define STICKER_POSTED_PROFILE @"StickerPostedProfile"
@@ -108,6 +109,23 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 #define STICKER_SEVERITY @"severity"
 
 
+//Activity Object
+#define THANKS @"THANKS"
+#define FOLLOW @"FOLLOW"
+#define COMMENT @"COMMENT"
+#define IMAGE_COMMENT @"IMAGE_COMMENT"
+#define IMAGE_ONLY @"IMAGE"
+
+#define ACTIVITY @"Activity"
+#define ACTIVITY_FROMUSER @"fromUser"
+#define ACTIVITY_TOUSER @"toUser"
+#define ACTIVITY_TYPE @"type"
+#define ACTIVITY_CONTENT @"content"
+#define ACTIVITY_POST @"post"
+#define ACTIVITY_ORIGINAL_IMAGE @"OriginalImage"
+#define ACTIVITY_THUMBNAIL_IMAGE @"ThumbnailImage"
+
+
 //Category Object
 #define CATEGORY @"category"
 #define CATEGORY_IMAGE @"Image"
@@ -116,4 +134,6 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 
 //User Object
 #define USER_DISPLAY_NAME @"displayName"
+
+
 
