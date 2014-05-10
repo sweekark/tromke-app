@@ -293,19 +293,16 @@ NS_ENUM(int, ProfileDisplay) {
 
 -(void)updateFollowButton {
     if ([Reachability isReachable]) {
-        PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"toUser == %@ AND fromUser == %@", self.userProfile, [PFUser currentUser]]];
-        __weak TProfileViewController* weakself = self;
+        PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity" predicate:[NSPredicate predicateWithFormat:@"toUser == %@ AND fromUser == %@ AND type == %@", self.userProfile, [PFUser currentUser], @"FOLLOW"]];
         [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                weakself.followButton.hidden = NO;
-                if (objects.count) {
-                    self.isFollowing = YES;
-                    [weakself.followButton setTitle:@"Unfollow" forState:UIControlStateNormal];
-                } else {
-                    self.isFollowing = NO;
-                    [weakself.followButton setTitle:@"Follow" forState:UIControlStateNormal];
-                }
-            });
+            self.followButton.hidden = NO;
+            if (objects.count) {
+                self.isFollowing = YES;
+                [self.followButton setTitle:@"Unfollow" forState:UIControlStateNormal];
+            } else {
+                self.isFollowing = NO;
+                [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
+            }
         }];
     }
 }
@@ -538,13 +535,12 @@ NS_ENUM(int, ProfileDisplay) {
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"PROFILE"]) {
         NSIndexPath* indxPath = [[self.collectionView indexPathsForSelectedItems] firstObject];
-        PFObject* act = self.postsArray[indxPath.row];
-        PFUser* usr;
-        if (self.currentDisplay == ProfileDisplayFollowers) {
-            usr = act[POST_FROMUSER];
-        } else if (self.currentDisplay == ProfileDisplayFollowing) {
-            usr = act[@"toUser"];
-        }
+        PFUser* usr = self.postsArray[indxPath.row];
+//        if (self.currentDisplay == ProfileDisplayFollowers) {
+//            usr = act[POST_FROMUSER];
+//        } else if (self.currentDisplay == ProfileDisplayFollowing) {
+//            usr = act[@"toUser"];
+//        }
         
         TProfileViewController* profileVC = segue.destinationViewController;
         profileVC.userProfile = usr;
