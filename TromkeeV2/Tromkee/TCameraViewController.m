@@ -559,17 +559,15 @@
 
         [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSString* msg;
-                    if (self.activityName == CameraForAsk) {
-                        msg = @"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks";
-                    } else {
-                        msg = @"Image is posted successfully. We will inform you if anyoneon on Tromke will comment, thanks";
-                    }
-                    
-                    [[[UIAlertView alloc] initWithTitle:@"Successful" message:msg delegate:self cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
-    //                [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
-                });
+                NSString* msg;
+                if (self.activityName == CameraForAsk) {
+                    msg = @"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks";
+                } else {
+                    msg = @"Image is posted successfully. We will inform you if anyoneon on Tromke will comment, thanks";
+                }
+                
+                [[[UIAlertView alloc] initWithTitle:@"Successful" message:msg delegate:nil cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
+                [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
             } else {
                 NSLog(@"Failed with Comment to post: %@", error.localizedDescription);
             }

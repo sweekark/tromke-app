@@ -44,9 +44,9 @@
 @property (nonatomic, strong) NSMutableArray* stickerLocations;
 
 @property (weak, nonatomic) IBOutlet UIView *askQuestionView;
+@property (weak, nonatomic) IBOutlet UIView *askBackgroundView;
 @property (weak, nonatomic) IBOutlet UILabel *textCount;
 @property (weak, nonatomic) IBOutlet UITextView *askText;
-@property (weak, nonatomic) IBOutlet UIButton *sendButton;
 @property (weak, nonatomic) IBOutlet UIButton *onlyCameraButton;
 
 @property (nonatomic) BOOL isFirstTime;
@@ -70,7 +70,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation:) name:TROMKE_USER_LOCATION_UPDATED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePostedStickers) name:TROMKEE_UPDATE_STICKERS object:nil];
     
-    self.askQuestionView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"RedBox"]];
+    self.askBackgroundView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"RedBox"]];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -156,8 +156,11 @@
     } else if ([segue.identifier isEqualToString:ASKCAMERA]) {
         TCameraViewController* cameraVC = segue.destinationViewController;
         [self.askText resignFirstResponder];
-        cameraVC.activityName = YES;
+        cameraVC.activityName = CameraForAsk;
         cameraVC.cameraMessage = self.askText.text;
+    } else if ([segue.identifier isEqualToString:CAMERA]) {
+        TCameraViewController* cameraVC = segue.destinationViewController;
+        cameraVC.activityName = CameraForImage;
     }
 }
 
@@ -348,6 +351,7 @@
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (!error) {
+                    [self.map removeAnnotations:self.map.annotations];                    
 //                    self.stickerLocations = [objects mutableCopy];
                     [self updateMapWithStickers:objects];
                 } else {
@@ -364,12 +368,12 @@
 }
 
 -(void)updateMapWithStickers:(NSArray*)stickers {
-//    for (PFObject* sticker in stickers) {
-//        TStickerAnnotation *annotation = [[TStickerAnnotation alloc] initWithObject:sticker];
-//        [self.map addAnnotation:annotation];
-//    }
+    for (PFObject* sticker in stickers) {
+        TStickerAnnotation *annotation = [[TStickerAnnotation alloc] initWithObject:sticker];
+        [self.map addAnnotation:annotation];
+    }
     
-    
+    /*
     NSMutableArray* newPosts = [[NSMutableArray alloc] initWithCapacity:10];
     NSMutableArray* allNewPosts = [[NSMutableArray alloc] initWithCapacity:10];
     for (PFObject* obj in stickers) {
@@ -406,6 +410,7 @@
     [self.map addAnnotations:newPosts];
     [self.stickerLocations addObjectsFromArray:newPosts];
     [self.stickerLocations removeObjectsInArray:postsToRemove];
+    */
 }
 
 - (IBAction)menuClicked:(id)sender {
@@ -447,28 +452,24 @@
 -(void)userClickedMenu:(NSInteger)rowNumber {
     [self menuClicked:nil];
     switch (rowNumber) {
-//        case MenuItemNearMe:
-//            [self updateUserLocation:nil];
-//            break;
-//        case MenuItemChooseMyRoute:
-//            break;
-//        case MenuItemChats:
-//            break;
-//        case MenuItemProfile:
-//            if ([[PFUser currentUser] isAuthenticated]) {
-//                [self performSegueWithIdentifier:PROFILE sender:nil];
-//            } else {
-//                [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You need to login first" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-//            }
-//
-//            break;
-//        case MenuItemTopTromers:
-//            break;
-//        case MenuItemSettings:
-//            break;
-//        case MenuItemLogout:
-//            [PFUser logOut];
-//            break;
+        case MenuItemNearMe:
+            [self updateUserLocation:nil];
+            break;
+        case MenuItemMyProfile:
+            if ([[PFUser currentUser] isAuthenticated]) {
+                [self performSegueWithIdentifier:PROFILE sender:nil];
+            } else {
+                [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You need to login first" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+            }
+
+            break;
+        case MenuItemMyActivity:
+            break;
+        case MenuItemSettings:
+            break;
+        case MenuItemLogout:
+            [PFUser logOut];
+            break;
         default:
             break;
     }
@@ -497,13 +498,12 @@
     }
     
     self.askText.text = @"Type your question here";
-    self.sendButton.enabled = NO;
     self.onlyCameraButton.enabled = NO;
     self.textCount.text = @"0";
     
     [UIView animateWithDuration:0.5 animations:^{
         CGRect r = self.askQuestionView.frame;
-        self.askQuestionView.frame = CGRectMake(0, 64, r.size.width, r.size.height);
+        self.askQuestionView.frame = CGRectMake(0, 0, r.size.width, r.size.height);
     }];
 }
 
@@ -511,7 +511,7 @@
     [UIView animateWithDuration:0.5 animations:^{
         [self.askText resignFirstResponder];
         CGRect r = self.askQuestionView.frame;
-        self.askQuestionView.frame = CGRectMake(0, -130, r.size.width, r.size.height);
+        self.askQuestionView.frame = CGRectMake(0, -568, r.size.width, r.size.height);
     }];
 }
 
@@ -575,10 +575,8 @@
     
     if (charCount == 0) {
         self.onlyCameraButton.enabled = NO;
-        self.sendButton.enabled = NO;
     } else {
         self.onlyCameraButton.enabled = YES;
-        self.sendButton.enabled = YES;
     }
     
     if (charCount <= POSTDATA_LENGTH) {

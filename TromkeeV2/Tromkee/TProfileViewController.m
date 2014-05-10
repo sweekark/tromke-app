@@ -149,8 +149,9 @@ NS_ENUM(int, ProfileDisplay) {
 
 -(void)updateActivity {
     if ([Reachability isReachable]) {
-        self.activityButton.backgroundColor = [UIColor greenColor];
-        self.followersButton.backgroundColor = self.followingButton.backgroundColor = [UIColor yellowColor];
+        self.activityButton.hidden = YES;
+        [self.followersButton setImage:[UIImage imageNamed:@"NewBlueBuddy"] forState:UIControlStateNormal];
+        [self.followingButton setImage:[UIImage imageNamed:@"NewBlueBuddy"] forState:UIControlStateNormal];
         
         self.buttonsView.userInteractionEnabled = NO;
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -186,9 +187,9 @@ NS_ENUM(int, ProfileDisplay) {
 
 -(void)updateFollowerUsers {
     if ([Reachability isReachable]) {
-        self.activityButton.backgroundColor = [UIColor yellowColor];
-        self.followersButton.backgroundColor = [UIColor greenColor];
-        self.followingButton.backgroundColor = [UIColor yellowColor];
+        self.activityButton.hidden = NO;
+        [self.followersButton setImage:[UIImage imageNamed:@"NewYelloBuddy"] forState:UIControlStateNormal];
+        [self.followingButton setImage:[UIImage imageNamed:@"NewBlueBuddy"] forState:UIControlStateNormal];
         
         self.buttonsView.userInteractionEnabled = NO;
         self.noResultsLabel.hidden = self.collectionView.hidden = YES;
@@ -231,9 +232,9 @@ NS_ENUM(int, ProfileDisplay) {
 
 -(void)updateFollowingUsers {
     if ([Reachability isReachable]) {
-        self.activityButton.backgroundColor = [UIColor yellowColor];
-        self.followersButton.backgroundColor = [UIColor yellowColor];
-        self.followingButton.backgroundColor = [UIColor greenColor];
+        self.activityButton.hidden = NO;
+        [self.followersButton setImage:[UIImage imageNamed:@"NewBlueBuddy"] forState:UIControlStateNormal];
+        [self.followingButton setImage:[UIImage imageNamed:@"NewYelloBuddy"] forState:UIControlStateNormal];
         
         self.buttonsView.userInteractionEnabled = NO;
         self.noResultsLabel.hidden = self.collectionView.hidden = YES;
@@ -495,6 +496,14 @@ NS_ENUM(int, ProfileDisplay) {
         return 0;
     } else {
         return 10;
+    }
+}
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section{
+    if (self.currentDisplay == ProfileDisplayActivity) {
+        return UIEdgeInsetsMake(0, 0, 0, 0);
+    } else {
+        return UIEdgeInsetsMake(5, 5, 5, 5);
     }
 }
 

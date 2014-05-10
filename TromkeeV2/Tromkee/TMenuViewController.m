@@ -10,6 +10,8 @@
 
 @interface TMenuViewController ()
 
+@property (nonatomic, strong) NSArray* menuItems;
+
 @end
 
 @implementation TMenuViewController
@@ -18,6 +20,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.menuItems = @[@"Near Me", @"My Profile", @"My Activity", @"Settings", @"Logout"];
 }
 
 
@@ -32,10 +35,26 @@
 //    [self.delegate userClickedMenu:indexPath.row];
 //}
 //
+#pragma mark - Table view data source
 
-- (IBAction)showMyProfile:(id)sender {
-    NSLog(@"Showing profile");
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.menuItems.count;
 }
 
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"MenuCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    
+    // Configure the cell...
+    cell.textLabel.text = self.menuItems[indexPath.row];
+    return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self.delegate userClickedMenu:indexPath.row];
+}
 
 @end

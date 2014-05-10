@@ -31,12 +31,13 @@
 
 
 @property (weak, nonatomic) IBOutlet UIView *askQuestionView;
+@property (weak, nonatomic) IBOutlet UIView *askBackground;
 @property (weak, nonatomic) IBOutlet UILabel *textCount;
 @property (weak, nonatomic) IBOutlet UITextView *askText;
     @property (weak, nonatomic) IBOutlet UIButton *onlyCameraButton;
 
 
-- (IBAction)postActivityDescription:(id)sender;
+//- (IBAction)postActivityDescription:(id)sender;
 
 @end
 
@@ -62,15 +63,16 @@
 //    self.navigationController.navigationItem.rightBarButtonItem = forwardButton;
     self.activities = [@[] mutableCopy];
     
-    self.bottomView.backgroundColor = [TUtility colorFromHexString:YELLOW_COLOR];
-    self.askQuestionView.backgroundColor = [TUtility colorFromHexString:YELLOW_COLOR];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:TROMKEE_UPDATE_COMMENTS object:nil];    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:TROMKEE_UPDATE_COMMENTS object:nil];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
+    self.bottomView.backgroundColor = [TUtility colorFromHexString:YELLOW_COLOR];
+    self.askBackground.backgroundColor = [TUtility colorFromHexString:YELLOW_COLOR];
     
+
     NSString* stickerType = self.postedObject[POST_TYPE];
     if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
         self.activityTitle.text = ACTIVITY_STICKER;
@@ -199,12 +201,17 @@
     
     if (indexPath.row == 0) {
         if (self.postCell == nil) {
-            PFObject* images = self.postedObject[@"images"];
-            if (images) {
-                self.postCell = [tableView dequeueReusableCellWithIdentifier:@"POST_IMAGE"];
-            } else {
-                self.postCell = [tableView dequeueReusableCellWithIdentifier:@"ONLY_POST"];
+            NSString* stickerType = self.postedObject[POST_TYPE];
+            if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
+                self.postCell = [tableView dequeueReusableCellWithIdentifier:VIEWSTICKER];
+            } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
+                self.postCell = [tableView dequeueReusableCellWithIdentifier:VIEWQUESTION];
+                self.postCell.contentView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_PICTURE_COLOR];
+            } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
+                self.postCell = [tableView dequeueReusableCellWithIdentifier:VIEWIMAGE];
+                self.postCell.contentView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_STICKER_COLOR];
             }
+
             self.postCell.delegate = self;
             [self.postCell update:self.postedObject];
         }
@@ -242,13 +249,16 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     CGFloat height = 100;
     if (indexPath.row == 0) {
-        PFObject* images = self.postedObject[@"images"];
-        if (images) {
-            height = 325;
-        } else {
+        NSString* stickerType = self.postedObject[POST_TYPE];
+        if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
             height = 150;
+        } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
+            height = 108;
+        } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
+            height = 430;
         }
     } else {
         if (self.activities && self.activities.count) {
@@ -298,7 +308,7 @@
 //    }];
 //}
 
-- (IBAction)postActivityDescription:(id)sender {
+//- (IBAction)postActivityDescription:(id)sender {
 //    if ([self.stickerImages count]) {
 //        UIImage *resizedImage = [self.stickerImages[0] resizedImageWithContentMode:UIViewContentModeScaleAspectFit bounds:CGSizeMake(560.0f, 560.0f) interpolationQuality:kCGInterpolationHigh];
 //        NSData *imageData = UIImageJPEGRepresentation(resizedImage, 0.8f);
@@ -332,7 +342,7 @@
 //    }
     
 
-}
+//}
 
 -(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
@@ -428,8 +438,8 @@
 {
     if([text isEqualToString:@"\n"])
     {
+        [textView resignFirstResponder];        
         [self postAskQuestion:nil];
-        [textView resignFirstResponder];
         return YES;
     }
     
@@ -487,7 +497,7 @@
     
     [UIView animateWithDuration:0.5 animations:^{
         CGRect r = self.askQuestionView.frame;
-        self.askQuestionView.frame = CGRectMake(0, 64, r.size.width, r.size.height);
+        self.askQuestionView.frame = CGRectMake(0, 0, r.size.width, r.size.height);
     }];
 }
 
@@ -495,7 +505,7 @@
     [UIView animateWithDuration:0.5 animations:^{
         [self.askText resignFirstResponder];
         CGRect r = self.askQuestionView.frame;
-        self.askQuestionView.frame = CGRectMake(0, -130, r.size.width, r.size.height);
+        self.askQuestionView.frame = CGRectMake(0, -568, r.size.width, r.size.height);
     }];
 }
 

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "TBaseViewController.h"
 
-@interface TProfileViewController : TBaseViewController
+@interface TProfileViewController : UIViewController
 
 @property (nonatomic, strong) PFUser* userProfile;
 

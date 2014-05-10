@@ -47,36 +47,36 @@
 }
 
 -(void)update:(PFObject*)postObj {
+    
     PFUser* user = postObj[POST_FROMUSER];
     PFFile *imageFile = [user objectForKey:FACEBOOK_SMALLPIC_KEY];
     self.fromImage.image = [UIImage imageNamed:@"Personholder"];
     if (imageFile) {
         [self.fromImage setFile:imageFile];
         [self.fromImage loadInBackground];
-    } 
-    
+    }
     self.fromName.text = user[USER_DISPLAY_NAME];
     self.fromPostedTime.text = [TUtility computePostedTime:postObj.updatedAt];
     self.fromPostedMessage.text = postObj[POST_DATA];
-    //                [weakSelf.fromPostedMessage sizeToFit];
-    //Compute Thanks objects posted
     self.postedLocation.text = postObj[POST_USERLOCATION];
-    PFObject* stickerObj = postObj[STICKER];
     
-    PFFile* stickerImage = stickerObj[STICKER_IMAGE];
-    if (stickerImage) {
-        self.fromStickerImage.file = stickerImage;
-        [self.fromStickerImage loadInBackground];
-    }
-    
-    self.fromStickerIntensity.green = [postObj[STICKER_SEVERITY] floatValue];
-    [self.fromStickerIntensity setNeedsDisplay];
-    
-    self.stickerName.text = stickerObj[STICKER_NAME];
-    
-    PFObject* images = postObj[@"images"];
-    if (images) {
-        PFFile* imgFile = images[STICKER_IMAGE];
+    NSString* stickerType = postObj[POST_TYPE];
+    if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
+        PFObject* stickerObj = postObj[STICKER];
+        PFFile* stickerImage = stickerObj[STICKER_IMAGE];
+        if (stickerImage) {
+            self.fromStickerImage.file = stickerImage;
+            [self.fromStickerImage loadInBackground];
+        }
+        
+        self.fromStickerIntensity.green = [postObj[STICKER_SEVERITY] floatValue];
+        [self.fromStickerIntensity setNeedsDisplay];
+        
+        self.stickerName.text = stickerObj[STICKER_NAME];
+    } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
+
+    } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
+        PFFile* imgFile = postObj[POST_ORIGINAL_IMAGE];
         if (imgFile) {
             self.postImage.file = imgFile;
             [self.postImage loadInBackground];

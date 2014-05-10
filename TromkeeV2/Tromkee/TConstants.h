@@ -58,10 +58,8 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 //MENU IDENTIFIERS
 typedef NS_ENUM(NSInteger, MenuItem) {
     MenuItemNearMe = 0,
-    MenuItemChooseMyRoute,
-    MenuItemChats,
-    MenuItemProfile,
-    MenuItemTopTromers,
+    MenuItemMyProfile,
+    MenuItemMyActivity,
     MenuItemSettings,
     MenuItemLogout
 };
@@ -84,7 +82,9 @@ typedef NS_ENUM(NSInteger, Camera) {
 //VIEW or Segue Identifiers
 #define CAMERA @"CAMERA"
 #define ASKCAMERA @"ASKCAMERA"
-
+#define VIEWSTICKER @"VIEWSTICKER"
+#define VIEWQUESTION @"VIEWQUESTION"
+#define VIEWIMAGE @"VIEWIMAGE"
 
 //Posting Sticker, Image, Ask
 #define POST @"Post"
