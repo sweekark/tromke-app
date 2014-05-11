@@ -11,15 +11,18 @@
 
 @interface TPostCell ()
 
-@property (weak, nonatomic) IBOutlet UILabel *stickerName;
 @property (weak, nonatomic) IBOutlet PFImageView *fromImage;
+@property (weak, nonatomic) IBOutlet PFImageView *fromStickerImage;
+@property (weak, nonatomic) IBOutlet TCircleView *fromStickerIntensity;
+@property (weak, nonatomic) IBOutlet PFImageView* postImage;
+
+@property (weak, nonatomic) IBOutlet UILabel *stickerName;
 @property (weak, nonatomic) IBOutlet UILabel *fromName;
 @property (weak, nonatomic) IBOutlet UILabel *fromPostedTime;
 @property (weak, nonatomic) IBOutlet UILabel *fromPostedMessage;
-@property (weak, nonatomic) IBOutlet PFImageView *fromStickerImage;
-@property (weak, nonatomic) IBOutlet TCircleView *fromStickerIntensity;
 @property (weak, nonatomic) IBOutlet UILabel* postedLocation;
-@property (weak, nonatomic) IBOutlet PFImageView* postImage;
+@property (weak, nonatomic) IBOutlet UILabel* postedByLabel;
+
 
 @end
 
@@ -90,6 +93,11 @@
     int totalThanks = [self.totalThanks.text intValue];
     self.totalThanks.text = [NSString stringWithFormat:@"%d", ++totalThanks];
     [self.delegate conveyThanks];
+}
+
+-(void)showLabelsForQuestion {
+    self.fromPostedTime.textColor = self.fromPostedMessage.textColor = self.postedLocation.textColor = self.postedByLabel.textColor = [UIColor whiteColor];
+    
 }
 
 @end

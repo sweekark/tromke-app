@@ -55,6 +55,7 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.delegate userClickedMenu:indexPath.row];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

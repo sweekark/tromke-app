@@ -166,12 +166,12 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
-                            <containerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OTO-Ts-hRa">
-                                <rect key="frame" x="0.0" y="-568" width="320" height="504"/>
+                            <containerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OTO-Ts-hRa" userLabel="Menu Container">
+                                <rect key="frame" x="0.0" y="-504" width="320" height="504"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <segue destination="NJT-y2-0t2" kind="embed" id="df1-hn-JpK"/>
+                                    <segue destination="NJT-y2-0t2" kind="embed" identifier="Menu" id="df1-hn-JpK"/>
                                 </connections>
                             </containerView>
                         </subviews>
@@ -754,6 +754,10 @@
                                         </subviews>
                                         <color key="backgroundColor" red="1" green="0.81568634510040283" blue="0.28627452254295349" alpha="1" colorSpace="deviceRGB"/>
                                     </view>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="ProfileRound" translatesAutoresizingMaskIntoConstraints="NO" id="cAI-fp-6TQ">
+                                        <rect key="frame" x="121" y="6" width="70" height="70"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <constraints>
@@ -1936,6 +1940,7 @@
                                             <outlet property="fromName" destination="nvU-fr-kNP" id="OFp-Aa-KfL"/>
                                             <outlet property="fromPostedMessage" destination="sWW-ik-rSu" id="UHv-kJ-s1g"/>
                                             <outlet property="fromPostedTime" destination="0Pa-q0-OVm" id="LRu-ho-R4A"/>
+                                            <outlet property="postedByLabel" destination="9PV-8x-0vi" id="Wen-qz-Oit"/>
                                             <outlet property="postedLocation" destination="CrM-Jx-6wv" id="Fld-Bu-lDN"/>
                                             <outlet property="thanksButton" destination="LLS-2F-krI" id="Zzt-7R-We8"/>
                                             <outlet property="totalThanks" destination="pOS-tg-1Mo" id="t0q-sK-UXW"/>
@@ -1956,7 +1961,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="Helvetica-Light" family="Helvetica" pointSize="24"/>
                                         <inset key="contentEdgeInsets" minX="60" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                        <state key="normal" title="Comment">
+                                        <state key="normal">
                                             <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -1979,7 +1984,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1jZ-EI-w7u">
-                                        <rect key="frame" x="0.0" y="64" width="320" height="130"/>
+                                        <rect key="frame" x="0.0" y="20" width="320" height="130"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ueb-zr-csm">
@@ -1993,7 +1998,7 @@
                                                     <action selector="hideAskQuestionView:" destination="oKO-5Q-Eb5" eventType="touchUpInside" id="o6g-WX-HSO"/>
                                                 </connections>
                                             </button>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" text="Type your question here" translatesAutoresizingMaskIntoConstraints="NO" id="MtK-cv-tWM">
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" text="Type your comment/answer here" translatesAutoresizingMaskIntoConstraints="NO" id="MtK-cv-tWM">
                                                 <rect key="frame" x="0.0" y="0.0" width="320" height="96"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2049,6 +2054,7 @@
                         <outlet property="askQuestionView" destination="pA7-TO-TQK" id="XPY-NE-Nwj"/>
                         <outlet property="askText" destination="MtK-cv-tWM" id="am7-4T-8fF"/>
                         <outlet property="bottomView" destination="oQI-bq-ukl" id="5N2-58-FCE"/>
+                        <outlet property="commentButton" destination="TTs-Jg-Iel" id="Ae8-8l-PKW"/>
                         <outlet property="onlyCameraButton" destination="QrA-3A-uzP" id="DKb-mb-Btp"/>
                         <outlet property="textCount" destination="ZH7-sh-csm" id="q4A-n5-etO"/>
                         <outlet property="topBar" destination="q6p-6s-MmN" id="Dc9-UG-uxL"/>
@@ -2105,6 +2111,7 @@
         <image name="NewStickerBG" width="60" height="60"/>
         <image name="Personholder" width="50" height="50"/>
         <image name="Placeholder" width="50" height="50"/>
+        <image name="ProfileRound" width="70" height="70"/>
         <image name="RedBox" width="1" height="70"/>
         <image name="Send" width="60" height="60"/>
         <image name="TopBar" width="320" height="44"/>
@@ -2116,8 +2123,8 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="yux-Dm-G3t"/>
         <segue reference="Jaa-Qq-CdW"/>
-        <segue reference="COV-JJ-dRE"/>
+        <segue reference="l0l-lO-hqx"/>
+        <segue reference="yux-Dm-G3t"/>
     </inferredMetricsTieBreakers>
 </document>

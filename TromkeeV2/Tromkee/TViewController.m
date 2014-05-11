@@ -70,7 +70,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation:) name:TROMKE_USER_LOCATION_UPDATED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePostedStickers) name:TROMKEE_UPDATE_STICKERS object:nil];
     
-    self.askBackgroundView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"RedBox"]];
+    self.askBackgroundView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_PICTURE_COLOR];
+    //[UIColor colorWithPatternImage:[UIImage imageNamed:@"RedBox"]];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -229,9 +230,11 @@
         } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_IMAGE]) {
             annotationPin.stickerImage.file = postObj[POST_THUMBNAIL_IMAGE];
             [annotationPin.stickerImage loadInBackground];
+            annotationPin.circleView.hidden = YES;
         } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_ASK]) {
             annotationPin.bottomBar.backgroundColor = [UIColor darkGrayColor];
             annotationPin.stickerImage.image = [UIImage imageNamed:@"NewMapAsk"];
+            annotationPin.circleView.hidden = YES;            
         }
 
         
@@ -293,15 +296,15 @@
 
 //- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated{
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-//    if (!animated) {
-//        return;
-//    }
+    if (!animated) {
+        return;
+    }
     CLLocationCoordinate2D mapCenter2D = mapView.centerCoordinate;
     CLLocation* mapCenter = [[CLLocation alloc] initWithLatitude:mapCenter2D.latitude longitude:mapCenter2D.longitude];
     
     CLLocation* oldCenter = [[CLLocation alloc] initWithLatitude:self.currentCenterLocation.latitude longitude:self.currentCenterLocation.longitude];
     DLog(@"Distance is: %f", [mapCenter distanceFromLocation:oldCenter]);
-    if ([mapCenter distanceFromLocation:oldCenter] > 1000) {
+    if ([mapCenter distanceFromLocation:oldCenter] > 2000) {
         CLLocationCoordinate2D center = mapView.centerCoordinate;
         self.currentCenterLocation = center;
         [self updatePostedStickersOnMapWithCenter:center.latitude andLongitude:center.longitude];
@@ -351,7 +354,7 @@
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (!error) {
-                    [self.map removeAnnotations:self.map.annotations];                    
+//                    [self.map removeAnnotations:self.map.annotations];                    
 //                    self.stickerLocations = [objects mutableCopy];
                     [self updateMapWithStickers:objects];
                 } else {
@@ -369,8 +372,10 @@
 
 -(void)updateMapWithStickers:(NSArray*)stickers {
     for (PFObject* sticker in stickers) {
-        TStickerAnnotation *annotation = [[TStickerAnnotation alloc] initWithObject:sticker];
-        [self.map addAnnotation:annotation];
+//        if ([sticker[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
+            TStickerAnnotation *annotation = [[TStickerAnnotation alloc] initWithObject:sticker];
+            [self.map addAnnotation:annotation];
+//        }
     }
     
     /*

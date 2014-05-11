@@ -12,6 +12,7 @@
 @interface CustomPin : UIView//MKAnnotationView
 
 @property (nonatomic, assign) CLLocationCoordinate2D coOrdinate2D;
+@property (nonatomic, weak) IBOutlet TCircleView* circleView;
 @property (nonatomic, weak) IBOutlet PFImageView* stickerImage;
 @property (nonatomic, weak) IBOutlet UILabel* commentsCount;
 @property (nonatomic) float stickerColor;

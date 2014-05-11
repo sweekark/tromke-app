@@ -31,8 +31,8 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 #define STICKERS_BG_COLOR [UIColor colorWithRed:240/255.0f green:242/255.0f blue:242/255.0f alpha:1.0f]
 #define STICKER_POST_BOTTOM_COLOR [UIColor colorWithRed:226/255.0f green:226/255.0f blue:226/255.0f alpha:1.0f]
 
-#define ACTIVITY_PICTURE_COLOR @"#993366"
-#define ACTIVITY_QUESTION_COLOR @"#D393BC"
+#define ACTIVITY_PICTURE_COLOR @"#D393BC"
+#define ACTIVITY_QUESTION_COLOR @"#F88190"
 #define ACTIVITY_STICKER_COLOR @"#FFFFFF"
 
 #define YELLOW_COLOR @"#FDD17D"

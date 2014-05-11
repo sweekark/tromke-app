@@ -35,6 +35,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *textCount;
 @property (weak, nonatomic) IBOutlet UITextView *askText;
     @property (weak, nonatomic) IBOutlet UIButton *onlyCameraButton;
+@property (weak, nonatomic) IBOutlet UIButton *commentButton;
 
 
 //- (IBAction)postActivityDescription:(id)sender;
@@ -78,12 +79,18 @@
         self.activityTitle.text = ACTIVITY_STICKER;
         self.activityTitle.textColor = [UIColor darkGrayColor];
         self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_STICKER_COLOR];
+        self.askText.text = @"Type your comment here";
+        [self.commentButton setTitle:@"Comment" forState:UIControlStateNormal];
     } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
         self.activityTitle.text = ACTIVITY_ASK;
         self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_PICTURE_COLOR];
+        self.askText.text = @"Type your answer here";
+        [self.commentButton setTitle:@"Answer" forState:UIControlStateNormal];
     } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
         self.activityTitle.text = ACTIVITY_PICTURE;
         self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_QUESTION_COLOR];
+        self.askText.text = @"Type your comment here";
+        [self.commentButton setTitle:@"Comment" forState:UIControlStateNormal];
     }
 }
 
@@ -122,10 +129,10 @@
         self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_STICKER_COLOR];
     } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
         self.activityTitle.text = ACTIVITY_ASK;
-        self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_PICTURE_COLOR];
+        self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_QUESTION_COLOR];
     } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
         self.activityTitle.text = ACTIVITY_PICTURE;
-        self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_QUESTION_COLOR];
+        self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_PICTURE_COLOR];
     }
     
     if ([Reachability isReachable]) {
@@ -207,6 +214,7 @@
             } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
                 self.postCell = [tableView dequeueReusableCellWithIdentifier:VIEWQUESTION];
                 self.postCell.contentView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_PICTURE_COLOR];
+                [self.postCell showLabelsForQuestion];
             } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
                 self.postCell = [tableView dequeueReusableCellWithIdentifier:VIEWIMAGE];
                 self.postCell.contentView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_STICKER_COLOR];
@@ -429,7 +437,7 @@
 #pragma mark - Ask question delegate
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
-    if ([textView.text isEqualToString:@"Type your question here"]) {
+    if ([textView.text isEqualToString:@"Type your comment here"] || [textView.text isEqualToString:@"Type your answer here"]) {
         textView.text = @"";
     }
 }
@@ -491,9 +499,18 @@
         return;
     }
     
-    self.askText.text = @"Type your question here";
-    self.onlyCameraButton.enabled = NO;
-    self.textCount.text = @"0";
+//    self.askText.text = @"Type your question here";
+//    self.onlyCameraButton.enabled = NO;
+//    self.textCount.text = @"0";
+    
+    NSString* stickerType = self.postedObject[POST_TYPE];
+    if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
+        self.askText.text = @"Type your comment here";
+    } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
+        self.askText.text = @"Type your answer here";
+    } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
+        self.askText.text = @"Type your comment here";
+    }
     
     [UIView animateWithDuration:0.5 animations:^{
         CGRect r = self.askQuestionView.frame;

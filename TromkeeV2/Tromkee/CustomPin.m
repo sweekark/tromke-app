@@ -10,7 +10,6 @@
 
 @interface CustomPin ()
 
-@property (nonatomic, weak) IBOutlet TCircleView* circleView;
 @property (weak, nonatomic) IBOutlet TCircleView *labelBackground;
 
 @end

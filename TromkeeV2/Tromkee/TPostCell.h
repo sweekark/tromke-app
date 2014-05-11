@@ -18,8 +18,10 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *thanksButton;
 @property (weak, nonatomic) IBOutlet UILabel *totalThanks;
+
 @property (weak, nonatomic) id<TPostCellDelegate> delegate;
 
--(void)update:(PFObject*)postObj;
 
+-(void)update:(PFObject*)postObj;
+-(void)showLabelsForQuestion;
 @end
