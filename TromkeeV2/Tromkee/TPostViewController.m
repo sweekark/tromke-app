@@ -61,6 +61,8 @@
     self.commentView.backgroundColor = STICKER_POST_BOTTOM_COLOR;
     
     [self updateSeverityColor:0.5];
+    
+    self.postView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_PICTURE_COLOR];
 }
 
 -(void)viewWillAppear:(BOOL)animated {

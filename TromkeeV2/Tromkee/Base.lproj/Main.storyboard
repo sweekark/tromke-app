@@ -319,10 +319,6 @@
                                 <rect key="frame" x="0.0" y="478" width="320" height="90"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="RedBox" translatesAutoresizingMaskIntoConstraints="NO" id="Mct-h3-bwn">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="90"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5By-vH-J1k">
                                         <rect key="frame" x="113" y="32" width="93" height="27"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1247,10 +1243,6 @@
                                 <rect key="frame" x="0.0" y="136" width="320" height="54"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="RedBox" translatesAutoresizingMaskIntoConstraints="NO" id="rx6-wq-bSm">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="54"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3dz-WQ-bqp">
                                         <rect key="frame" x="8" y="11" width="32" height="32"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -2112,7 +2104,6 @@
         <image name="Personholder" width="50" height="50"/>
         <image name="Placeholder" width="50" height="50"/>
         <image name="ProfileRound" width="70" height="70"/>
-        <image name="RedBox" width="1" height="70"/>
         <image name="Send" width="60" height="60"/>
         <image name="TopBar" width="320" height="44"/>
         <image name="UserLocation" width="60" height="60"/>

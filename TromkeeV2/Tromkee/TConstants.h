@@ -40,7 +40,7 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 
 //GENERAL
 #define POSTDATA_LENGTH 100
-#define STICKER_QUERY_RADIUS 40.0 //In miles
+#define STICKER_QUERY_RADIUS 2 //In miles
 
 //STRINGS
 #define ACTIVITY_STICKER @"Sticker"

@@ -70,7 +70,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation:) name:TROMKE_USER_LOCATION_UPDATED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePostedStickers) name:TROMKEE_UPDATE_STICKERS object:nil];
     
-    self.askBackgroundView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_PICTURE_COLOR];
+    self.askBackgroundView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_QUESTION_COLOR];
     //[UIColor colorWithPatternImage:[UIImage imageNamed:@"RedBox"]];
 }
 
@@ -125,8 +125,8 @@
     MKCoordinateRegion region;
     region.center = self.currentMapLocation;
     MKCoordinateSpan span;
-    span.latitudeDelta = 0.0144927536 * 20;// * STICKER_QUERY_RADIUS; //1 mile
-    span.longitudeDelta = 0.0144927536 * 20;//  * STICKER_QUERY_RADIUS; //1 mile
+    span.latitudeDelta = 0.0144927536 * STICKER_QUERY_RADIUS; //1 mile
+    span.longitudeDelta = 0.0144927536 * STICKER_QUERY_RADIUS; //1 mile
     region.span = span;
     [self.map setRegion:region animated:NO];
     
