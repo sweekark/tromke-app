@@ -35,6 +35,7 @@
 @property (weak, nonatomic) IBOutlet UIView* postView;
 
 @property (nonatomic) BOOL isCommentEditing;
+@property (nonatomic, assign) UIBackgroundTaskIdentifier photoPostBackgroundTaskId;
 
 - (IBAction)postSticker:(id)sender;
 
@@ -62,7 +63,8 @@
     
     [self updateSeverityColor:0.5];
     
-    self.postView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_PICTURE_COLOR];
+    self.postView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_QUESTION_COLOR];
+    self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -87,7 +89,6 @@
 
 - (IBAction)updateStickerIntensity:(id)sender {
     CGFloat gValue = self.stickerSeverity.value;
-    //CGFloat gHTMLValue = gValue / 255;
     [self updateSeverityColor:gValue];
 }
 
@@ -111,13 +112,11 @@
         return;
     }
     
-//    if (![self.stickerDescription.text length]) {
-//        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Please enter comment to post !!!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-//        return;
-//    }
-    NSLog(@"User available");
-
     //Post only content
+    self.photoPostBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
+    }];
+
     CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
     
     PFObject *stickerPost = [PFObject objectWithClassName:POST];
@@ -126,7 +125,7 @@
     stickerPost[POST_FROMUSER] = [PFUser currentUser];
     stickerPost[STICKER] = self.postSticker;
     stickerPost[STICKER_SEVERITY] = [NSNumber numberWithFloat:self.stickerSeverity.value];
-    stickerPost[@"points"] = self.postSticker[@"postPoints"];
+//    stickerPost[@"points"] = self.postSticker[@"postPoints"];
     stickerPost[POST_USERLOCATION] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
     stickerPost[POST_TYPE] = @"STICKER";
     
@@ -140,6 +139,8 @@
         } else {
             NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
         }
+        
+        [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
     }];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:STICKER_POSTED object:nil];

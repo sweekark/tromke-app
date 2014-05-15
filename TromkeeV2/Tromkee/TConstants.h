@@ -92,8 +92,8 @@ typedef NS_ENUM(NSInteger, Camera) {
 #define POST_LOCATION @"location"
 #define POST_FROMUSER @"fromUser"
 #define POST_USERLOCATION @"usrlocation"
-#define POST_ORIGINAL_IMAGE @"OriginalImage"
-#define POST_THUMBNAIL_IMAGE @"ThumbnailImage"
+#define POST_ORIGINAL_IMAGE @"originalImage"
+#define POST_THUMBNAIL_IMAGE @"thumbnailImage"
 #define POST_TYPE @"type"
 #define POST_COMMENTS_COUNT @"comments_count"
 #define POST_THANKS_COUNT @"thanks_count"
@@ -110,11 +110,11 @@ typedef NS_ENUM(NSInteger, Camera) {
 
 
 //Activity Object
-#define THANKS @"THANKS"
-#define FOLLOW @"FOLLOW"
-#define COMMENT @"COMMENT"
-#define IMAGE_COMMENT @"IMAGE_COMMENT"
-#define IMAGE_ONLY @"IMAGE"
+#define ACTIVITY_TYPE_THANKS @"THANKS"
+#define ACTIVITY_TYPE_FOLLOW @"FOLLOW"
+#define ACTIVITY_TYPE_COMMENT @"COMMENT"
+#define ACTIVITY_TYPE_IMAGE_COMMENT @"IMAGE_COMMENT"
+#define ACTIVITY_TYPE_IMAGE_ONLY @"IMAGE"
 
 #define ACTIVITY @"Activity"
 #define ACTIVITY_FROMUSER @"fromUser"
@@ -122,8 +122,8 @@ typedef NS_ENUM(NSInteger, Camera) {
 #define ACTIVITY_TYPE @"type"
 #define ACTIVITY_CONTENT @"content"
 #define ACTIVITY_POST @"post"
-#define ACTIVITY_ORIGINAL_IMAGE @"OriginalImage"
-#define ACTIVITY_THUMBNAIL_IMAGE @"ThumbnailImage"
+#define ACTIVITY_ORIGINAL_IMAGE @"originalImage"
+#define ACTIVITY_THUMBNAIL_IMAGE @"thumbnailImage"
 
 
 //Category Object

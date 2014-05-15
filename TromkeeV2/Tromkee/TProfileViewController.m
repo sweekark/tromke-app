@@ -198,7 +198,7 @@ NS_ENUM(int, ProfileDisplay) {
         PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
 //        [followersQuery whereKey:POST_FROMUSER equalTo:self.userProfile];
         [followersQuery whereKey:@"toUser" equalTo:self.userProfile];
-        [followersQuery whereKey:POST_TYPE equalTo:FOLLOW];
+        [followersQuery whereKey:POST_TYPE equalTo:ACTIVITY_TYPE_FOLLOW];
         [followersQuery includeKey:POST_FROMUSER];
         [followersQuery selectKeys:@[POST_FROMUSER]];
         followersQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
@@ -242,7 +242,7 @@ NS_ENUM(int, ProfileDisplay) {
         PFQuery* followersQuery = [PFQuery queryWithClassName:@"Activity"];
         [followersQuery whereKey:POST_FROMUSER equalTo:self.userProfile];
 //        [followersQuery whereKey:@"toUser" equalTo:self.userProfile];
-        [followersQuery whereKey:POST_TYPE equalTo:FOLLOW];
+        [followersQuery whereKey:POST_TYPE equalTo:ACTIVITY_TYPE_FOLLOW];
         [followersQuery includeKey:@"toUser"];
         [followersQuery selectKeys:@[@"toUser"]];
         followersQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
@@ -345,7 +345,7 @@ NS_ENUM(int, ProfileDisplay) {
         PFQuery* activity = [PFQuery queryWithClassName:@"Activity"];
         [activity whereKey:POST_FROMUSER equalTo:[PFUser currentUser]];
         [activity whereKey:@"toUser" equalTo:self.userProfile];
-        [activity whereKey:POST_TYPE equalTo:FOLLOW];
+        [activity whereKey:POST_TYPE equalTo:ACTIVITY_TYPE_FOLLOW];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [activity getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             DLog(@"Deleted following");
@@ -373,7 +373,7 @@ NS_ENUM(int, ProfileDisplay) {
         PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
         activiy[POST_FROMUSER] = [PFUser currentUser];
         activiy[@"toUser"] = self.userProfile;
-        activiy[POST_TYPE] = FOLLOW;
+        activiy[POST_TYPE] = ACTIVITY_TYPE_FOLLOW;
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
@@ -415,15 +415,15 @@ NS_ENUM(int, ProfileDisplay) {
         
         PFObject* post = self.postsArray[indexPath.row];
         cell.postedTime.text = [TUtility computePostedTime:post.updatedAt];
-        if ([post[POST_TYPE] isEqualToString:COMMENT]) {
+        if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
             cell.comment.text = [NSString stringWithFormat:@"Commented %@", post[@"content"]];
-        } else if ([post[POST_TYPE] isEqualToString:THANKS]) {
+        } else if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
             cell.comment.text = @"Conveyed Thanks";
-        } else if ([post[POST_TYPE] isEqualToString:IMAGE_COMMENT]) {
+        } else if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT]) {
             cell.comment.text = [NSString stringWithFormat:@"Posted image with %@", post[@"content"]];
-        } else if ([post[POST_TYPE] isEqualToString:IMAGE_ONLY]) {
+        } else if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_ONLY]) {
             cell.comment.text = @"Posted Image";
-        } else if ([post[POST_TYPE] isEqualToString:FOLLOW]) {
+        } else if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_FOLLOW]) {
             PFUser* touser = post[@"toUser"];
             cell.comment.text = [NSString stringWithFormat:@"Following %@", touser[USER_DISPLAY_NAME]];
         }
@@ -452,7 +452,7 @@ NS_ENUM(int, ProfileDisplay) {
 //            usr = act[@"toUser"];
 //        }
 
-        
+        cell.personName.text = usr[USER_DISPLAY_NAME];
         PFFile *imageFile = [usr objectForKey:FACEBOOK_SMALLPIC_KEY];
         cell.personImage.image = [UIImage imageNamed:@"Personholder"];
         if (imageFile) {
@@ -477,7 +477,7 @@ NS_ENUM(int, ProfileDisplay) {
             break;
         case ProfileDisplayFollowers:
         case ProfileDisplayFollowing:            
-            cellSize = CGSizeMake(90, 90);
+            cellSize = CGSizeMake(90, 110);
             break;
     }
     

@@ -10,7 +10,7 @@
 
 @protocol TUserActivity <NSObject>
 
--(void)showProfile:(int)rowNumber;
+-(void)showProfile:(NSInteger)rowNumber;
 
 @end
 
@@ -20,7 +20,7 @@
 @property (nonatomic, weak) IBOutlet UILabel* notificationMessage;
 @property (nonatomic, weak) IBOutlet UILabel* postedAt;
 
-@property (nonatomic) int rowNumber;
+@property (nonatomic) NSInteger rowNumber;
 @property (nonatomic, weak) id<TUserActivity> delegate;
 
 @end

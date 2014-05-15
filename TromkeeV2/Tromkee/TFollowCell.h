@@ -12,5 +12,6 @@
 @interface TFollowCell : UICollectionViewCell
 
 @property (nonatomic, weak) IBOutlet PFImageView* personImage;
+@property (nonatomic, weak) IBOutlet UILabel* personName;
 
 @end

@@ -50,6 +50,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *onlyCameraButton;
 
 @property (nonatomic) BOOL isFirstTime;
+@property (nonatomic) BOOL isAskViewVisible;
 
 - (IBAction)menuClicked:(id)sender;
 - (IBAction)searchClicked:(id)sender;
@@ -63,6 +64,7 @@
 {
     [super viewDidLoad];
     self.isFirstTime = YES;
+    self.isAskViewVisible = NO;
     self.firstTimeLogin = YES;
     self.isMenuExpanded = NO;
     self.stickerLocations = [[NSMutableArray alloc] initWithCapacity:10];
@@ -431,6 +433,11 @@
 //            self.view.frame = vr;
         }];
     } else {
+        
+        if (self.isAskViewVisible) {
+            [self hideAskQuestionView:nil];
+        }
+        
         //show
         [UIView animateWithDuration:0.5 animations:^{
             CGRect r = self.menuContainer.frame;
@@ -487,7 +494,7 @@
         return;
     }
 
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:0.2 animations:^{
         CGRect r = self.categoryContainer.frame;
         r.origin.y = self.view.frame.size.height - r.size.height;
         self.categoryContainer.frame = r;
@@ -502,22 +509,27 @@
         return;
     }
     
-    self.askText.text = @"Type your question here";
+    self.askText.text = @"";
     self.onlyCameraButton.enabled = NO;
     self.textCount.text = @"0";
+    [self.askText becomeFirstResponder];
     
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:0.2 animations:^{
         CGRect r = self.askQuestionView.frame;
-        self.askQuestionView.frame = CGRectMake(0, 0, r.size.width, r.size.height);
+        self.askQuestionView.frame = CGRectMake(0, 64, r.size.width, r.size.height);
     }];
+    
+    self.isAskViewVisible = YES;
 }
 
 - (IBAction)hideAskQuestionView:(id)sender {
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:0.2 animations:^{
         [self.askText resignFirstResponder];
         CGRect r = self.askQuestionView.frame;
         self.askQuestionView.frame = CGRectMake(0, -568, r.size.width, r.size.height);
     }];
+    
+    self.isAskViewVisible = NO;
 }
 
 
@@ -560,12 +572,6 @@
 }
 
 #pragma mark - Ask question delegate
-
-- (void)textViewDidBeginEditing:(UITextView *)textView {
-    if ([textView.text isEqualToString:@"Type your question here"]) {
-        textView.text = @"";
-    }
-}
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {

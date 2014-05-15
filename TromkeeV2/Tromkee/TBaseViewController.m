@@ -30,13 +30,13 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     UIButton* notificationCount = [UIButton buttonWithType:UIButtonTypeCustom];
-    notificationCount.frame = CGRectMake(60, 27, 30, 30);
-    [notificationCount setImage:[UIImage imageNamed:@"Callout"] forState:UIControlStateNormal];
+    notificationCount.frame = CGRectMake(280, 27, 30, 30);
+    [notificationCount setImage:[UIImage imageNamed:@"NewBox"] forState:UIControlStateNormal];
     [notificationCount addTarget:self action:@selector(showUserActivity) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:notificationCount];
     
-    self.notificationCountValue = [[UILabel alloc] initWithFrame:CGRectMake(60, 27, 30, 21)];
-    self.notificationCountValue.textColor = [UIColor whiteColor];
+    self.notificationCountValue = [[UILabel alloc] initWithFrame:CGRectMake(280, 27, 30, 21)];
+    self.notificationCountValue.textColor = [TUtility colorFromHexString:ACTIVITY_QUESTION_COLOR];
     self.notificationCountValue.font = [UIFont boldSystemFontOfSize:11];
     self.notificationCountValue.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:self.notificationCountValue];

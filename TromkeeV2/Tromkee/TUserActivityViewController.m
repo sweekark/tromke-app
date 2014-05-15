@@ -19,7 +19,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *noResultsLabel;
 @property (weak, nonatomic) IBOutlet UITableView* userActivityTable;
 
-@property (nonatomic) int row;
+@property (nonatomic) NSInteger row;
 @end
 
 @implementation TUserActivityViewController
@@ -54,7 +54,7 @@
         [activityQuery includeKey:@"post"];
         [activityQuery includeKey:@"post.sticker"];
         [activityQuery includeKey:@"post.fromUser"];
-        
+        activityQuery.limit = 30;
 //        [activityQuery whereKeyDoesNotExist:@"notifyUser"];
         [activityQuery whereKey:@"notifyUser" equalTo:[PFUser currentUser]];
         [activityQuery orderByDescending:SORTBY];
@@ -120,13 +120,13 @@
         PFObject* activityObj = notifyObj[@"activity"];
         
         NSString* comment;
-        if ([activityObj[POST_TYPE] isEqualToString:COMMENT]) {
+        if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
             comment = [NSString stringWithFormat:@"Commented %@", activityObj[@"content"]];
-        } else if ([activityObj[POST_TYPE] isEqualToString:THANKS]) {
+        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
             comment = @"Conveyed Thanks";
-        } else if ([activityObj[POST_TYPE] isEqualToString:IMAGE_COMMENT]) {
+        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT]) {
             comment = [NSString stringWithFormat:@"Posted image with %@", activityObj[@"content"]];
-        } else if ([activityObj[POST_TYPE] isEqualToString:IMAGE_ONLY]) {
+        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_ONLY]) {
             comment = @"Posted Image";
         }
         
@@ -143,6 +143,7 @@
             [cell.userImage loadInBackground];
         }
         
+        cell.rowNumber = indexPath.row;
         return cell;
     } else {
         static NSString* cellIdentifier = @"USERPOST";
@@ -169,6 +170,7 @@
             [cell.userImage loadInBackground];
         }
 
+        cell.rowNumber = indexPath.row;        
         return cell;
     }
 }
@@ -195,7 +197,7 @@
     }
 }
 
--(void)showProfile:(int)rowNumber {
+-(void)showProfile:(NSInteger)rowNumber {
     self.row = rowNumber;
     [self performSegueWithIdentifier:@"PROFILE" sender:nil];
 }

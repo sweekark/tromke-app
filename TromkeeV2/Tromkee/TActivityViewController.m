@@ -58,12 +58,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.postCell = nil;
-	// Do any additional setup after loading the view.
-//    UIBarButtonItem* forwardButton = [[UIBarButtonItem alloc] initWithTitle:@"Forward" style:UIBarButtonItemStyleBordered target:self action:@selector(share)];
-//    self.navigationController.navigationItem.rightBarButtonItem = forwardButton;
-    self.activities = [@[] mutableCopy];
     
+    self.postCell = nil;
+    self.activities = [@[] mutableCopy];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:TROMKEE_UPDATE_COMMENTS object:nil];
 }
 
@@ -79,17 +76,17 @@
         self.activityTitle.text = ACTIVITY_STICKER;
         self.activityTitle.textColor = [UIColor darkGrayColor];
         self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_STICKER_COLOR];
-        self.askText.text = @"Type your comment here";
+//        self.askText.text = @"Type your comment here";
         [self.commentButton setTitle:@"Comment" forState:UIControlStateNormal];
     } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
         self.activityTitle.text = ACTIVITY_ASK;
         self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_PICTURE_COLOR];
-        self.askText.text = @"Type your answer here";
+//        self.askText.text = @"Type your answer here";
         [self.commentButton setTitle:@"Answer" forState:UIControlStateNormal];
     } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
         self.activityTitle.text = ACTIVITY_PICTURE;
         self.topBar.backgroundColor = [TUtility colorFromHexString:ACTIVITY_QUESTION_COLOR];
-        self.askText.text = @"Type your comment here";
+//        self.askText.text = @"Type your comment here";
         [self.commentButton setTitle:@"Comment" forState:UIControlStateNormal];
     }
 }
@@ -115,6 +112,7 @@
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             if (!error) {
                 self.postedObject = [objects firstObject];
+                [self.activitiesTable reloadData];
                 [self update];
             }
         }];
@@ -138,10 +136,10 @@
     if ([Reachability isReachable]) {
         [self updateThanksButton];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        PFQuery* activityQuery = [PFQuery queryWithClassName:@"Activity"];
-        [activityQuery whereKey:@"post" equalTo:self.postedObject];
-        [activityQuery whereKey:POST_TYPE containedIn:@[@"IMAGE_COMMENT", @"COMMENT", @"THANKS"]];
-        [activityQuery includeKey:POST_FROMUSER];
+        PFQuery* activityQuery = [PFQuery queryWithClassName:ACTIVITY];
+        [activityQuery whereKey:ACTIVITY_POST equalTo:self.postedObject];
+        [activityQuery whereKey:ACTIVITY_TYPE containedIn:@[ACTIVITY_TYPE_IMAGE_COMMENT, ACTIVITY_TYPE_COMMENT, ACTIVITY_TYPE_THANKS]];
+        [activityQuery includeKey:ACTIVITY_FROMUSER];
         [activityQuery orderByDescending:SORT_ACTIVITIES_KEY];
         
         __weak TActivityViewController* weakSelf = self;
@@ -151,7 +149,7 @@
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             
             NSIndexSet* indexes = [objects indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-                return [[(PFObject*)obj valueForKey:POST_TYPE] isEqualToString:THANKS];
+                return [[(PFObject*)obj valueForKey:POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS];
             }];
             
             weakSelf.postCell.totalThanks.text = [NSString stringWithFormat:@"%lu", (unsigned long)(indexes ? indexes.count : 0)];
@@ -170,8 +168,8 @@
 }
 
 -(void)updateThanksButton {
-    PFQuery* thanksQuery = [PFQuery queryWithClassName:@"Activity"];
-    [thanksQuery whereKey:@"post" equalTo:self.postedObject];
+    PFQuery* thanksQuery = [PFQuery queryWithClassName:ACTIVITY];
+    [thanksQuery whereKey:ACTIVITY_POST equalTo:self.postedObject];
     [thanksQuery whereKey:POST_FROMUSER equalTo:[PFUser currentUser]];
     [thanksQuery whereKey:POST_TYPE equalTo:@"THANKS"];
     [thanksQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
@@ -197,11 +195,15 @@
 #pragma mark - Tableview methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (self.activities && self.activities.count) {
-        return self.activities.count + 1;
+    if (self.postedObject) {
+        if (self.activities && self.activities.count) {
+            return self.activities.count + 1;
+        }
+        
+        return 1;
     }
-
-    return 1;
+    
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -228,23 +230,26 @@
     }
     
     PFObject* comment = self.activities[indexPath.row - 1];
-    PFObject* fromUser = comment[POST_FROMUSER];
+    PFObject* fromUser = comment[ACTIVITY_FROMUSER];
     
     TActivityCell* cell;
-    if ([comment[POST_TYPE] isEqualToString:COMMENT]) {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"ONLY_COMMENT"];
-    } else {
+    PFFile* imgFile = comment[ACTIVITY_ORIGINAL_IMAGE];
+    
+    if ([comment[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT] && imgFile) {
         cell = [tableView dequeueReusableCellWithIdentifier:@"COMMENT_IMAGE"];
-        PFFile* imgFile = comment[@"commentImage"];
-        cell.commentImage.image = [UIImage imageNamed:@"Personholder"];
+//        PFFile* imgFile = comment[@"commentImage"];
+        cell.commentImage.image = [UIImage imageNamed:@"PlaceHolder"];
         if (imgFile) {
             [cell.commentImage setFile:imgFile];
             [cell.commentImage loadInBackground];
         }
     }
+    else { //if ([comment[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
+        cell = [tableView dequeueReusableCellWithIdentifier:@"ONLY_COMMENT"];
+    }
 
     cell.personName.text = fromUser[USER_DISPLAY_NAME];
-    cell.comment.text = comment[@"content"];
+    cell.comment.text = comment[ACTIVITY_CONTENT];
     cell.updatedTime.text = [TUtility computePostedTime:comment.updatedAt];
     
     PFFile* perImg = fromUser[FACEBOOK_SMALLPIC_KEY];
@@ -270,10 +275,23 @@
         }
     } else {
         if (self.activities && self.activities.count) {
+            
+            
             PFObject* comment = self.activities[indexPath.row - 1];
-            if ([comment[POST_TYPE] isEqualToString:IMAGE_COMMENT]) {
+            PFFile* imgFile = comment[ACTIVITY_ORIGINAL_IMAGE];
+            
+            if ([comment[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT] && imgFile) {
                 height = 300;
             }
+//            else { //if ([comment[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
+//                
+//            }
+
+            
+//            PFObject* comment = self.activities[indexPath.row - 1];
+//            if ([comment[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT]) {
+//                height = 300;
+//            }
         }
     }
     
@@ -367,12 +385,12 @@
     [self.askText resignFirstResponder];
 
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
-    activiy[POST_FROMUSER] = [PFUser currentUser];
-    activiy[@"toUser"] = self.postedObject[POST_FROMUSER];
-    activiy[POST_TYPE] = @"THANKS";
-    activiy[@"content"] = self.askText.text;
-    activiy[@"post"] = self.postedObject;
+    PFObject* activiy = [PFObject objectWithClassName:ACTIVITY];
+    activiy[ACTIVITY_FROMUSER] = [PFUser currentUser];
+    activiy[ACTIVITY_TOUSER] = self.postedObject[POST_FROMUSER];
+    activiy[ACTIVITY_TYPE] = @"THANKS";
+    activiy[ACTIVITY_CONTENT] = self.askText.text;
+    activiy[ACTIVITY_POST] = self.postedObject;
 
     [activiy saveInBackground];
 }
@@ -394,10 +412,10 @@
         PFUser* user = self.postedObject[POST_FROMUSER];
         TProfileViewController* profileVC = segue.destinationViewController;
         profileVC.userProfile = user;
-    } else if ([segue.identifier isEqualToString:ASKCAMERA]) {
+    } else if ([segue.identifier isEqualToString:CAMERA]) {
         TCameraViewController* cameraVC = segue.destinationViewController;
         [self.askText resignFirstResponder];
-        cameraVC.activityName = YES;
+        cameraVC.activityName = CameraForComment;
         cameraVC.cameraMessage = self.askText.text;
         cameraVC.postedObject = self.postedObject;
     }
@@ -424,10 +442,12 @@
         [actItems addObject:comment];
     }
     
-    PFObject* stickerObj = self.postedObject[STICKER];
-    PFFile* stickerImage = stickerObj[STICKER_IMAGE];
-    UIImage* img = [UIImage imageWithData:[stickerImage getData]];
-    [actItems addObject:img];
+//    PFObject* stickerObj = self.postedObject[STICKER];
+    PFFile* stickerImage = self.postedObject[POST_ORIGINAL_IMAGE];
+    if (stickerImage) {
+        UIImage* img = [UIImage imageWithData:[stickerImage getData]];
+        [actItems addObject:img];
+    }
     
     UIActivityViewController* actController = [[UIActivityViewController alloc] initWithActivityItems:actItems applicationActivities:nil];
     [self presentViewController:actController animated:YES completion:nil];
@@ -436,17 +456,17 @@
 
 #pragma mark - Ask question delegate
 
-- (void)textViewDidBeginEditing:(UITextView *)textView {
-    if ([textView.text isEqualToString:@"Type your comment here"] || [textView.text isEqualToString:@"Type your answer here"]) {
-        textView.text = @"";
-    }
-}
+//- (void)textViewDidBeginEditing:(UITextView *)textView {
+//    if ([textView.text isEqualToString:@"Type your comment here"] || [textView.text isEqualToString:@"Type your answer here"]) {
+//        textView.text = @"";
+//    }
+//}
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
     if([text isEqualToString:@"\n"])
     {
-        [textView resignFirstResponder];        
+//        [textView resignFirstResponder];        
         [self postAskQuestion:nil];
         return YES;
     }
@@ -478,23 +498,24 @@
         return;
     }
     
-    PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
+    PFObject* activiy = [PFObject objectWithClassName:ACTIVITY];
     activiy[ACTIVITY_FROMUSER] = [PFUser currentUser];
     activiy[ACTIVITY_TOUSER] = self.postedObject[POST_FROMUSER];
-    activiy[ACTIVITY_TYPE] = COMMENT;
+    activiy[ACTIVITY_TYPE] = ACTIVITY_TYPE_COMMENT;
     activiy[ACTIVITY_CONTENT] = self.askText.text;
     activiy[ACTIVITY_POST] = self.postedObject;
     
     [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
             dispatch_async(dispatch_get_main_queue(), ^{
+                self.askText.text = @"";
                 [self update];
             });
         }
     }];
 }
 
-- (IBAction)askAQuestion:(id)sender {
+- (IBAction)askForComment:(id)sender {
     if (![Reachability isReachable]) {
         return;
     }
@@ -502,20 +523,26 @@
 //    self.askText.text = @"Type your question here";
 //    self.onlyCameraButton.enabled = NO;
 //    self.textCount.text = @"0";
+//    
+//    NSString* stickerType = self.postedObject[POST_TYPE];
+//    if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
+//        self.askText.text = @"Type your comment here";
+//    } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
+//        self.askText.text = @"Type your answer here";
+//    } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
+//        self.askText.text = @"Type your comment here";
+//    }
     
-    NSString* stickerType = self.postedObject[POST_TYPE];
-    if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
-        self.askText.text = @"Type your comment here";
-    } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
-        self.askText.text = @"Type your answer here";
-    } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
-        self.askText.text = @"Type your comment here";
-    }
+    self.askText.text = @"";
+    self.onlyCameraButton.enabled = NO;
+    self.textCount.text = @"0";
     
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:0.2 animations:^{
         CGRect r = self.askQuestionView.frame;
         self.askQuestionView.frame = CGRectMake(0, 0, r.size.width, r.size.height);
     }];
+    
+    [self.askText becomeFirstResponder];    
 }
 
 - (IBAction)hideAskQuestionView:(id)sender {
