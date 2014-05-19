@@ -105,10 +105,10 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rkL-Je-yeK">
-                                <rect key="frame" x="280" y="69" width="30" height="30"/>
+                                <rect key="frame" x="275" y="79" width="30" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                <state key="normal" image="UserLocation">
+                                <state key="normal" image="NewNearMe">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -555,11 +555,17 @@
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pkR-AN-JwA">
+                                                    <rect key="frame" x="0.0" y="69" width="50" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                </imageView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <connections>
+                                            <outlet property="arrowImage" destination="pkR-AN-JwA" id="m5I-Md-wsa"/>
                                             <outlet property="categoryImage" destination="8tH-27-9qq" id="ab0-VD-K7j"/>
                                             <outlet property="categoryTitle" destination="GZ3-Th-f3E" id="3Wm-0R-KAr"/>
                                         </connections>
@@ -589,6 +595,11 @@
                                     <action selector="hideCategories:" destination="rTm-1C-4Pa" eventType="touchUpInside" id="3Z3-ej-jqF"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5Uz-BF-4uL">
+                                <rect key="frame" x="0.0" y="121" width="320" height="1"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.87850765306122447" green="0.87850765306122447" blue="0.87850765306122447" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </view>
@@ -637,7 +648,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pbl-VU-F0N">
-                                <rect key="frame" x="6" y="15" width="24" height="48"/>
+                                <rect key="frame" x="0.0" y="15" width="44" height="48"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="NewBackArrow">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -935,7 +946,7 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nFi-ls-YvI">
-                                <rect key="frame" x="6" y="14" width="24" height="48"/>
+                                <rect key="frame" x="0.0" y="15" width="44" height="48"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="NewBackArrow">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1325,7 +1336,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dEe-wB-I9P">
-                                        <rect key="frame" x="6" y="15" width="24" height="48"/>
+                                        <rect key="frame" x="0.0" y="15" width="44" height="48"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" image="NewBackArrow">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1340,8 +1351,8 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     </view>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BHj-Mg-L1X">
-                                        <rect key="frame" x="38" y="15" width="203" height="48"/>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BHj-Mg-L1X">
+                                        <rect key="frame" x="69" y="15" width="182" height="48"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="Helvetica-Light" family="Helvetica" pointSize="24"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1512,7 +1523,7 @@
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 </imageView>
                                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0oB-7s-y27" customClass="PFImageView">
-                                                                    <rect key="frame" x="3" y="3" width="44" height="44"/>
+                                                                    <rect key="frame" x="1" y="1" width="48" height="48"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 </imageView>
                                                             </subviews>
@@ -2067,7 +2078,7 @@
         <image name="NewBackArrow" width="12" height="23"/>
         <image name="NewBigThanks" width="52" height="27"/>
         <image name="NewBlueBuddy" width="37" height="22"/>
-        <image name="NewBox" width="32" height="32"/>
+        <image name="NewBox" width="30" height="30"/>
         <image name="NewCamera" width="73" height="73"/>
         <image name="NewCapture" width="75" height="75"/>
         <image name="NewClose" width="32" height="32"/>
@@ -2081,6 +2092,7 @@
         <image name="NewLaughingFace" width="27" height="34"/>
         <image name="NewLocation" width="29" height="35"/>
         <image name="NewMenu" width="33" height="32"/>
+        <image name="NewNearMe" width="60" height="60"/>
         <image name="NewOneBuddyUnSelected" width="31" height="31"/>
         <image name="NewOnlyCamera" width="32" height="32"/>
         <image name="NewPost" width="93" height="27"/>
@@ -2091,7 +2103,6 @@
         <image name="ProfileRound" width="70" height="70"/>
         <image name="Send" width="60" height="60"/>
         <image name="TopBar" width="320" height="44"/>
-        <image name="UserLocation" width="60" height="60"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
@@ -2099,8 +2110,8 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="dV4-on-W57"/>
+        <segue reference="IGv-YH-97g"/>
         <segue reference="TWm-KL-P30"/>
-        <segue reference="l0l-lO-hqx"/>
-        <segue reference="yux-Dm-G3t"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -39,6 +39,9 @@
 @property (weak, nonatomic) IBOutlet UIView* postMessageView;
 @property (weak, nonatomic) IBOutlet UILabel* textCount;
 
+@property (nonatomic, strong) PFFile* photoFile;
+@property (nonatomic, strong) PFFile* thumbnailFile;
+
 @property (nonatomic, assign) UIBackgroundTaskIdentifier photoPostBackgroundTaskId;
 
 @end
@@ -111,7 +114,7 @@
         session=nil;
     
     session = [[AVCaptureSession alloc] init];
-	session.sessionPreset = AVCaptureSessionPresetMedium;
+	session.sessionPreset = AVCaptureSessionPresetLow;
 	
     if (captureVideoPreviewLayer)
         captureVideoPreviewLayer=nil;
@@ -262,6 +265,24 @@
 - (void)setCapturedImage{
     // Stop capturing image
     [self hideControllers];
+    [self shouldUploadImageFiles];
+}
+
+
+- (void)shouldUploadImageFiles {
+    UIImage* imgToPost = self.captureImage.image;
+    UIImage *thumbnailImage = [imgToPost thumbnailImage:60.0f transparentBorder:0.0f cornerRadius:10.0f interpolationQuality:kCGInterpolationLow];
+    NSData *imageData = UIImageJPEGRepresentation(imgToPost, 0.8f);
+    NSData* thumbnailData = UIImagePNGRepresentation(thumbnailImage);
+    
+    self.photoFile = [PFFile fileWithData:imageData];
+    self.thumbnailFile = [PFFile fileWithData:thumbnailData];
+    
+    [self.thumbnailFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            [self.photoFile saveInBackground];
+        }
+    }];
 }
 
 #pragma mark - Device Availability Controls
@@ -390,19 +411,19 @@
         return;
     }
     
-    UIImage* imgToPost = self.captureImage.image;
-    UIImage *thumbnailImage = [imgToPost thumbnailImage:60.0f transparentBorder:0.0f cornerRadius:10.0f interpolationQuality:kCGInterpolationLow];
-    NSData *imageData = UIImageJPEGRepresentation(imgToPost, 0.8f);
-    NSData* thumbnailData = UIImagePNGRepresentation(thumbnailImage);
-    
-    PFFile* photoFile = [PFFile fileWithData:imageData];
-    PFFile* thumbnailFile = [PFFile fileWithData:thumbnailData];
-    
-    [photoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (succeeded) {
-            [thumbnailFile saveInBackground];
-        }
-    }];
+//    UIImage* imgToPost = self.captureImage.image;
+//    UIImage *thumbnailImage = [imgToPost thumbnailImage:60.0f transparentBorder:0.0f cornerRadius:10.0f interpolationQuality:kCGInterpolationLow];
+//    NSData *imageData = UIImageJPEGRepresentation(imgToPost, 0.8f);
+//    NSData* thumbnailData = UIImagePNGRepresentation(thumbnailImage);
+//    
+//    PFFile* photoFile = [PFFile fileWithData:imageData];
+//    PFFile* thumbnailFile = [PFFile fileWithData:thumbnailData];
+//    
+//    [photoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+//        if (succeeded) {
+//            [thumbnailFile saveInBackground];
+//        }
+//    }];
 
     if ([self.postMessage.text isEqualToString:DEFAULT_TEXT]) {
         self.postMessage.text = @"";
@@ -422,17 +443,18 @@
         activiy[ACTIVITY_TYPE] = ACTIVITY_TYPE_COMMENT;
         activiy[ACTIVITY_CONTENT] = self.postMessage.text;
         activiy[ACTIVITY_POST] = self.postedObject;
-        activiy[ACTIVITY_ORIGINAL_IMAGE] = photoFile;
-        activiy[ACTIVITY_THUMBNAIL_IMAGE] = thumbnailFile;
+        activiy[ACTIVITY_ORIGINAL_IMAGE] = self.photoFile;
+        activiy[ACTIVITY_THUMBNAIL_IMAGE] = self.thumbnailFile;
 
         [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_COMMENTS object:nil];                    
-                });
+                [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_COMMENTS object:nil];
+            } else {
+                NSLog(@"Error while posting activity: %@", error.localizedDescription);
             }
             
             [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
+            self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;            
         }];
 
     } else {
@@ -441,16 +463,15 @@
         stickerPost[POST_LOCATION] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
         stickerPost[POST_FROMUSER] = [PFUser currentUser];
         stickerPost[POST_USERLOCATION] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
-        stickerPost[POST_ORIGINAL_IMAGE] = photoFile;
-        stickerPost[POST_THUMBNAIL_IMAGE] = thumbnailFile;
+        stickerPost[POST_ORIGINAL_IMAGE] = self.photoFile;
+        stickerPost[POST_THUMBNAIL_IMAGE] = self.thumbnailFile;
         if (self.activityName == CameraForAsk) {
             stickerPost[POST_TYPE] = POST_TYPE_ASK;
         } else if (self.activityName == CameraForImage){
             stickerPost[POST_TYPE] = POST_TYPE_IMAGE;
         }
 
-        [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
+            [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (succeeded) {
                     NSString* msg;
                     if (self.activityName == CameraForAsk) {
@@ -460,25 +481,17 @@
                     }
                     
                     [[[UIAlertView alloc] initWithTitle:@"Successful" message:msg delegate:nil cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:@"Testing Notification"];
                 } else {
-                    NSLog(@"Failed with Comment to post: %@", error.localizedDescription);
+                    NSLog(@"Failed with Comment to post");
                 }
-            });
+
             [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
+            self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
         }];
     }
     
     [self goBack];
-}
-
--(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (self.activityName != CameraForComment) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
-    } else {
-        [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_COMMENTS object:nil];
-    }
-
 }
 
 - (IBAction)handleOneBuddy:(id)sender {

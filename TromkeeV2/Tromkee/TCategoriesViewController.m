@@ -37,7 +37,7 @@
 
 - (void)viewDidLoad
 {
-    self.currentSelectedItem = -1;
+    self.currentSelectedItem = 0;
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
@@ -93,6 +93,12 @@
         [cell.categoryImage loadInBackground];
     }
 
+    if (self.currentSelectedItem == indexPath.item) {
+        cell.arrowImage.image = [UIImage imageNamed:@"NewCatArrow"];
+    } else {
+        cell.arrowImage.image = nil;
+    }
+    
 //    [userImageFile getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
 //        dispatch_async(dispatch_get_main_queue(), ^{
 //            if (!error) {
@@ -119,6 +125,8 @@
         [self.navController popToRootViewControllerAnimated:YES];
         self.stickersVC.category = self.allCategories[indexPath.item];        
     }
+    
+    [collectionView reloadData];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

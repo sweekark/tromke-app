@@ -70,10 +70,15 @@
     self.stickerLocations = [[NSMutableArray alloc] initWithCapacity:10];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation:) name:TROMKE_USER_LOCATION_UPDATED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePostedStickers) name:TROMKEE_UPDATE_STICKERS object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadLatestStickers:) name:TROMKEE_UPDATE_STICKERS object:nil];
     
     self.askBackgroundView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_QUESTION_COLOR];
     //[UIColor colorWithPatternImage:[UIImage imageNamed:@"RedBox"]];
+}
+
+-(void)uploadLatestStickers:(NSNotification*)notification {
+    NSLog(@"Notification: %@", notification);
+    [self updatePostedStickers];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -298,9 +303,9 @@
 
 //- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated{
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-    if (!animated) {
-        return;
-    }
+//    if (!animated) {
+//        return;
+//    }
     CLLocationCoordinate2D mapCenter2D = mapView.centerCoordinate;
     CLLocation* mapCenter = [[CLLocation alloc] initWithLatitude:mapCenter2D.latitude longitude:mapCenter2D.longitude];
     
@@ -356,7 +361,7 @@
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (!error) {
-//                    [self.map removeAnnotations:self.map.annotations];                    
+                    [self.map removeAnnotations:self.map.annotations];                    
 //                    self.stickerLocations = [objects mutableCopy];
                     [self updateMapWithStickers:objects];
                 } else {

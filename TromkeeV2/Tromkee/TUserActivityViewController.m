@@ -184,7 +184,14 @@
     if ([segue.identifier isEqualToString:@"PROFILE"]) {
         PFObject* notifyObj = self.postsArray[self.row];
         PFObject* postObj = notifyObj[@"post"];
-        PFUser* fromUser = postObj[POST_FROMUSER];
+        PFUser* fromUser;
+        if (!postObj) {
+            postObj = notifyObj[@"activity"];
+            fromUser = postObj[ACTIVITY_FROMUSER];
+        } else {
+             fromUser = postObj[POST_FROMUSER];
+        }
+
         
         TProfileViewController* profileVC = segue.destinationViewController;
         profileVC.userProfile = fromUser;

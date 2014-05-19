@@ -34,7 +34,7 @@
 @property (weak, nonatomic) IBOutlet UIView *askBackground;
 @property (weak, nonatomic) IBOutlet UILabel *textCount;
 @property (weak, nonatomic) IBOutlet UITextView *askText;
-    @property (weak, nonatomic) IBOutlet UIButton *onlyCameraButton;
+@property (weak, nonatomic) IBOutlet UIButton *onlyCameraButton;
 @property (weak, nonatomic) IBOutlet UIButton *commentButton;
 
 
@@ -466,7 +466,7 @@
 {
     if([text isEqualToString:@"\n"])
     {
-//        [textView resignFirstResponder];        
+        [textView resignFirstResponder];        
         [self postAskQuestion:nil];
         return YES;
     }
@@ -487,7 +487,8 @@
 }
 
 - (IBAction)postAskQuestion:(id)sender {
-    [self.askText resignFirstResponder];
+//    [self.askText resignFirstResponder];
+    [self hideAskQuestionView:nil];
     
     if (![PFUser currentUser]) {
         [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You must login in order to post a sticker !!!" delegate:self cancelButtonTitle:@"Not Now" otherButtonTitles: @"Login", nil] show];
