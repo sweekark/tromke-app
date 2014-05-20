@@ -50,6 +50,9 @@
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         PFQuery* activityQuery = [PFQuery queryWithClassName:@"NotifyActivity"];
         [activityQuery includeKey:@"activity"];
+        [activityQuery includeKey:@"activity.post"];
+        [activityQuery includeKey:@"activity.post.sticker"];
+        [activityQuery includeKey:@"activity.post.fromUser"];
         [activityQuery includeKey:@"activity.fromUser"];
         [activityQuery includeKey:@"post"];
         [activityQuery includeKey:@"post.sticker"];
@@ -109,7 +112,7 @@
 -(UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     PFObject* notifyObj = self.postsArray[indexPath.row];
-    NSLog(@"%@", notifyObj);
+    NSLog(@"%@", notifyObj[@"post"][@"sticker"]);
     
     if (notifyObj[@"activity"]) {
         static NSString* cellIdentifier = @"USERPOST";
@@ -155,7 +158,15 @@
         
         PFObject* fromUser = postObj[POST_FROMUSER];
         
-        NSString* str = [NSString stringWithFormat:@"%@ posted sticker %@ @ %@", fromUser[USER_DISPLAY_NAME], stickerObj[@"name"], postObj[POST_USERLOCATION]];
+        NSString* str;
+        if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_IMAGE]) {
+            str = [NSString stringWithFormat:@"%@ posted an image @ %@", fromUser[USER_DISPLAY_NAME], postObj[POST_USERLOCATION]];
+        } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_ASK]) {
+            str = [NSString stringWithFormat:@"%@ posted a question @ %@", fromUser[USER_DISPLAY_NAME], postObj[POST_USERLOCATION]];
+        } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
+            str = [NSString stringWithFormat:@"%@ posted sticker %@ @ %@", fromUser[USER_DISPLAY_NAME], stickerObj[@"name"], postObj[POST_USERLOCATION]];
+        }
+        
         NSMutableAttributedString* msgString = [[NSMutableAttributedString alloc] initWithString:str];
         NSRange postedRange = [str rangeOfString:@"posted"];
         
@@ -200,7 +211,18 @@
         PFObject* notifyObj = self.postsArray[indxPath.row];
 
         TActivityViewController* activityVC = segue.destinationViewController;
-        activityVC.postedObjectID = [notifyObj[@"post"] objectId];
+        
+        PFObject* postObc = notifyObj[@"post"];
+        if (!postObc) {
+            PFObject* act = notifyObj[@"activity"];
+//            activityVC.postedObjectID = [act[@"post"] objectId];
+            activityVC.postedObject = act[@"post"];
+        } else {
+//            activityVC.postedObjectID = [notifyObj[@"post"] objectId];
+            activityVC.postedObject = notifyObj[@"post"];
+        }
+        
+
     }
 }
 
