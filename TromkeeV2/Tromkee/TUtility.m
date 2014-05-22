@@ -183,4 +183,13 @@
     [scanner scanHexInt:&rgbValue];
     return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
 }
+
++ (NSString*)getDisplayNameForUser:(PFUser*)user {
+    NSString* str = user[USER_DISPLAY_NAME];
+    if (!str || str.length == 0) {
+        str = user[USER_USER_NAME];
+    }
+    
+    return str;
+}
 @end

@@ -83,7 +83,7 @@ NS_ENUM(int, ProfileDisplay) {
     } else {
         NSLog(@"No image found");
     }
-    self.userName.text = self.userProfile[USER_DISPLAY_NAME];
+    self.userName.text = [TUtility getDisplayNameForUser:self.userProfile]; //self.userProfile[USER_DISPLAY_NAME];
     self.postsArray = [[NSMutableArray alloc] init];
 
     [self updateFollowersAndFollowingValues];
@@ -425,13 +425,13 @@ NS_ENUM(int, ProfileDisplay) {
             cell.comment.text = @"Posted Image";
         } else if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_FOLLOW]) {
             PFUser* touser = post[@"toUser"];
-            cell.comment.text = [NSString stringWithFormat:@"Following %@", touser[USER_DISPLAY_NAME]];
+            cell.comment.text = [NSString stringWithFormat:@"Following %@", [TUtility getDisplayNameForUser:touser]];//touser[USER_DISPLAY_NAME]];
         }
         //    [cell.comment sizeToFit];
         
         
-        PFObject* fromUser = post[POST_FROMUSER];
-        cell.personName.text = fromUser[USER_DISPLAY_NAME];
+        PFUser* fromUser = post[POST_FROMUSER];
+        cell.personName.text = [TUtility getDisplayNameForUser:fromUser];//fromUser[USER_DISPLAY_NAME];
         PFFile* imgFile = fromUser[FACEBOOK_SMALLPIC_KEY];
         if (imgFile) {
             [cell.personImage setFile:imgFile];
@@ -452,7 +452,7 @@ NS_ENUM(int, ProfileDisplay) {
 //            usr = act[@"toUser"];
 //        }
 
-        cell.personName.text = usr[USER_DISPLAY_NAME];
+        cell.personName.text = [TUtility getDisplayNameForUser:usr];//usr[USER_DISPLAY_NAME];
         PFFile *imageFile = [usr objectForKey:FACEBOOK_SMALLPIC_KEY];
         cell.personImage.image = [UIImage imageNamed:@"Personholder"];
         if (imageFile) {
@@ -550,7 +550,7 @@ NS_ENUM(int, ProfileDisplay) {
 - (IBAction)updateUserName:(id)sender {
     [self.userName resignFirstResponder];
     
-    NSString* actualDispName = self.userProfile[USER_DISPLAY_NAME];
+    NSString* actualDispName = [TUtility getDisplayNameForUser:self.userProfile];//self.userProfile[USER_DISPLAY_NAME];
     NSString* latestDispName = self.userName.text;
     if (latestDispName && ![latestDispName isEqual:[NSNull null]] && latestDispName.length && ![latestDispName isEqualToString:actualDispName]) {
         [[PFUser currentUser] setObject:latestDispName forKey:USER_DISPLAY_NAME];

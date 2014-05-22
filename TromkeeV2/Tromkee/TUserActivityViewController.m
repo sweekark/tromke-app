@@ -55,8 +55,8 @@
         [activityQuery includeKey:@"activity.post.fromUser"];
         [activityQuery includeKey:@"activity.fromUser"];
         [activityQuery includeKey:@"post"];
-        [activityQuery includeKey:@"post.sticker"];
         [activityQuery includeKey:@"post.fromUser"];
+        [activityQuery includeKey:@"post.sticker"];
         activityQuery.limit = 30;
 //        [activityQuery whereKeyDoesNotExist:@"notifyUser"];
         [activityQuery whereKey:@"notifyUser" equalTo:[PFUser currentUser]];
@@ -112,8 +112,7 @@
 -(UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     PFObject* notifyObj = self.postsArray[indexPath.row];
-    NSLog(@"%@", notifyObj[@"post"][@"sticker"]);
-    
+
     if (notifyObj[@"activity"]) {
         static NSString* cellIdentifier = @"USERPOST";
         TUserActivityCell* cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
@@ -133,9 +132,9 @@
             comment = @"Posted Image";
         }
         
-        PFObject* fromUser = activityObj[POST_FROMUSER];
+        PFUser* fromUser = activityObj[POST_FROMUSER];
         
-        NSString* str = [NSString stringWithFormat:@"%@ %@", fromUser[USER_DISPLAY_NAME], comment];
+        NSString* str = [NSString stringWithFormat:@"%@ %@", /*fromUser[USER_DISPLAY_NAME]*/[TUtility getDisplayNameForUser:fromUser], comment];
         NSMutableAttributedString* msgStr = [[NSMutableAttributedString alloc] initWithString:str];
         cell.notificationMessage.attributedText = msgStr;
         
@@ -156,15 +155,15 @@
         PFObject* postObj = notifyObj[@"post"];
         PFObject* stickerObj = postObj[STICKER];
         
-        PFObject* fromUser = postObj[POST_FROMUSER];
+        PFUser* fromUser = postObj[POST_FROMUSER];
         
         NSString* str;
         if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_IMAGE]) {
-            str = [NSString stringWithFormat:@"%@ posted an image @ %@", fromUser[USER_DISPLAY_NAME], postObj[POST_USERLOCATION]];
+            str = [NSString stringWithFormat:@"%@ posted an image @ %@", /*fromUser[USER_DISPLAY_NAME]*/ [TUtility getDisplayNameForUser:fromUser], postObj[POST_USERLOCATION]];
         } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_ASK]) {
-            str = [NSString stringWithFormat:@"%@ posted a question @ %@", fromUser[USER_DISPLAY_NAME], postObj[POST_USERLOCATION]];
+            str = [NSString stringWithFormat:@"%@ posted a question @ %@", /*fromUser[USER_DISPLAY_NAME]*/[TUtility getDisplayNameForUser:fromUser], postObj[POST_USERLOCATION]];
         } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
-            str = [NSString stringWithFormat:@"%@ posted sticker %@ @ %@", fromUser[USER_DISPLAY_NAME], stickerObj[@"name"], postObj[POST_USERLOCATION]];
+            str = [NSString stringWithFormat:@"%@ posted sticker %@ @ %@", /*fromUser[USER_DISPLAY_NAME]*/[TUtility getDisplayNameForUser:fromUser], stickerObj[@"name"], postObj[POST_USERLOCATION]];
         }
         
         NSMutableAttributedString* msgString = [[NSMutableAttributedString alloc] initWithString:str];

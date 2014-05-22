@@ -134,6 +134,7 @@ typedef NS_ENUM(NSInteger, Camera) {
 
 //User Object
 #define USER_DISPLAY_NAME @"displayName"
+#define USER_USER_NAME @"username"
 
 
 

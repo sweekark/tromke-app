@@ -58,7 +58,7 @@
         [self.fromImage setFile:imageFile];
         [self.fromImage loadInBackground];
     }
-    self.fromName.text = user[USER_DISPLAY_NAME];
+    self.fromName.text = [TUtility getDisplayNameForUser:user];//user[USER_DISPLAY_NAME];
     self.fromPostedTime.text = [TUtility computePostedTime:postObj.updatedAt];
     self.fromPostedMessage.text = postObj[POST_DATA];
     self.postedLocation.text = postObj[POST_USERLOCATION];

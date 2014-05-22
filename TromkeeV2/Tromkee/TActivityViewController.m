@@ -230,7 +230,7 @@
     }
     
     PFObject* comment = self.activities[indexPath.row - 1];
-    PFObject* fromUser = comment[ACTIVITY_FROMUSER];
+    PFUser* fromUser = comment[ACTIVITY_FROMUSER];
     
     TActivityCell* cell;
     PFFile* imgFile = comment[ACTIVITY_ORIGINAL_IMAGE];
@@ -248,7 +248,7 @@
         cell = [tableView dequeueReusableCellWithIdentifier:@"ONLY_COMMENT"];
     }
 
-    cell.personName.text = fromUser[USER_DISPLAY_NAME];
+    cell.personName.text = [TUtility getDisplayNameForUser:fromUser];//fromUser[USER_DISPLAY_NAME];
     cell.comment.text = comment[ACTIVITY_CONTENT];
     cell.updatedTime.text = [TUtility computePostedTime:comment.updatedAt];
     

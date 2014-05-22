@@ -105,7 +105,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rkL-Je-yeK">
-                                <rect key="frame" x="275" y="79" width="30" height="30"/>
+                                <rect key="frame" x="276" y="70" width="44" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal" image="NewNearMe">
@@ -2092,7 +2092,7 @@
         <image name="NewLaughingFace" width="27" height="34"/>
         <image name="NewLocation" width="29" height="35"/>
         <image name="NewMenu" width="33" height="32"/>
-        <image name="NewNearMe" width="60" height="60"/>
+        <image name="NewNearMe" width="30" height="30"/>
         <image name="NewOneBuddyUnSelected" width="31" height="31"/>
         <image name="NewOnlyCamera" width="32" height="32"/>
         <image name="NewPost" width="93" height="27"/>
