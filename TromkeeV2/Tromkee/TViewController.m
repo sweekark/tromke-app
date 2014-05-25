@@ -22,6 +22,7 @@
 #import "CustomPin.h"
 #import <Crashlytics/Crashlytics.h>
 #import "TCameraViewController.h"
+#import "ITProgressBar.h"
 
 #define USER_LOCATION_TEXT @"User Location"
 
@@ -52,6 +53,8 @@
 @property (nonatomic) BOOL isFirstTime;
 @property (nonatomic) BOOL isAskViewVisible;
 @property (weak, nonatomic) IBOutlet UIView *firstTimeHelpView;
+@property (weak, nonatomic) IBOutlet ITProgressBar *progressBar;
+
 
 - (IBAction)menuClicked:(id)sender;
 - (IBAction)searchClicked:(id)sender;
@@ -69,7 +72,6 @@
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:FIRST_TIME_HELP] == NO) {
         [self.firstTimeHelpView removeFromSuperview];
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:FIRST_TIME_HELP];
     }
     
     [[TLocationUtility sharedInstance] initiateLocationCapture];
@@ -82,8 +84,18 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation:) name:TROMKE_USER_LOCATION_UPDATED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadLatestStickers:) name:TROMKEE_UPDATE_STICKERS object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startShowingAnimation) name:START_PROGRESS_ANIMATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showShowingAnimation) name:STOP_PROGRESS_ANIMATION object:nil];
     
     self.askBackgroundView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_QUESTION_COLOR];
+}
+
+-(void)startShowingAnimation {
+    self.progressBar.hidden = NO;
+}
+
+-(void)showShowingAnimation {
+    self.progressBar.hidden = YES;
 }
 
 -(void)uploadLatestStickers:(NSNotification*)notification {
@@ -327,14 +339,14 @@
 }
 
 -(void)updateMapWithStickers:(NSArray*)stickers {
-    for (PFObject* sticker in stickers) {
-//        if ([sticker[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
-            TStickerAnnotation *annotation = [[TStickerAnnotation alloc] initWithObject:sticker];
-            [self.map addAnnotation:annotation];
-//        }
-    }
+//    for (PFObject* sticker in stickers) {
+////        if ([sticker[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
+//            TStickerAnnotation *annotation = [[TStickerAnnotation alloc] initWithObject:sticker];
+//            [self.map addAnnotation:annotation];
+////        }
+//    }
     
-/*
+
     NSMutableArray* newPosts = [[NSMutableArray alloc] initWithCapacity:10];
     NSMutableArray* allNewPosts = [[NSMutableArray alloc] initWithCapacity:10];
     for (PFObject* obj in stickers) {
@@ -371,7 +383,7 @@
     [self.map addAnnotations:newPosts];
     [self.stickerLocations addObjectsFromArray:newPosts];
     [self.stickerLocations removeObjectsInArray:postsToRemove];
-*/
+    NSLog(@"Total stickers in memory are: %d", self.stickerLocations.count);
 }
 
 - (IBAction)menuClicked:(id)sender {
@@ -415,6 +427,8 @@
     } completion:^(BOOL finished) {
         [self.firstTimeHelpView removeFromSuperview];
     }];
+    
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:FIRST_TIME_HELP];
 }
 
 

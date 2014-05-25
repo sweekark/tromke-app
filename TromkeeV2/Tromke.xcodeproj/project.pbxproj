@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		450544B618B284A500529015 /* TActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 450544B518B284A500529015 /* TActivityViewController.m */; };
 		450544B918B284B600529015 /* TActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 450544B818B284B600529015 /* TActivityCell.m */; };
+		450C3978193259D900B2320F /* ITProgressBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 450C3975193259D900B2320F /* ITProgressBar.m */; };
+		450C3979193259D900B2320F /* UIImage+BBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 450C3977193259D900B2320F /* UIImage+BBlock.m */; };
 		451AF9A61885314300811899 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451AF9A51885314300811899 /* MapKit.framework */; };
 		451C1B121910CF54001E619D /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451C1B111910CF54001E619D /* Crashlytics.framework */; };
 		451C1B161910D181001E619D /* TCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 451C1B151910D181001E619D /* TCameraViewController.m */; };
@@ -91,6 +93,10 @@
 		450544B518B284A500529015 /* TActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TActivityViewController.m; sourceTree = "<group>"; };
 		450544B718B284B600529015 /* TActivityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TActivityCell.h; sourceTree = "<group>"; };
 		450544B818B284B600529015 /* TActivityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TActivityCell.m; sourceTree = "<group>"; };
+		450C3974193259D900B2320F /* ITProgressBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITProgressBar.h; sourceTree = "<group>"; };
+		450C3975193259D900B2320F /* ITProgressBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ITProgressBar.m; sourceTree = "<group>"; };
+		450C3976193259D900B2320F /* UIImage+BBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+BBlock.h"; sourceTree = "<group>"; };
+		450C3977193259D900B2320F /* UIImage+BBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+BBlock.m"; sourceTree = "<group>"; };
 		451AF9A4188530B100811899 /* Tromke-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Tromke-Prefix.pch"; sourceTree = "<group>"; };
 		451AF9A51885314300811899 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		451C1B111910CF54001E619D /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
@@ -236,6 +242,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		450C3973193259D900B2320F /* Progressbar */ = {
+			isa = PBXGroup;
+			children = (
+				450C3974193259D900B2320F /* ITProgressBar.h */,
+				450C3975193259D900B2320F /* ITProgressBar.m */,
+				450C3976193259D900B2320F /* UIImage+BBlock.h */,
+				450C3977193259D900B2320F /* UIImage+BBlock.m */,
+			);
+			path = Progressbar;
+			sourceTree = "<group>";
+		};
 		451C1B131910D159001E619D /* Camera */ = {
 			isa = PBXGroup;
 			children = (
@@ -477,6 +494,7 @@
 		45E54460188F934200FF8977 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				450C3973193259D900B2320F /* Progressbar */,
 				457A592B19067F1E007E63DD /* Toast */,
 				456DAE5418CC9394009E4FEC /* FacebookSDK.framework */,
 				456DAE5518CC9394009E4FEC /* Parse.framework */,
@@ -631,6 +649,7 @@
 				45FC756218A017E10089255A /* UIImage+RoundedCornerAdditions.m in Sources */,
 				451C1B161910D181001E619D /* TCameraViewController.m in Sources */,
 				45E54467188F934200FF8977 /* Reachability.m in Sources */,
+				450C3979193259D900B2320F /* UIImage+BBlock.m in Sources */,
 				45A2E89418764FF1009A6171 /* TViewController.m in Sources */,
 				453CB8F31885B65100D7019D /* TCategoryCell.m in Sources */,
 				45A8462C18F7EC0C00DA3627 /* TUserActivityCell.m in Sources */,
@@ -654,6 +673,7 @@
 				454BDE0118890101009DC4F6 /* TPostViewController.m in Sources */,
 				45431D19192F251700D8D135 /* TRegistrationViewController.m in Sources */,
 				453CB8FD1885C7B700D7019D /* TCategoryStickersViewController.m in Sources */,
+				450C3978193259D900B2320F /* ITProgressBar.m in Sources */,
 				45FC0DCD18CCD46700C82A2B /* TFollowCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -792,7 +812,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;
-				PROVISIONING_PROFILE = "D7378D2E-9A52-4679-B6AD-143C080C19FB";
+				PROVISIONING_PROFILE = "4DA6CDF9-23FD-4885-BED9-B29FCE84A85C";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -816,7 +836,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;
-				PROVISIONING_PROFILE = "D7378D2E-9A52-4679-B6AD-143C080C19FB";
+				PROVISIONING_PROFILE = "4DA6CDF9-23FD-4885-BED9-B29FCE84A85C";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

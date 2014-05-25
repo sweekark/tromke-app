@@ -112,6 +112,8 @@
         return;
     }
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:START_PROGRESS_ANIMATION object:nil];
+    
     //Post only content
     self.photoPostBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
         [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
@@ -134,6 +136,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Sticker posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
                 [self.navigationController popViewControllerAnimated:YES];
+                [[NSNotificationCenter defaultCenter] postNotificationName:STOP_PROGRESS_ANIMATION object:nil];
                 [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:nil];
             });
         } else {

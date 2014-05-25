@@ -300,6 +300,11 @@
                                     <constraint firstItem="eRS-fl-sm3" firstAttribute="leading" secondItem="xKb-PL-b0G" secondAttribute="leading" id="yyK-S1-dfY"/>
                                 </constraints>
                             </view>
+                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hnE-gH-cgY" customClass="ITProgressBar">
+                                <rect key="frame" x="0.0" y="62" width="320" height="2"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -325,6 +330,7 @@
                         <outlet property="map" destination="gDK-oB-tKf" id="RaG-ke-zso"/>
                         <outlet property="menuContainer" destination="OTO-Ts-hRa" id="t2D-r3-oTJ"/>
                         <outlet property="onlyCameraButton" destination="qNp-f2-3ds" id="DgE-yE-nPS"/>
+                        <outlet property="progressBar" destination="hnE-gH-cgY" id="9cJ-j3-oCy"/>
                         <outlet property="textCount" destination="umS-8e-ijf" id="uU7-5E-uq3"/>
                         <segue destination="oKO-5Q-Eb5" kind="push" identifier="Activity" id="TWm-KL-P30"/>
                         <segue destination="XTB-9t-TTs" kind="push" identifier="PROFILE" id="IGv-YH-97g"/>
