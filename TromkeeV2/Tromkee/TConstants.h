@@ -19,6 +19,8 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 
 //User defaults
 #define USER_LOCATION @"USER_LOCATION"
+#define FIRST_TIME @"FIRST_TIME"
+#define FIRST_TIME_HELP @"FIRST_TIME_HELP"
 
 //Notifications
 #define TROMKE_USER_LOCATION_UPDATED @"TROMKE_USER_LOCATION_UPDATED"
@@ -37,6 +39,9 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 
 #define YELLOW_COLOR @"#FDD17D"
 
+#define REGISTER_TOPBLUE @"#a0eaf2"
+#define REGISTER_MIDDLEYELLOW @"#fdd17d"
+#define REGISTER_BOTTOMGREEN @"#2bfa8a"
 
 //GENERAL
 #define POSTDATA_LENGTH 100
@@ -77,7 +82,9 @@ typedef NS_ENUM(NSInteger, Camera) {
 #define MENU @"Menu"
 #define CATEGORIES @"Categories"
 #define PROFILEVIEW @"Profile"
+#define HELP @"Help"
 #define ASKCAMERA @"ASKCAMERA"
+#define MAIN @"Main"
 
 //VIEW or Segue Identifiers
 #define CAMERA @"CAMERA"

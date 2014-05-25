@@ -33,6 +33,7 @@
 #import "PFSignUpViewController.h"
 #import "PFTableViewCell.h"
 #import "PFTwitterUtils.h"
+#import "PF_MBProgressHUD.h"
 
 #if defined(__has_include)
 #if __has_include(<FacebookSDK/FacebookSDK.h>)

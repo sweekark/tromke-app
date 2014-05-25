@@ -25,7 +25,7 @@
 
 #define USER_LOCATION_TEXT @"User Location"
 
-@interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate, TStickerAnnotationDelegate>
+@interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate/*, TStickerAnnotationDelegate*/>
 
 @property (weak, nonatomic) IBOutlet UILabel *notificationsCount;
 @property (weak, nonatomic) IBOutlet MKMapView *map;
@@ -51,9 +51,12 @@
 
 @property (nonatomic) BOOL isFirstTime;
 @property (nonatomic) BOOL isAskViewVisible;
+@property (weak, nonatomic) IBOutlet UIView *firstTimeHelpView;
 
 - (IBAction)menuClicked:(id)sender;
 - (IBAction)searchClicked:(id)sender;
+- (IBAction)hideFirstTimeHelpView:(id)sender;
+
 
 
 @end
@@ -63,6 +66,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:FIRST_TIME_HELP] == NO) {
+        [self.firstTimeHelpView removeFromSuperview];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:FIRST_TIME_HELP];
+    }
+    
+    [[TLocationUtility sharedInstance] initiateLocationCapture];
+    
     self.isFirstTime = YES;
     self.isAskViewVisible = NO;
     self.firstTimeLogin = YES;
@@ -73,7 +84,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadLatestStickers:) name:TROMKEE_UPDATE_STICKERS object:nil];
     
     self.askBackgroundView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_QUESTION_COLOR];
-    //[UIColor colorWithPatternImage:[UIImage imageNamed:@"RedBox"]];
 }
 
 -(void)uploadLatestStickers:(NSNotification*)notification {
@@ -81,14 +91,6 @@
     [self updatePostedStickers];
 }
 
--(void)viewWillAppear:(BOOL)animated {
-    if (![PFUser currentUser]) {
-        [(TAppDelegate*)[[UIApplication sharedApplication] delegate] presentLoginViewControllerAnimated:NO];
-        return;
-    }
-    
-    [super viewWillAppear:animated];
-}
 
 -(void)viewDidAppear:(BOOL)animated {
     if (self.isCategoriesExpanded) {
@@ -99,6 +101,7 @@
         [self updatePostedStickersOnMapWithCenter:self.currentCenterLocation.latitude andLongitude:self.currentCenterLocation.longitude];
     }
     self.isFirstTime = NO;
+    
     [super viewDidAppear:animated];
 }
 
@@ -108,15 +111,15 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Login Delegates
-
-- (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
-    [logInController dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)logInViewController:(PFLogInViewController *)logInController didFailToLogInWithError:(NSError *)error {
-    [logInController dismissViewControllerAnimated:YES completion:nil];
-}
+//#pragma mark - Login Delegates
+//
+//- (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
+//    [logInController dismissViewControllerAnimated:YES completion:nil];
+//}
+//
+//- (void)logInViewController:(PFLogInViewController *)logInController didFailToLogInWithError:(NSError *)error {
+//    [logInController dismissViewControllerAnimated:YES completion:nil];
+//}
 
 
 -(void)updateUserLocation:(NSNotification*)notification {
@@ -124,10 +127,10 @@
     // Creates a marker in the center of the map.
     self.currentCenterLocation = self.currentMapLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
     
-    MKPointAnnotation* point = [[MKPointAnnotation alloc] init];
-    point.coordinate = self.currentMapLocation;
-    point.title = USER_LOCATION_TEXT;
-    [self.map addAnnotation:point];
+//    MKPointAnnotation* point = [[MKPointAnnotation alloc] init];
+//    point.coordinate = self.currentMapLocation;
+//    point.title = USER_LOCATION_TEXT;
+//    [self.map addAnnotation:point];
     
     MKCoordinateRegion region;
     region.center = self.currentMapLocation;
@@ -175,10 +178,10 @@
 
 #pragma mark - MKMapViewDelegate
 
--(void)userTappedSticker:(id<MKAnnotation>)annotation {
-    TStickerAnnotation* ann = (TStickerAnnotation*)annotation;
-    [self performSegueWithIdentifier:ACTIVITY sender:ann.annotationObject];
-}
+//-(void)userTappedSticker:(id<MKAnnotation>)annotation {
+//    TStickerAnnotation* ann = (TStickerAnnotation*)annotation;
+//    [self performSegueWithIdentifier:ACTIVITY sender:ann.annotationObject];
+//}
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
     if ([view isKindOfClass:[MKPinAnnotationView class]]) {
@@ -197,22 +200,9 @@
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
-    if ([annotation isKindOfClass:[MKPointAnnotation class]]) {
-        return nil;
-    }
-    
-//    static NSString *annotationIdentifier = @"StickerPin";
-//    
-//    MKAnnotationView* annotationView = (MKAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
-//    
-//    if (!annotationView) {
-//        annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
-//        annotationView.canShowCallout = NO;
-//        annotationView.image = [UIImage imageNamed:@"Sticker"];
+//    if ([annotation isKindOfClass:[MKPointAnnotation class]]) {
+//        return nil;
 //    }
-//    
-//    return annotationView;
-
     
     static NSString *identifier = @"myAnnotation";
     CustomViewMV * annotationView = (CustomViewMV*)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
@@ -244,22 +234,12 @@
             annotationPin.circleView.hidden = YES;            
         }
 
-        
         NSNumber* commentsCount = postObj[POST_COMMENTS_COUNT];
         if (commentsCount) {
             annotationPin.commentsCount.text = [NSString stringWithFormat:@"%@",commentsCount];
         } else {
             annotationPin.commentsCount.text = @"0";
         }
-        
-//    [stickerImage getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            if (!error) {
-//                annotationView.image = [UIImage imageWithData:imageData];
-//                annotationView.stickerColor = [postObj[STICKER_SEVERITY] floatValue];
-//            }
-//        });
-//    }];
         
         annotationView.frame = annotationPin.frame;
         [annotationView addSubview:annotationPin];
@@ -268,44 +248,16 @@
     } else {
         annotationView.annotation = annotation;
     }
+    
     return annotationView;
-
-    
-    
-//    if ([annotation isKindOfClass:[MKPointAnnotation class]]) {
-//        return nil;
-//    }
-//    
-//    static NSString *annotationIdentifier = @"StickerPin";
-//    
-//    TStickerAnnotationView *annotationView = (TStickerAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
-//    
-//    if (!annotationView) {
-//        annotationView = [[TStickerAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
-//        annotationView.canShowCallout = NO;
-//        annotationView.delegate = self;
-//    }
-//    
-//    PFObject* postObj = [(TStickerAnnotation*)annotation annotationObject];
-//    PFObject* stickerObj = postObj[STICKER];
-//    PFFile* stickerImage = stickerObj[STICKER_IMAGE];
-//    [stickerImage getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            if (!error) {
-//                annotationView.image = [UIImage imageWithData:imageData];
-//                annotationView.stickerColor = [postObj[STICKER_SEVERITY] floatValue];
-//            }
-//        });
-//    }];
-//    
-//    return annotationView;
 }
 
 //- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated{
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-//    if (!animated) {
-//        return;
-//    }
+    if (animated) {
+        return;
+    }
+    
     CLLocationCoordinate2D mapCenter2D = mapView.centerCoordinate;
     CLLocation* mapCenter = [[CLLocation alloc] initWithLatitude:mapCenter2D.latitude longitude:mapCenter2D.longitude];
     
@@ -347,7 +299,6 @@
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         PFQuery* stickersQuery = [PFQuery queryWithClassName:POST];
         [stickersQuery includeKey:STICKER];
-//        [stickersQuery includeKey:@"images"];
         [stickersQuery includeKey:POST_FROMUSER];
         [stickersQuery whereKey:POST_LOCATION nearGeoPoint:[PFGeoPoint geoPointWithLatitude:latitude longitude:longitude] withinMiles:STICKER_QUERY_RADIUS];
         stickersQuery.limit = 15;
@@ -355,18 +306,16 @@
         if ([self.stickerLocations count] == 0) {
             stickersQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
         }
-//        __weak TViewController* weakSelf = self;
+
         [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             DLog(@"Stickers received: %lu", (unsigned long)objects.count);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (!error) {
-                    [self.map removeAnnotations:self.map.annotations];                    
-//                    self.stickerLocations = [objects mutableCopy];
+//                    [self.map removeAnnotations:self.map.annotations];
                     [self updateMapWithStickers:objects];
                 } else {
                     NSLog(@"No stickers Found");
-//                    [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Error in retrieving stickers" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
                 }
             });
         }];
@@ -385,7 +334,7 @@
 //        }
     }
     
-    /*
+/*
     NSMutableArray* newPosts = [[NSMutableArray alloc] initWithCapacity:10];
     NSMutableArray* allNewPosts = [[NSMutableArray alloc] initWithCapacity:10];
     for (PFObject* obj in stickers) {
@@ -422,7 +371,7 @@
     [self.map addAnnotations:newPosts];
     [self.stickerLocations addObjectsFromArray:newPosts];
     [self.stickerLocations removeObjectsInArray:postsToRemove];
-    */
+*/
 }
 
 - (IBAction)menuClicked:(id)sender {
@@ -458,6 +407,14 @@
 }
 
 - (IBAction)searchClicked:(id)sender {
+}
+
+- (IBAction)hideFirstTimeHelpView:(id)sender {
+    [UIView animateWithDuration:0.2 animations:^{
+        self.firstTimeHelpView.alpha = 0.0;
+    } completion:^(BOOL finished) {
+        [self.firstTimeHelpView removeFromSuperview];
+    }];
 }
 
 

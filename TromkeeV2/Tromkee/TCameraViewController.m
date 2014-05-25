@@ -400,10 +400,11 @@
     } completion:nil];
 }
 
+
 - (IBAction)postImage:(id)sender {
 
     if (![PFUser currentUser]) {
-        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You must login in order to post a sticker !!!" delegate:self cancelButtonTitle:@"Not Now" otherButtonTitles: @"Login", nil] show];
+        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You must login in order to post a sticker !!!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
         return;
     }
 
@@ -429,50 +430,55 @@
         self.postMessage.text = @"";
     }
     
-    
-    CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
-    
-    self.photoPostBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-        [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-    }];
-    
-    if (self.activityName == CameraForComment) {
-        PFObject* activiy = [PFObject objectWithClassName:ACTIVITY];
-        activiy[ACTIVITY_FROMUSER] = [PFUser currentUser];
-        activiy[ACTIVITY_TOUSER] = self.postedObject[POST_FROMUSER];
-        activiy[ACTIVITY_TYPE] = ACTIVITY_TYPE_COMMENT;
-        activiy[ACTIVITY_CONTENT] = self.postMessage.text;
-        activiy[ACTIVITY_POST] = self.postedObject;
-        activiy[ACTIVITY_ORIGINAL_IMAGE] = self.photoFile;
-        activiy[ACTIVITY_THUMBNAIL_IMAGE] = self.thumbnailFile;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
+        
+        //    self.photoPostBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        //        [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
+        //    }];
+        //
+        if (self.activityName == CameraForComment) {
+            PFObject* activiy = [PFObject objectWithClassName:ACTIVITY];
+            activiy[ACTIVITY_FROMUSER] = [PFUser currentUser];
+            activiy[ACTIVITY_TOUSER] = self.postedObject[POST_FROMUSER];
+            activiy[ACTIVITY_TYPE] = ACTIVITY_TYPE_COMMENT;
+            activiy[ACTIVITY_CONTENT] = self.postMessage.text;
+            activiy[ACTIVITY_POST] = self.postedObject;
+            activiy[ACTIVITY_ORIGINAL_IMAGE] = self.photoFile;
+            activiy[ACTIVITY_THUMBNAIL_IMAGE] = self.thumbnailFile;
 
-        [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (succeeded) {
+            if ([activiy save]) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_COMMENTS object:nil];
             } else {
-                NSLog(@"Error while posting activity: %@", error.localizedDescription);
+                NSLog(@"Failed to post activity");
             }
+//            [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+//                if (succeeded) {
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_COMMENTS object:nil];
+//                } else {
+//                    NSLog(@"Error while posting activity: %@", error.localizedDescription);
+//                }
+//                
+//                //            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
+//                //            self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
+//            }];
             
-            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-            self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;            
-        }];
+        } else {
+            PFObject *stickerPost = [PFObject objectWithClassName:POST];
+            stickerPost[POST_DATA] = self.postMessage.text;
+            stickerPost[POST_LOCATION] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
+            stickerPost[POST_FROMUSER] = [PFUser currentUser];
+            stickerPost[POST_USERLOCATION] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
+            stickerPost[POST_ORIGINAL_IMAGE] = self.photoFile;
+            stickerPost[POST_THUMBNAIL_IMAGE] = self.thumbnailFile;
+            if (self.activityName == CameraForAsk) {
+                stickerPost[POST_TYPE] = POST_TYPE_ASK;
+            } else if (self.activityName == CameraForImage){
+                stickerPost[POST_TYPE] = POST_TYPE_IMAGE;
+            }
 
-    } else {
-        PFObject *stickerPost = [PFObject objectWithClassName:POST];
-        stickerPost[POST_DATA] = self.postMessage.text;
-        stickerPost[POST_LOCATION] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
-        stickerPost[POST_FROMUSER] = [PFUser currentUser];
-        stickerPost[POST_USERLOCATION] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
-        stickerPost[POST_ORIGINAL_IMAGE] = self.photoFile;
-        stickerPost[POST_THUMBNAIL_IMAGE] = self.thumbnailFile;
-        if (self.activityName == CameraForAsk) {
-            stickerPost[POST_TYPE] = POST_TYPE_ASK;
-        } else if (self.activityName == CameraForImage){
-            stickerPost[POST_TYPE] = POST_TYPE_IMAGE;
-        }
-
-            [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (succeeded) {
+            if ([stickerPost save]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
                     NSString* msg;
                     if (self.activityName == CameraForAsk) {
                         msg = @"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks";
@@ -482,14 +488,28 @@
                     
                     [[[UIAlertView alloc] initWithTitle:@"Successful" message:msg delegate:nil cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
                     [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:@"Testing Notification"];
-                } else {
-                    NSLog(@"Failed with Comment to post");
-                }
-
-            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-            self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
-        }];
-    }
+                });
+            }
+//            [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+//                if (succeeded) {
+//                    NSString* msg;
+//                    if (self.activityName == CameraForAsk) {
+//                        msg = @"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks";
+//                    } else {
+//                        msg = @"Image is posted successfully. We will inform you if anyoneon on Tromke will comment, thanks";
+//                    }
+//                    
+//                    [[[UIAlertView alloc] initWithTitle:@"Successful" message:msg delegate:nil cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:@"Testing Notification"];
+//                } else {
+//                    NSLog(@"Failed with Comment to post");
+//                }
+//                
+//                //            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
+//                //            self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
+//            }];
+        }
+    });
     
     [self goBack];
 }

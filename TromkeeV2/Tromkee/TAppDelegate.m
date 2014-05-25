@@ -30,6 +30,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [[NSUserDefaults standardUserDefaults] registerDefaults:@{FIRST_TIME : @YES,
+                                                              FIRST_TIME_HELP : @YES}];
     [Crashlytics startWithAPIKey:@"2ae8a966d3e8305dd050a9dcfbd6466b468527fa"];
     //Sticker posted
     //    {
@@ -65,7 +67,6 @@
     }
     
     // Register for push notifications
-    [[TLocationUtility sharedInstance] initiateLocationCapture];
     [application registerForRemoteNotificationTypes: UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound];
     
 //    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:160/255.0f green:234/255.0f blue:242/255.0f alpha:1.0f]];
@@ -75,7 +76,7 @@
     [PFFacebookUtils initializeFacebook];
 
     // Track app open.
-    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+//    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
     //[PFUser enableAutomaticUser];
     
