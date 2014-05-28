@@ -26,7 +26,7 @@
 
 #define USER_LOCATION_TEXT @"User Location"
 
-@interface TViewController () <PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate/*, TStickerAnnotationDelegate*/>
+@interface TViewController () <TCameraDelegate, PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate/*, TStickerAnnotationDelegate*/>
 
 @property (weak, nonatomic) IBOutlet UILabel *notificationsCount;
 @property (weak, nonatomic) IBOutlet MKMapView *map;
@@ -55,12 +55,11 @@
 @property (weak, nonatomic) IBOutlet UIView *firstTimeHelpView;
 @property (weak, nonatomic) IBOutlet ITProgressBar *progressBar;
 
+@property (nonatomic, strong) IBOutlet UILabel* notificationCountValue;
 
 - (IBAction)menuClicked:(id)sender;
 - (IBAction)searchClicked:(id)sender;
 - (IBAction)hideFirstTimeHelpView:(id)sender;
-
-
 
 @end
 
@@ -69,7 +68,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNotificationCount) name:UPDATE_NOTIFICATION_COUNT object:nil];
+
     if ([[NSUserDefaults standardUserDefaults] boolForKey:FIRST_TIME_HELP] == NO) {
         [self.firstTimeHelpView removeFromSuperview];
     }
@@ -85,16 +85,32 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation:) name:TROMKE_USER_LOCATION_UPDATED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadLatestStickers:) name:TROMKEE_UPDATE_STICKERS object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startShowingAnimation) name:START_PROGRESS_ANIMATION object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showShowingAnimation) name:STOP_PROGRESS_ANIMATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopShowingAnimation) name:STOP_PROGRESS_ANIMATION object:nil];
     
     self.askBackgroundView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_QUESTION_COLOR];
 }
+
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self updateNotificationCount];
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.progressBar.hidden = YES;
+}
+
+-(void)updateNotificationCount {
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    self.notificationCountValue.text = [NSString stringWithFormat:@"%ld", (long)currentInstallation.badge];
+}
+
 
 -(void)startShowingAnimation {
     self.progressBar.hidden = NO;
 }
 
--(void)showShowingAnimation {
+-(void)stopShowingAnimation {
     self.progressBar.hidden = YES;
 }
 
@@ -135,7 +151,6 @@
 
 
 -(void)updateUserLocation:(NSNotification*)notification {
-    [self.map removeAnnotations:self.map.annotations];
     // Creates a marker in the center of the map.
     self.currentCenterLocation = self.currentMapLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
     
@@ -181,9 +196,11 @@
         [self.askText resignFirstResponder];
         cameraVC.activityName = CameraForAsk;
         cameraVC.cameraMessage = self.askText.text;
+        cameraVC.delegate = self;
     } else if ([segue.identifier isEqualToString:CAMERA]) {
         TCameraViewController* cameraVC = segue.destinationViewController;
         cameraVC.activityName = CameraForImage;
+        cameraVC.delegate = self;
     }
 }
 
@@ -225,7 +242,7 @@
         annotationPin.coOrdinate2D = ((TStickerAnnotation*)annotation).coordinate;
         annotationPin.tag = 100;
         
-        
+        annotationPin.stickerImage.image = nil;
         PFObject* postObj = [(TStickerAnnotation*)annotation annotationObject];
         if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
             PFObject* stickerObj = postObj[STICKER];
@@ -275,7 +292,7 @@
     
     CLLocation* oldCenter = [[CLLocation alloc] initWithLatitude:self.currentCenterLocation.latitude longitude:self.currentCenterLocation.longitude];
     DLog(@"Distance is: %f", [mapCenter distanceFromLocation:oldCenter]);
-    if ([mapCenter distanceFromLocation:oldCenter] > 2000) {
+    if ([mapCenter distanceFromLocation:oldCenter] > 1000) {
         CLLocationCoordinate2D center = mapView.centerCoordinate;
         self.currentCenterLocation = center;
         [self updatePostedStickersOnMapWithCenter:center.latitude andLongitude:center.longitude];
@@ -324,7 +341,6 @@
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (!error) {
-//                    [self.map removeAnnotations:self.map.annotations];
                     [self updateMapWithStickers:objects];
                 } else {
                     NSLog(@"No stickers Found");
@@ -339,14 +355,15 @@
 }
 
 -(void)updateMapWithStickers:(NSArray*)stickers {
-//    for (PFObject* sticker in stickers) {
-////        if ([sticker[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
-//            TStickerAnnotation *annotation = [[TStickerAnnotation alloc] initWithObject:sticker];
-//            [self.map addAnnotation:annotation];
-////        }
-//    }
+    [self.map removeAnnotations:self.map.annotations];
+    for (PFObject* sticker in stickers) {
+//        if ([sticker[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
+            TStickerAnnotation *annotation = [[TStickerAnnotation alloc] initWithObject:sticker];
+            [self.map addAnnotation:annotation];
+//        }
+    }
     
-
+/*
     NSMutableArray* newPosts = [[NSMutableArray alloc] initWithCapacity:10];
     NSMutableArray* allNewPosts = [[NSMutableArray alloc] initWithCapacity:10];
     for (PFObject* obj in stickers) {
@@ -362,6 +379,8 @@
         
         if (!found) {
             [newPosts addObject:newObj];
+            newObj.animatesDrop = YES;
+            [self.map addAnnotation:newObj];
         }
     }
     
@@ -371,19 +390,22 @@
         for (TStickerAnnotation* allNewPost in allNewPosts) {
             if ([currentObj equalToPost:allNewPost]) {
                 found = YES;
+                break;
             }
         }
         
         if (!found) {
             [postsToRemove addObject:currentObj];
+            [self.map removeAnnotation:currentObj];
         }
     }
     
-    [self.map removeAnnotations:postsToRemove];
-    [self.map addAnnotations:newPosts];
+//    [self.map removeAnnotations:postsToRemove];
+//    [self.map addAnnotations:newPosts];
     [self.stickerLocations addObjectsFromArray:newPosts];
     [self.stickerLocations removeObjectsInArray:postsToRemove];
-    NSLog(@"Total stickers in memory are: %d", self.stickerLocations.count);
+    NSLog(@"Total stickers in memory are: %lu", (unsigned long)self.stickerLocations.count);
+*/
 }
 
 - (IBAction)menuClicked:(id)sender {
@@ -419,6 +441,7 @@
 }
 
 - (IBAction)searchClicked:(id)sender {
+    [[[UIAlertView alloc] initWithTitle:@"" message:@"This feature is in development" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
 }
 
 - (IBAction)hideFirstTimeHelpView:(id)sender {
@@ -456,13 +479,27 @@
         case MenuItemSettings:
             break;
         case MenuItemLogout:
-            [PFUser logOut];
+        {
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Confirm" message:@"Please confirm if you want to logout of the application" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+            alert.tag = 1000;
+            [alert show];
+        }
             break;
         default:
             break;
     }
 }
 
+-(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (alertView.tag == 1000) {
+        if (buttonIndex == 1) {
+            [PFUser logOut];
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    } else if (alertView.tag == 2000) {
+        [self updatePostedStickers];
+    }
+}
 
 - (IBAction)postStickerOnly:(id)sender {
 
@@ -521,6 +558,7 @@
         return;
     }
     
+    [self startShowingAnimation];
     CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
     
     PFObject *stickerPost = [PFObject objectWithClassName:POST];
@@ -533,7 +571,10 @@
     [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks" delegate:self cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
+                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Successful" message:@"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks" delegate:self cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil];
+                alert.tag = 2000;
+                [alert show];
+                [self stopShowingAnimation];
             });
         } else {
             NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
@@ -543,9 +584,6 @@
     [self hideAskQuestionView:nil];
 }
 
--(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    [self updatePostedStickers];
-}
 
 #pragma mark - Ask question delegate
 
@@ -578,4 +616,20 @@
     
 }
 
+-(void)startedPosting {
+    self.progressBar.hidden = NO;
+}
+
+-(void)completedPosting:(BOOL)status andMessage:(NSString*)msg {
+    self.progressBar.hidden = YES;
+    NSString* statusTitle;
+    if (status) {
+        statusTitle = @"Successful";
+        [self updatePostedStickers];
+    } else {
+        statusTitle = @"Warning";
+    }
+
+    [[[UIAlertView alloc] initWithTitle:statusTitle message:msg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+}
 @end

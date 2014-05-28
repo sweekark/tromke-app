@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TBaseViewController.h"
 
 @interface TActivityViewController : UIViewController
 

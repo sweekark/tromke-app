@@ -6,9 +6,6 @@
 //  Copyright (c) 2014 Tromkee. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import "TBaseViewController.h"
-
-@interface TViewController : TBaseViewController
+@interface TViewController : UIViewController
 
 @end

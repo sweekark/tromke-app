@@ -115,9 +115,9 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:START_PROGRESS_ANIMATION object:nil];
     
     //Post only content
-    self.photoPostBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-        [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-    }];
+//    self.photoPostBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+//        [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
+//    }];
 
     CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
     
@@ -143,7 +143,7 @@
             NSLog(@"Failed with Sticker Error: %@", error.localizedDescription);
         }
         
-        [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
+//        [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
     }];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:STICKER_POSTED object:nil];

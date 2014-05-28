@@ -114,7 +114,7 @@
         session=nil;
     
     session = [[AVCaptureSession alloc] init];
-	session.sessionPreset = AVCaptureSessionPresetLow;
+	session.sessionPreset = AVCaptureSessionPresetPhoto;
 	
     if (captureVideoPreviewLayer)
         captureVideoPreviewLayer=nil;
@@ -278,9 +278,15 @@
     self.photoFile = [PFFile fileWithData:imageData];
     self.thumbnailFile = [PFFile fileWithData:thumbnailData];
     
+    NSDate* strt = [NSDate date];
     [self.thumbnailFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        NSDate* strt1 = [NSDate date];
+        NSLog(@"Thumbnail Uploaded: %f", [strt1 timeIntervalSinceDate:strt]);
         if (succeeded) {
-            [self.photoFile saveInBackground];
+            [self.photoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                NSDate* strt2 = [NSDate date];
+                NSLog(@"Image Uploaded: %f", [strt2 timeIntervalSinceDate:strt1]);
+            }];
         }
     }];
 }
@@ -431,10 +437,11 @@
     }
     
     CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
+    [self.delegate startedPosting];
     
-    self.photoPostBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-        [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-    }];
+//    self.photoPostBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+//        [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
+//    }];
 
     if (self.activityName == CameraForComment) {
         PFObject* activiy = [PFObject objectWithClassName:ACTIVITY];
@@ -446,25 +453,25 @@
         activiy[ACTIVITY_ORIGINAL_IMAGE] = self.photoFile;
         activiy[ACTIVITY_THUMBNAIL_IMAGE] = self.thumbnailFile;
 
-        if ([activiy save]) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_COMMENTS object:nil];
-        } else {
-            NSLog(@"Failed to post activity");
-        }
+//        if ([activiy save]) {
+//            [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_COMMENTS object:nil];
+//        } else {
+//            NSLog(@"Failed to post activity");
+//        }
         
-        [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-        self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
+//        [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
+//        self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
         
-//            [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-//                if (succeeded) {
-//                    [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_COMMENTS object:nil];
-//                } else {
-//                    NSLog(@"Error while posting activity: %@", error.localizedDescription);
-//                }
-//                
-//                //            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-//                //            self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
-//            }];
+        [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_COMMENTS object:nil];
+            } else {
+                NSLog(@"Error while posting activity: %@", error.localizedDescription);
+            }
+            
+            //            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
+            //            self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
+        }];
         
     } else {
         PFObject *stickerPost = [PFObject objectWithClassName:POST];
@@ -498,25 +505,29 @@
 //        self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
 
         
+        NSDate* dt1 = [NSDate date];
         [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            NSDate* dt2 = [NSDate date];
+            NSLog(@"Image Posted: %f", [dt2 timeIntervalSinceDate:dt1]);
             if (succeeded) {
-                dispatch_async(dispatch_get_main_queue(), ^{
                     NSString* msg;
                     if (self.activityName == CameraForAsk) {
                         msg = @"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks";
                     } else {
                         msg = @"Image is posted successfully. We will inform you if anyoneon on Tromke will comment, thanks";
                     }
-                    
-                    [[[UIAlertView alloc] initWithTitle:@"Successful" message:msg delegate:nil cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:@"Testing Notification"];
-                });
+                
+                [self.delegate completedPosting:YES andMessage:msg];
+//                    [[[UIAlertView alloc] initWithTitle:@"Successful" message:msg delegate:nil cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:STOP_PROGRESS_ANIMATION object:nil];
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:@"Testing Notification"];
             } else {
+                [self.delegate completedPosting:NO andMessage:@"Failed to post"];
                 NSLog(@"Failed with Comment to post");
             }
             
-            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-            self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
+//            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
+//            self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
         }];
     }
     

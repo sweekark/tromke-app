@@ -25,9 +25,7 @@
 		45431D1D192F62EC00D8D135 /* TCustomLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45431D1C192F62EC00D8D135 /* TCustomLoginViewController.m */; };
 		454BDE0118890101009DC4F6 /* TPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 454BDE0018890101009DC4F6 /* TPostViewController.m */; };
 		455B796B19003DEC00D4AAD2 /* TPostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 455B796A19003DEC00D4AAD2 /* TPostCell.m */; };
-		455C01131879C60E00D54908 /* backgroundLogin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 455C01101879C60E00D54908 /* backgroundLogin@2x.png */; };
 		4563F2E418A4B1EB00E8911E /* TStickerAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F2E318A4B1EB00E8911E /* TStickerAnnotation.m */; };
-		4564400818F5434600672099 /* Sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = 4564400718F5434600672099 /* Sticker.png */; };
 		456CC342192EEAC5009470E8 /* THelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 456CC341192EEAC5009470E8 /* THelpViewController.m */; };
 		456DAE5618CC9394009E4FEC /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 456DAE5418CC9394009E4FEC /* FacebookSDK.framework */; };
 		456DAE5718CC9394009E4FEC /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 456DAE5518CC9394009E4FEC /* Parse.framework */; };
@@ -64,7 +62,6 @@
 		45A6AF7518B109B900D26563 /* TStickerAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 45A6AF7418B109B900D26563 /* TStickerAnnotationView.m */; };
 		45A8462C18F7EC0C00DA3627 /* TUserActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 45A8462B18F7EC0C00DA3627 /* TUserActivityCell.m */; };
 		45B95C8918F6AE6D004D7568 /* TUserActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45B95C8818F6AE6D004D7568 /* TUserActivityViewController.m */; };
-		45B95C8C18F6AF43004D7568 /* TBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45B95C8B18F6AF43004D7568 /* TBaseViewController.m */; };
 		45D3E6CB18ACA3ED000AD55F /* TMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D3E6CA18ACA3ED000AD55F /* TMenuViewController.m */; };
 		45E54467188F934200FF8977 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 45E54464188F934200FF8977 /* Reachability.m */; };
 		45F2E63E190CEAFB0014E034 /* SnappySlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F2E63D190CEAFB0014E034 /* SnappySlider.m */; };
@@ -72,6 +69,9 @@
 		45F2E643190D6ED70014E034 /* CustomPin.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45F2E641190D6ED70014E034 /* CustomPin.xib */; };
 		45F2E646190D6F790014E034 /* CustomViewMV.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F2E645190D6F790014E034 /* CustomViewMV.m */; };
 		45F53E26189D6EB100C7C42A /* TUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F53E25189D6EB100C7C42A /* TUtility.m */; };
+		45F8D75F1935095000EA16D5 /* TTermsAndPolicyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F8D75E1935095000EA16D5 /* TTermsAndPolicyViewController.m */; };
+		45F8D76219350B4300EA16D5 /* Policy.html in Resources */ = {isa = PBXBuildFile; fileRef = 45F8D76019350B4300EA16D5 /* Policy.html */; };
+		45F8D76319350B4300EA16D5 /* Terms.html in Resources */ = {isa = PBXBuildFile; fileRef = 45F8D76119350B4300EA16D5 /* Terms.html */; };
 		45FC0DCD18CCD46700C82A2B /* TFollowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FC0DCC18CCD46700C82A2B /* TFollowCell.m */; };
 		45FC756018A017E10089255A /* UIImage+AlphaAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FC755B18A017E10089255A /* UIImage+AlphaAdditions.m */; };
 		45FC756118A017E10089255A /* UIImage+ResizeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FC755D18A017E10089255A /* UIImage+ResizeAdditions.m */; };
@@ -124,10 +124,8 @@
 		454BDE0018890101009DC4F6 /* TPostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPostViewController.m; sourceTree = "<group>"; };
 		455B796919003DEC00D4AAD2 /* TPostCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPostCell.h; sourceTree = "<group>"; };
 		455B796A19003DEC00D4AAD2 /* TPostCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPostCell.m; sourceTree = "<group>"; };
-		455C01101879C60E00D54908 /* backgroundLogin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backgroundLogin@2x.png"; sourceTree = "<group>"; };
 		4563F2E218A4B1EB00E8911E /* TStickerAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TStickerAnnotation.h; sourceTree = "<group>"; };
 		4563F2E318A4B1EB00E8911E /* TStickerAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TStickerAnnotation.m; sourceTree = "<group>"; };
-		4564400718F5434600672099 /* Sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Sticker.png; sourceTree = "<group>"; };
 		456CC340192EEAC5009470E8 /* THelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THelpViewController.h; sourceTree = "<group>"; };
 		456CC341192EEAC5009470E8 /* THelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THelpViewController.m; sourceTree = "<group>"; };
 		456DAE5418CC9394009E4FEC /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
@@ -175,8 +173,6 @@
 		45A8462B18F7EC0C00DA3627 /* TUserActivityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUserActivityCell.m; sourceTree = "<group>"; };
 		45B95C8718F6AE6D004D7568 /* TUserActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUserActivityViewController.h; sourceTree = "<group>"; };
 		45B95C8818F6AE6D004D7568 /* TUserActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUserActivityViewController.m; sourceTree = "<group>"; };
-		45B95C8A18F6AF43004D7568 /* TBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBaseViewController.h; sourceTree = "<group>"; };
-		45B95C8B18F6AF43004D7568 /* TBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBaseViewController.m; sourceTree = "<group>"; };
 		45D3E6C918ACA3ED000AD55F /* TMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TMenuViewController.h; sourceTree = "<group>"; };
 		45D3E6CA18ACA3ED000AD55F /* TMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TMenuViewController.m; sourceTree = "<group>"; };
 		45E54463188F934200FF8977 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
@@ -191,6 +187,10 @@
 		45F2E645190D6F790014E034 /* CustomViewMV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomViewMV.m; sourceTree = "<group>"; };
 		45F53E24189D6EB100C7C42A /* TUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUtility.h; sourceTree = "<group>"; };
 		45F53E25189D6EB100C7C42A /* TUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUtility.m; sourceTree = "<group>"; };
+		45F8D75D1935095000EA16D5 /* TTermsAndPolicyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTermsAndPolicyViewController.h; sourceTree = "<group>"; };
+		45F8D75E1935095000EA16D5 /* TTermsAndPolicyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTermsAndPolicyViewController.m; sourceTree = "<group>"; };
+		45F8D76019350B4300EA16D5 /* Policy.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Policy.html; sourceTree = "<group>"; };
+		45F8D76119350B4300EA16D5 /* Terms.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Terms.html; sourceTree = "<group>"; };
 		45FC0DCB18CCD46700C82A2B /* TFollowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFollowCell.h; sourceTree = "<group>"; };
 		45FC0DCC18CCD46700C82A2B /* TFollowCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFollowCell.m; sourceTree = "<group>"; };
 		45FC755A18A017E10089255A /* UIImage+AlphaAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+AlphaAdditions.h"; sourceTree = "<group>"; };
@@ -393,6 +393,7 @@
 		45A2E88318764FF1009A6171 /* Tromkee */ = {
 			isa = PBXGroup;
 			children = (
+				45F8D75C1935093B00EA16D5 /* TermsAndPolicy */,
 				45431D1A192F62B900D8D135 /* Login */,
 				45431D16192F250D00D8D135 /* Registration */,
 				456CC33F192EEAB8009470E8 /* Help */,
@@ -403,8 +404,6 @@
 				45D3E6C818ACA3D8000AD55F /* MenuDisplay */,
 				45A2E88C18764FF1009A6171 /* TAppDelegate.h */,
 				45A2E88D18764FF1009A6171 /* TAppDelegate.m */,
-				45B95C8A18F6AF43004D7568 /* TBaseViewController.h */,
-				45B95C8B18F6AF43004D7568 /* TBaseViewController.m */,
 				45A2E88F18764FF1009A6171 /* Main.storyboard */,
 				453AE94C188423F00099D8B0 /* TLocationUtility.h */,
 				453AE94D188423F00099D8B0 /* TLocationUtility.m */,
@@ -425,8 +424,8 @@
 		45A2E88418764FF1009A6171 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				4564400718F5434600672099 /* Sticker.png */,
-				455C01101879C60E00D54908 /* backgroundLogin@2x.png */,
+				45F8D76019350B4300EA16D5 /* Policy.html */,
+				45F8D76119350B4300EA16D5 /* Terms.html */,
 				45A2E88518764FF1009A6171 /* Tromke-Info.plist */,
 				45A2E88618764FF1009A6171 /* InfoPlist.strings */,
 				45A2E88918764FF1009A6171 /* main.m */,
@@ -504,6 +503,15 @@
 			);
 			path = External;
 			sourceTree = SOURCE_ROOT;
+		};
+		45F8D75C1935093B00EA16D5 /* TermsAndPolicy */ = {
+			isa = PBXGroup;
+			children = (
+				45F8D75D1935095000EA16D5 /* TTermsAndPolicyViewController.h */,
+				45F8D75E1935095000EA16D5 /* TTermsAndPolicyViewController.m */,
+			);
+			name = TermsAndPolicy;
+			sourceTree = "<group>";
 		};
 		45FC755918A017E10089255A /* UIImage */ = {
 			isa = PBXGroup;
@@ -597,11 +605,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45F8D76319350B4300EA16D5 /* Terms.html in Resources */,
 				45A2E89618764FF1009A6171 /* Images.xcassets in Resources */,
-				455C01131879C60E00D54908 /* backgroundLogin@2x.png in Resources */,
+				45F8D76219350B4300EA16D5 /* Policy.html in Resources */,
 				45F2E643190D6ED70014E034 /* CustomPin.xib in Resources */,
 				45A2E88818764FF1009A6171 /* InfoPlist.strings in Resources */,
-				4564400818F5434600672099 /* Sticker.png in Resources */,
 				45A2E89118764FF1009A6171 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -664,9 +672,9 @@
 				45D3E6CB18ACA3ED000AD55F /* TMenuViewController.m in Sources */,
 				45FC756018A017E10089255A /* UIImage+AlphaAdditions.m in Sources */,
 				45F2E642190D6ED70014E034 /* CustomPin.m in Sources */,
+				45F8D75F1935095000EA16D5 /* TTermsAndPolicyViewController.m in Sources */,
 				453CB8FA1885C5D300D7019D /* TCategoryStickerCell.m in Sources */,
 				45A6AF7518B109B900D26563 /* TStickerAnnotationView.m in Sources */,
-				45B95C8C18F6AF43004D7568 /* TBaseViewController.m in Sources */,
 				456CC342192EEAC5009470E8 /* THelpViewController.m in Sources */,
 				4563F2E418A4B1EB00E8911E /* TStickerAnnotation.m in Sources */,
 				457C8A861893B02100D6DA40 /* TCircleView.m in Sources */,

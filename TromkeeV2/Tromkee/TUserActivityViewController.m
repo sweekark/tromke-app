@@ -123,19 +123,36 @@
         
         NSString* comment;
         if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
-            comment = [NSString stringWithFormat:@"Commented %@", activityObj[@"content"]];
+            comment = [NSString stringWithFormat:@"commented %@", activityObj[@"content"]];
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
-            comment = @"Conveyed Thanks";
+            comment = @"conveyed Thanks";
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT]) {
-            comment = [NSString stringWithFormat:@"Posted image with %@", activityObj[@"content"]];
+            comment = [NSString stringWithFormat:@"posted image with %@", activityObj[@"content"]];
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_ONLY]) {
-            comment = @"Posted Image";
+            comment = @"posted image";
+        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_FOLLOW]) {
+            comment = @"is following you";
         }
         
         PFUser* fromUser = activityObj[POST_FROMUSER];
         
         NSString* str = [NSString stringWithFormat:@"%@ %@", /*fromUser[USER_DISPLAY_NAME]*/[TUtility getDisplayNameForUser:fromUser], comment];
         NSMutableAttributedString* msgStr = [[NSMutableAttributedString alloc] initWithString:str];
+        
+        NSRange postedRange;
+        if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
+            postedRange = [str rangeOfString:@"commented"];
+        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
+            postedRange = [str rangeOfString:@"conveyed"];
+        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT] || [activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_ONLY]) {
+            postedRange = [str rangeOfString:@"posted"];
+        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_FOLLOW]) {
+            postedRange = [str rangeOfString:@"following"];
+        }
+
+        [msgStr addAttribute:NSFontAttributeName value:[UIFont italicSystemFontOfSize:14] range:postedRange];
+        [msgStr addAttribute:NSForegroundColorAttributeName value:[UIColor greenColor] range:postedRange];
+
         cell.notificationMessage.attributedText = msgStr;
         
         PFFile* imgFile = fromUser[FACEBOOK_SMALLPIC_KEY];

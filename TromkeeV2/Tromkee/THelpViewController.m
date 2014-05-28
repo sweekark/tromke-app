@@ -41,11 +41,11 @@
     btn.frame = CGRectMake(0, self.view.frame.size.height - 194, 320, 194);
     
     if (IS_IPHONE_5) {
-        img1.image = [UIImage imageNamed:@"What5"];
-        img2.image = [UIImage imageNamed:@"Green5"];
+        img1.image = [UIImage imageNamed:@"Green5"];
+        img2.image = [UIImage imageNamed:@"What5"];
     } else {
-        img1.image = [UIImage imageNamed:@"What4"];
-        img2.image = [UIImage imageNamed:@"Green4"];
+        img1.image = [UIImage imageNamed:@"Green4"];
+        img2.image = [UIImage imageNamed:@"What4"];
     }
     
     [self.scrlView addSubview:img1];

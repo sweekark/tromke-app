@@ -7,10 +7,12 @@
 //
 
 #import "TCustomLoginViewController.h"
+#import "TTermsAndPolicyViewController.h"
 
 @interface TCustomLoginViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *userName;
 @property (weak, nonatomic) IBOutlet UITextField *passWord;
+@property (weak, nonatomic) IBOutlet UIImageView *bgImageView;
 
 @end
 
@@ -31,12 +33,20 @@
     // Do any additional setup after loading the view.
     UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard:)];
     [self.view addGestureRecognizer:tapGesture];
+    
+    if (!IS_IPHONE_5) {
+        self.bgImageView.image = [UIImage imageNamed:@"NewLoginBG4"];
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:FIRST_TIME]) {
         [self performSegueWithIdentifier:HELP sender:nil];
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:FIRST_TIME];
+    } else {
+        if ([PFUser currentUser] && [[PFUser currentUser] isAuthenticated]) {
+            [self performSegueWithIdentifier:MAIN sender:nil];
+        }
     }
     
     [super viewDidAppear:animated];
@@ -52,17 +62,19 @@
     [self.userName resignFirstResponder];
     [self.passWord resignFirstResponder];
 }
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    if ([segue.identifier isEqualToString:@"Terms"]) {
+        TTermsAndPolicyViewController* vc = segue.destinationViewController;
+        vc.showTerms = YES;
+    } else if ([segue.identifier isEqualToString:@"Policy"]) {
+        TTermsAndPolicyViewController* vc = segue.destinationViewController;
+        vc.showTerms = NO;
+    }
 }
-*/
-
 
 - (IBAction)authenticateWithParse:(id)sender {
     
