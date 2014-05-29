@@ -10,6 +10,6 @@
 
 @interface TCategoryStickerCell : UICollectionViewCell
 
-@property(nonatomic, weak) IBOutlet UIImageView* stickerImage;
+@property(nonatomic, weak) IBOutlet PFImageView* stickerImage;
 
 @end

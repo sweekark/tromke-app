@@ -234,7 +234,8 @@
 //    }
     
     static NSString *identifier = @"myAnnotation";
-    CustomViewMV * annotationView = (CustomViewMV*)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+    CustomViewMV * annotationView = nil;
+    //= (CustomViewMV*)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
     if (!annotationView)
     {
         annotationView = [[CustomViewMV alloc]initWithAnnotation:annotation reuseIdentifier:identifier];
@@ -242,7 +243,7 @@
         annotationPin.coOrdinate2D = ((TStickerAnnotation*)annotation).coordinate;
         annotationPin.tag = 100;
         
-        annotationPin.stickerImage.image = nil;
+        annotationPin.stickerImage.image = [UIImage imageNamed:@"NewStickerPlaceHolder"];;
         PFObject* postObj = [(TStickerAnnotation*)annotation annotationObject];
         if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
             PFObject* stickerObj = postObj[STICKER];
@@ -274,9 +275,11 @@
         [annotationView addSubview:annotationPin];
         
         annotationView.canShowCallout = NO;
-    } else {
-        annotationView.annotation = annotation;
     }
+    
+    /*else {
+        annotationView.annotation = annotation;
+    }*/
     
     return annotationView;
 }
@@ -355,15 +358,15 @@
 }
 
 -(void)updateMapWithStickers:(NSArray*)stickers {
-    [self.map removeAnnotations:self.map.annotations];
-    for (PFObject* sticker in stickers) {
-//        if ([sticker[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
-            TStickerAnnotation *annotation = [[TStickerAnnotation alloc] initWithObject:sticker];
-            [self.map addAnnotation:annotation];
-//        }
-    }
+//    [self.map removeAnnotations:self.map.annotations];
+//    for (PFObject* sticker in stickers) {
+////        if ([sticker[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
+//            TStickerAnnotation *annotation = [[TStickerAnnotation alloc] initWithObject:sticker];
+//            [self.map addAnnotation:annotation];
+////        }
+//    }
     
-/*
+
     NSMutableArray* newPosts = [[NSMutableArray alloc] initWithCapacity:10];
     NSMutableArray* allNewPosts = [[NSMutableArray alloc] initWithCapacity:10];
     for (PFObject* obj in stickers) {
@@ -405,7 +408,6 @@
     [self.stickerLocations addObjectsFromArray:newPosts];
     [self.stickerLocations removeObjectsInArray:postsToRemove];
     NSLog(@"Total stickers in memory are: %lu", (unsigned long)self.stickerLocations.count);
-*/
 }
 
 - (IBAction)menuClicked:(id)sender {
@@ -463,9 +465,9 @@
 -(void)userClickedMenu:(NSInteger)rowNumber {
     [self menuClicked:nil];
     switch (rowNumber) {
-        case MenuItemNearMe:
-            [self updateUserLocation:nil];
-            break;
+//        case MenuItemNearMe:
+//            [self updateUserLocation:nil];
+//            break;
         case MenuItemMyProfile:
             if ([[PFUser currentUser] isAuthenticated]) {
                 [self performSegueWithIdentifier:PROFILE sender:nil];
@@ -474,10 +476,10 @@
             }
 
             break;
-        case MenuItemMyActivity:
-            break;
-        case MenuItemSettings:
-            break;
+//        case MenuItemMyActivity:
+//            break;
+//        case MenuItemSettings:
+//            break;
         case MenuItemLogout:
         {
             UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Confirm" message:@"Please confirm if you want to logout of the application" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];

@@ -82,14 +82,11 @@
     PFObject* sticker = self.stickers[indexPath.item];
     
     PFFile *userImageFile = sticker[STICKER_IMAGE];
-    [userImageFile getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (!error) {
-                TCategoryStickerCell* tempCell = (TCategoryStickerCell*)[collectionView cellForItemAtIndexPath:indexPath];
-                tempCell.stickerImage.image = [UIImage imageWithData:imageData];
-            }
-        });
-    }];
+    if (userImageFile) {
+        cell.stickerImage.image = [UIImage imageNamed:@"NewStickerPlaceHolder"];
+        cell.stickerImage.file = userImageFile;
+        [cell.stickerImage loadInBackground];
+    }
 
     return cell;
 }

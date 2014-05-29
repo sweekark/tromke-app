@@ -15,11 +15,6 @@
 #import "UIImage+RoundedCornerAdditions.h"
 #import "UIImage+AlphaAdditions.h"
 
-
-#define IMAGE STICKER_IMAGE
-#define STICKER_POINTS @"postPoints"
-#define CAMERA_POINTS @"imagePoints"
-
 @interface TPostViewController () <PFLogInViewControllerDelegate> {
     BOOL isSingleBuddy;
 }
@@ -28,7 +23,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *groupBuddy;
 
 @property (weak, nonatomic) IBOutlet TCircleView *circleView;
-@property (weak, nonatomic) IBOutlet UIImageView *stickerImage;
+@property (weak, nonatomic) IBOutlet PFImageView *stickerImage;
+@property (weak, nonatomic) IBOutlet UILabel *stickerName;
 @property (weak, nonatomic) IBOutlet UISlider *stickerSeverity;
 @property (weak, nonatomic) IBOutlet UITextView *stickerDescription;
 @property (weak, nonatomic) IBOutlet UIView* commentView;
@@ -69,14 +65,20 @@
 
 -(void)viewWillAppear:(BOOL)animated {
 
-    PFFile *userImageFile = self.postSticker[IMAGE];
-    [userImageFile getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
-        if (!error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.stickerImage.image = [UIImage imageWithData:imageData];
-            });
-        }
-    }];
+    PFFile *userImageFile = self.postSticker[STICKER_IMAGE];
+    if (userImageFile) {
+        self.stickerImage.file = userImageFile;
+        [self.stickerImage loadInBackground];
+    }
+    self.stickerName.text = self.postSticker[STICKER_NAME];
+    
+//    [userImageFile getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
+//        if (!error) {
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                self.stickerImage.image = [UIImage imageWithData:imageData];
+//            });
+//        }
+//    }];
 
     [super viewWillAppear:animated];
 }

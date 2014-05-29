@@ -46,7 +46,7 @@
     if ([Reachability isReachable]) {
         PFQuery* categoriesQuery = [PFQuery queryWithClassName:CATEGORY];
         categoriesQuery.cachePolicy = kPFCachePolicyCacheElseNetwork;
-        categoriesQuery.maxCacheAge = 3600;
+        categoriesQuery.maxCacheAge = 86400;
         [categoriesQuery orderByAscending:CATEGORY_SORTBY];
         [categoriesQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             DLog(@"Categories received: %lu", (unsigned long)objects.count);
@@ -95,8 +95,10 @@
 
     if (self.currentSelectedItem == indexPath.item) {
         cell.arrowImage.image = [UIImage imageNamed:@"NewCatArrow"];
+        cell.categoryTitle.textColor = [UIColor blueColor];
     } else {
         cell.arrowImage.image = nil;
+        cell.categoryTitle.textColor = [UIColor blackColor];
     }
     
 //    [userImageFile getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {

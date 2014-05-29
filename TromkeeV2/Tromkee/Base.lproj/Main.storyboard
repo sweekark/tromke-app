@@ -1604,13 +1604,14 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="99"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="gIO-Mh-uNZ" customClass="PFImageView">
-                                                    <rect key="frame" x="5" y="9" width="80" height="80"/>
+                                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kqr-xO-jz5">
+                                                    <rect key="frame" x="0.0" y="0.0" width="70" height="100"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                                </view>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gIO-Mh-uNZ" customClass="PFImageView">
+                                                    <rect key="frame" x="5" y="9" width="60" height="60"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="80" id="c0Z-Sb-Yi1"/>
-                                                        <constraint firstAttribute="height" constant="80" id="u51-yA-W1O"/>
-                                                    </constraints>
                                                 </imageView>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="225" translatesAutoresizingMaskIntoConstraints="NO" id="aVs-DR-PgR">
                                                     <rect key="frame" x="90" y="5" width="225" height="17"/>
@@ -1634,7 +1635,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VzO-W7-xae">
-                                                    <rect key="frame" x="5" y="9" width="80" height="80"/>
+                                                    <rect key="frame" x="5" y="9" width="60" height="60"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -1644,7 +1645,7 @@
                                                     </connections>
                                                 </button>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="ProfileRound" translatesAutoresizingMaskIntoConstraints="NO" id="8Yf-0c-mCj">
-                                                    <rect key="frame" x="5" y="9" width="80" height="80"/>
+                                                    <rect key="frame" x="5" y="9" width="60" height="60"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
                                             </subviews>
@@ -1652,8 +1653,6 @@
                                                 <constraint firstItem="aVs-DR-PgR" firstAttribute="top" secondItem="pIo-h1-nvO" secondAttribute="top" constant="5" id="3Hz-kO-dUM"/>
                                                 <constraint firstItem="Asb-3q-v9F" firstAttribute="top" secondItem="aVs-DR-PgR" secondAttribute="bottom" constant="2" id="59u-Ri-VIn"/>
                                                 <constraint firstAttribute="trailing" secondItem="aVs-DR-PgR" secondAttribute="trailing" constant="5" id="I1k-F2-0gt"/>
-                                                <constraint firstItem="gIO-Mh-uNZ" firstAttribute="top" secondItem="pIo-h1-nvO" secondAttribute="top" constant="9" id="WFp-Ck-Phe"/>
-                                                <constraint firstItem="gIO-Mh-uNZ" firstAttribute="leading" secondItem="pIo-h1-nvO" secondAttribute="leading" constant="5" id="Zgm-Dn-pHm"/>
                                                 <constraint firstAttribute="trailing" secondItem="Asb-3q-v9F" secondAttribute="trailing" constant="5" id="acU-5H-82M"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -1715,7 +1714,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FFx-XO-er5">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FFx-XO-er5" customClass="PFImageView">
                                             <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         </imageView>
@@ -1785,7 +1784,7 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FhL-R0-lbD">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FhL-R0-lbD" customClass="PFImageView">
                                 <rect key="frame" x="130" y="7" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
@@ -1855,7 +1854,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             </view>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rKD-U8-AW3">
-                                <rect key="frame" x="55" y="73" width="210" height="21"/>
+                                <rect key="frame" x="55" y="74" width="210" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
@@ -1872,6 +1871,7 @@
                         <outlet property="postView" destination="cW3-UL-R0Q" id="uh6-3x-uTs"/>
                         <outlet property="stickerDescription" destination="4L1-hb-WqG" id="GGo-JP-Gt7"/>
                         <outlet property="stickerImage" destination="FhL-R0-lbD" id="LEg-xA-Kd5"/>
+                        <outlet property="stickerName" destination="rKD-U8-AW3" id="TB2-G9-RZu"/>
                         <outlet property="stickerSeverity" destination="MiN-7g-hhh" id="ml7-Uf-VIh"/>
                     </connections>
                 </viewController>
@@ -2704,9 +2704,9 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="COV-JJ-dRE"/>
         <segue reference="Bnd-pd-Ltr"/>
         <segue reference="Jaa-Qq-CdW"/>
         <segue reference="yux-Dm-G3t"/>
-        <segue reference="l0l-lO-hqx"/>
     </inferredMetricsTieBreakers>
 </document>

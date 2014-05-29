@@ -20,7 +20,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.menuItems = @[@"Near Me", @"My Profile", @"My Activity", @"Settings", @"Logout"];
+    self.menuItems = @[@"My Profile", @"Logout"];
 }
 
 

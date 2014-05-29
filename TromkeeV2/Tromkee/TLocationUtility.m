@@ -54,17 +54,45 @@
     
     CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
     [geoCoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
-        for (CLPlacemark * placemark in placemarks) {
-//            NSString* placemarkName = placemark.name;
-//            NSString* placemarkSubLocality = placemark.subLocality;
-//            NSString* placemarkLocality = placemark.locality;
-//            
-//            if (placemarkName && ![placemarkName isEqual:[NSNull null]] &&
-//                placemarkSubLocality && ![placemarkSubLocality isEqual:[NSNull null]] &&
-//                placemarkLocality && ![placemarkLocality isEqual:[NSNull null]]) {
-                [[NSUserDefaults standardUserDefaults] setValue:[NSString stringWithFormat:@"%@, %@, %@", placemark.name, placemark.subLocality, placemark.locality] forKeyPath:USER_LOCATION];
-//            }
+        
+        CLPlacemark* placemark = placemarks[0];
+        NSMutableString* placeStr = [[NSMutableString alloc] init];
+        NSString* placemarkName = placemark.name;
+        NSString* placemarkSubLocality = placemark.subLocality;
+        NSString* placemarkLocality = placemark.locality;
+
+        if (placemarkName && ![placemarkName isEqual:[NSNull null]]) {
+            [placeStr appendString:placemarkName];
         }
+        
+        if (placemarkSubLocality && ![placemarkSubLocality isEqual:[NSNull null]]) {
+            if ([placeStr length]) {
+                [placeStr appendString:@", "];
+            }
+            [placeStr appendString:placemarkSubLocality];
+        }
+        
+        if (placemarkLocality && ![placemarkLocality isEqual:[NSNull null]]) {
+            if ([placeStr length]) {
+                [placeStr appendString:@", "];
+            }
+            [placeStr appendString:placemarkLocality];
+        }
+        
+        NSLog(@"%@", placeStr);
+        [[NSUserDefaults standardUserDefaults] setValue:placeStr forKeyPath:USER_LOCATION];
+        
+//        for (CLPlacemark * placemark in placemarks) {
+////            NSString* placemarkName = placemark.name;
+////            NSString* placemarkSubLocality = placemark.subLocality;
+////            NSString* placemarkLocality = placemark.locality;
+////            
+////            if (placemarkName && ![placemarkName isEqual:[NSNull null]] &&
+////                placemarkSubLocality && ![placemarkSubLocality isEqual:[NSNull null]] &&
+////                placemarkLocality && ![placemarkLocality isEqual:[NSNull null]]) {
+//                [[NSUserDefaults standardUserDefaults] setValue:[NSString stringWithFormat:@"%@, %@, %@", placemark.name, placemark.subLocality, placemark.locality] forKeyPath:USER_LOCATION];
+////            }
+//        }
     }];
 }
 

@@ -64,10 +64,10 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 
 //MENU IDENTIFIERS
 typedef NS_ENUM(NSInteger, MenuItem) {
-    MenuItemNearMe = 0,
+//    MenuItemNearMe = 0,
     MenuItemMyProfile,
-    MenuItemMyActivity,
-    MenuItemSettings,
+//    MenuItemMyActivity,
+//    MenuItemSettings,
     MenuItemLogout
 };
 
