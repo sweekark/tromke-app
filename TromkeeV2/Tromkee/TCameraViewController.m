@@ -114,7 +114,7 @@
         session=nil;
     
     session = [[AVCaptureSession alloc] init];
-	session.sessionPreset = AVCaptureSessionPresetPhoto;
+	session.sessionPreset = AVCaptureSessionPresetHigh;
 	
     if (captureVideoPreviewLayer)
         captureVideoPreviewLayer=nil;

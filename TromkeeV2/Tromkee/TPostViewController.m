@@ -204,7 +204,7 @@
 }
 
 - (IBAction)showCommentsView:(id)sender {
-    
+    self.commentView.hidden = NO;
     [UIView animateWithDuration:0.2 animations:^{
         CGRect r = self.commentView.frame;
         self.commentView.frame = CGRectMake(0, r.origin.y, r.size.width, r.size.height);

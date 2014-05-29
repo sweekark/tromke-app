@@ -19,7 +19,7 @@
 @property (nonatomic) NSInteger currentSelectedItem;
 @property (nonatomic, strong) UINavigationController* navController;
 
-@property (nonatomic) BOOL isStickersShowing;
+//@property (nonatomic) BOOL isStickersShowing;
 
 - (IBAction)hideCategories:(id)sender;
 @end
@@ -64,7 +64,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated {
-    self.isStickersShowing = NO;
+//    self.isStickersShowing = NO;
     [super viewWillAppear:animated];
 }
 
@@ -120,13 +120,17 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     self.currentSelectedItem = indexPath.item;
-    if (!self.isStickersShowing) {
-        self.stickersVC.category = self.allCategories[indexPath.item];
-        [self.delegate showCategoriesView];
-    } else {
-        [self.navController popToRootViewControllerAnimated:YES];
-        self.stickersVC.category = self.allCategories[indexPath.item];        
-    }
+//    if (!self.isStickersShowing) {
+//        self.stickersVC.category = self.allCategories[indexPath.item];
+////        [self.delegate showCategoriesView];
+//    } else {
+//        [self.navController popToRootViewControllerAnimated:YES];
+//        self.stickersVC.category = self.allCategories[indexPath.item];        
+//    }
+    
+    
+    [self.navController popToRootViewControllerAnimated:YES];
+    self.stickersVC.category = self.allCategories[indexPath.item];
     
     [collectionView reloadData];
 }
@@ -140,12 +144,19 @@
 }
 
 -(void)userClickedSticker {
-    self.isStickersShowing = YES;
+//    self.isStickersShowing = YES;
+    self.categoriesView.userInteractionEnabled = NO;
+    [self performSelector:@selector(enable) withObject:nil afterDelay:0.2];
+}
+
+-(void)enable {
+    self.categoriesView.userInteractionEnabled = YES;
 }
 
 - (IBAction)hideCategories:(id)sender {
+    [self.navController popToRootViewControllerAnimated:YES];
     [self.delegate hideCategoriesView];
-    self.isStickersShowing = NO;
+//    self.isStickersShowing = NO;
 }
 
 @end

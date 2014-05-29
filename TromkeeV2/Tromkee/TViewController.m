@@ -226,6 +226,7 @@
 //        [self performSegueWithIdentifier:ACTIVITY sender:annotation.annotationObject];
 //    }
 
+    [mapView deselectAnnotation:view.annotation animated:NO];
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
@@ -234,11 +235,17 @@
 //    }
     
     static NSString *identifier = @"myAnnotation";
-    CustomViewMV * annotationView = nil;
-    //= (CustomViewMV*)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+    CustomViewMV * annotationView = nil;//(CustomViewMV*)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
     if (!annotationView)
     {
         annotationView = [[CustomViewMV alloc]initWithAnnotation:annotation reuseIdentifier:identifier];
+        
+        
+        UIView* pinView = [annotationView viewWithTag:100];
+        if (pinView) {
+            [pinView removeFromSuperview];
+        }
+        
         CustomPin *annotationPin = (CustomPin *)[[[NSBundle mainBundle] loadNibNamed:@"CustomPin" owner:self options:nil] objectAtIndex:0];
         annotationPin.coOrdinate2D = ((TStickerAnnotation*)annotation).coordinate;
         annotationPin.tag = 100;
@@ -249,7 +256,7 @@
             PFObject* stickerObj = postObj[STICKER];
             annotationPin.stickerImage.file = stickerObj[STICKER_IMAGE];
             [annotationPin.stickerImage loadInBackground];
-
+            
             CGFloat severity = [postObj[STICKER_SEVERITY] floatValue];
             annotationPin.bottomBar.backgroundColor = [UIColor colorWithRed:1.0 - severity green:severity blue:0 alpha:1.0];
             
@@ -261,9 +268,9 @@
         } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_ASK]) {
             annotationPin.bottomBar.backgroundColor = [UIColor darkGrayColor];
             annotationPin.stickerImage.image = [UIImage imageNamed:@"NewMapAsk"];
-            annotationPin.circleView.hidden = YES;            
+            annotationPin.circleView.hidden = YES;
         }
-
+        
         NSNumber* commentsCount = postObj[POST_COMMENTS_COUNT];
         if (commentsCount) {
             annotationPin.commentsCount.text = [NSString stringWithFormat:@"%@",commentsCount];
@@ -275,12 +282,12 @@
         [annotationView addSubview:annotationPin];
         
         annotationView.canShowCallout = NO;
-    }
-    
-    /*else {
+    } /*else {
         annotationView.annotation = annotation;
     }*/
     
+
+
     return annotationView;
 }
 

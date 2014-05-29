@@ -57,7 +57,7 @@
         [activityQuery includeKey:@"post"];
         [activityQuery includeKey:@"post.fromUser"];
         [activityQuery includeKey:@"post.sticker"];
-//        activityQuery.limit = 30;
+        activityQuery.limit = 50;
 //        [activityQuery whereKeyDoesNotExist:@"notifyUser"];
         [activityQuery whereKey:@"notifyUser" equalTo:[PFUser currentUser]];
         [activityQuery orderByDescending:SORTBY];
