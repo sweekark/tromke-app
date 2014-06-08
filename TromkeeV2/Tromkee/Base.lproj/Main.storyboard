@@ -1309,9 +1309,9 @@
                                                 </state>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J1S-bc-IP6">
-                                                <rect key="frame" x="8" y="6" width="40" height="40"/>
+                                                <rect key="frame" x="8" y="9" width="35" height="35"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <state key="normal" title="A">
+                                                <state key="normal" image="NewActivityBtn">
                                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
                                                 <connections>
@@ -2656,6 +2656,7 @@
     <resources>
         <image name="BottomHelp" width="320" height="86"/>
         <image name="MiddleHelp" width="320" height="74"/>
+        <image name="NewActivityBtn" width="35" height="35"/>
         <image name="NewAsk" width="73" height="73"/>
         <image name="NewBackArrow" width="12" height="23"/>
         <image name="NewBigThanks" width="52" height="27"/>
