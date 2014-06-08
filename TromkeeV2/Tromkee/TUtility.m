@@ -134,42 +134,40 @@
     [dateFormatter setPMSymbol:@"pm"];
     
     NSString* timestamp;
-    int timeIntervalInHours = (int)[[NSDate date] timeIntervalSinceDate:date] /3600;
+    int timeInterValInSeconds = [[NSDate date] timeIntervalSinceDate:date];
     
-    int timeIntervalInMinutes = [[NSDate date] timeIntervalSinceDate:date] /60;
-    
-    if (timeIntervalInMinutes <= 2){//less than 2 minutes old
+    if (timeInterValInSeconds <= 59) { //seconds
+        timestamp = @"Now"; //[NSString stringWithFormat:@"%ds", timeInterValInSeconds];
+    }else { //minutes
+        int timeIntervalInMinutes = timeInterValInSeconds / 60;
         
-        timestamp = @"Just Now";
-        
-    }else if(timeIntervalInMinutes < 15){//less than 15 minutes old
-        
-        timestamp = @"A few minutes ago";
-        
-    } else if (timeIntervalInHours < 2) {
-        
-        timestamp = @"One hour back";
-        
-    } else if (timeIntervalInHours < 3) {
-        
-        timestamp = @"2 hours back";
-        
-    }
-    else if(timeIntervalInHours < 24){//less than 1 day
+        if (timeIntervalInMinutes <= 59) {
+            timestamp = [NSString stringWithFormat:@"%dm", timeIntervalInMinutes];
+        } else { //hours
+            int timeIntervalInHours = (int)timeIntervalInMinutes / 60;
+            if (timeIntervalInHours <= 23) {
+                timestamp = [NSString stringWithFormat:@"%dh", timeIntervalInHours];
+            } else { //days
+                int timeIntervalInDays = timeIntervalInHours / 24;
+                if (timeIntervalInDays <= 6) { //day
+                    timestamp = [NSString stringWithFormat:@"%dd", timeIntervalInDays];
+                } else { //weeks
+                    int timeIntervalInWeek = (int)timeIntervalInDays / 7;
+                    if (timeIntervalInWeek <= 3) {
+                        timestamp = [NSString stringWithFormat:@"%dw", timeIntervalInWeek];
+                    } else { //months
+                        int timeIntervalInMonths = (int)timeIntervalInWeek / 4;
+                        if (timeIntervalInMonths <= 11) {
+                            timestamp = [NSString stringWithFormat:@"%dM", timeIntervalInMonths];
+                        } else { //years
+                            int timeIntervalInYears = (int)timeIntervalInMonths / 12;
+                            timestamp = [NSString stringWithFormat:@"%dy", timeIntervalInYears];
+                        }
+                    }
+                }
+            }
+        }
 
-        [dateFormatter setDateFormat:@"EEEE h:mm a"];
-        timestamp = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:date]];
-        
-    }else if (timeIntervalInHours < 8765){//less than a year
-        
-        [dateFormatter setDateFormat:@"d MMMM"];
-        timestamp = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:date]];
-        
-    }else{//older than a year
-        
-        [dateFormatter setDateFormat:@"d MMMM yyyy"];
-        timestamp = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:date]];
-        
     }
     
     return timestamp;

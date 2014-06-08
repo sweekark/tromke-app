@@ -3,12 +3,12 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "NewLoginBG5.png"
+      "filename" : "LoginBG5.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "NewLoginBG5@2x.png"
+      "filename" : "LoginBG5@2x.png"
     }
   ],
   "info" : {

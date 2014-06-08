@@ -10,6 +10,7 @@
 
 @protocol TPostCellDelegate <NSObject>
 
+-(void)showProfileFromPost;
 -(void)conveyThanks;
 
 @end

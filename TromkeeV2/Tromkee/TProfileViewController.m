@@ -210,7 +210,7 @@ NS_ENUM(int, ProfileDisplay) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 if (error) {
-                    NSLog(@"Error in getting activities: %@", error.localizedDescription);
+                    NSLog(@"Error in getting followers: %@", error.localizedDescription);
                 } else {
 //                    weakSelf.postsArray = [objects mutableCopy];
                     if ([objects count]) {
@@ -254,7 +254,7 @@ NS_ENUM(int, ProfileDisplay) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 if (error) {
-                    NSLog(@"Error in getting activities: %@", error.localizedDescription);
+                    NSLog(@"Error in getting following users: %@", error.localizedDescription);
                 } else {
 //                    weakSelf.postsArray = [objects mutableCopy];
                     if ([objects count]) {
@@ -306,8 +306,6 @@ NS_ENUM(int, ProfileDisplay) {
         }];
     }
 }
-
-
 
 
 - (IBAction)followTheUser:(id)sender {
@@ -415,19 +413,30 @@ NS_ENUM(int, ProfileDisplay) {
         
         PFObject* post = self.postsArray[indexPath.row];
         cell.postedTime.text = [TUtility computePostedTime:post.updatedAt];
+        
+        NSString* comment = @"";
+        NSRange postedRange;
         if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
-            cell.comment.text = [NSString stringWithFormat:@"Commented %@", post[@"content"]];
+            comment = [NSString stringWithFormat:@"Commented %@", post[@"content"]];
+            postedRange = [comment rangeOfString:@"Commented"];
         } else if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
-            cell.comment.text = @"Conveyed Thanks";
+            comment = @"Conveyed Thanks";
+            postedRange = [comment rangeOfString:@"Conveyed"];
         } else if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT]) {
-            cell.comment.text = [NSString stringWithFormat:@"Posted image with %@", post[@"content"]];
+            comment = [NSString stringWithFormat:@"Posted image with %@", post[@"content"]];
+            postedRange = [comment rangeOfString:@"Posted"];
         } else if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_ONLY]) {
-            cell.comment.text = @"Posted Image";
+            comment = @"Posted Image";
+            postedRange = [comment rangeOfString:@"Posted"];
         } else if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_FOLLOW]) {
             PFUser* touser = post[@"toUser"];
-            cell.comment.text = [NSString stringWithFormat:@"Following %@", [TUtility getDisplayNameForUser:touser]];//touser[USER_DISPLAY_NAME]];
+            comment = [NSString stringWithFormat:@"Following %@", [TUtility getDisplayNameForUser:touser]];
+            postedRange = [comment rangeOfString:@"Following"];
         }
-        //    [cell.comment sizeToFit];
+
+        NSMutableAttributedString* msgStr = [[NSMutableAttributedString alloc] initWithString:comment];
+        [msgStr addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:postedRange];
+        cell.comment.attributedText = msgStr;
         
         
         PFUser* fromUser = post[POST_FROMUSER];
@@ -473,7 +482,7 @@ NS_ENUM(int, ProfileDisplay) {
     CGSize cellSize;
     switch (self.currentDisplay) {
         case ProfileDisplayActivity:
-            cellSize = CGSizeMake(310, 100);
+            cellSize = CGSizeMake(310, 60);
             break;
         case ProfileDisplayFollowers:
         case ProfileDisplayFollowing:            

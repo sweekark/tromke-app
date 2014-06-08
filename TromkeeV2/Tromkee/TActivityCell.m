@@ -26,4 +26,8 @@
     // Configure the view for the selected state
 }
 
+- (IBAction)showProfileOfUser:(id)sender {
+    [self.delegate showProfileFromActivity:self.tag];
+}
+
 @end

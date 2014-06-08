@@ -17,7 +17,7 @@
 
 #define SORT_ACTIVITIES_KEY @"updatedAt"
 
-@interface TActivityViewController () <UITableViewDataSource, UITableViewDelegate, TPostCellDelegate>
+@interface TActivityViewController () <UITableViewDataSource, UITableViewDelegate, TPostCellDelegate, TActivityDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *topBar;
 @property (weak, nonatomic) IBOutlet UILabel *activityTitle;
@@ -37,6 +37,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *onlyCameraButton;
 @property (weak, nonatomic) IBOutlet UIButton *commentButton;
 
+@property (nonatomic) BOOL showProfileForPost;
+@property (nonatomic) NSInteger showActivityItem;
 
 //- (IBAction)postActivityDescription:(id)sender;
 
@@ -216,7 +218,7 @@
             } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
                 self.postCell = [tableView dequeueReusableCellWithIdentifier:VIEWQUESTION];
                 self.postCell.contentView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_PICTURE_COLOR];
-                [self.postCell showLabelsForQuestion];
+//                [self.postCell showLabelsForQuestion];
             } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
                 self.postCell = [tableView dequeueReusableCellWithIdentifier:VIEWIMAGE];
                 self.postCell.contentView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_STICKER_COLOR];
@@ -248,6 +250,9 @@
         cell = [tableView dequeueReusableCellWithIdentifier:@"ONLY_COMMENT"];
     }
 
+    cell.tag = indexPath.row - 1;
+    cell.delegate = self;
+    cell.personName.textColor = [TUtility colorFromHexString:USERNAME_COLOR];
     cell.personName.text = [TUtility getDisplayNameForUser:fromUser];//fromUser[USER_DISPLAY_NAME];
     cell.comment.text = comment[ACTIVITY_CONTENT];
     cell.updatedTime.text = [TUtility computePostedTime:comment.updatedAt];
@@ -263,15 +268,15 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    CGFloat height = 100;
+    CGFloat height = 85;
     if (indexPath.row == 0) {
         NSString* stickerType = self.postedObject[POST_TYPE];
         if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
             height = 150;
         } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
-            height = 108;
+            height = 124;
         } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
-            height = 430;
+            height = 450;
         }
     } else {
         if (self.activities && self.activities.count) {
@@ -281,7 +286,7 @@
             PFFile* imgFile = comment[ACTIVITY_ORIGINAL_IMAGE];
             
             if ([comment[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT] && imgFile) {
-                height = 300;
+                height = 405;
             }
 //            else { //if ([comment[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
 //                
@@ -299,8 +304,8 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self performSegueWithIdentifier:@"PROFILE" sender:nil];
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];    
+//    [self performSegueWithIdentifier:@"PROFILE" sender:nil];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - TextView methods
@@ -395,24 +400,45 @@
     [activiy saveInBackground];
 }
 
+-(void)showProfileFromPost {
+    self.showProfileForPost = YES;
+    [self performSegueWithIdentifier:@"PROFILE" sender:nil];
+}
+
+-(void)showProfileFromActivity:(NSInteger)item {
+    self.showProfileForPost = NO;
+    self.showActivityItem = item;
+    [self performSegueWithIdentifier:@"PROFILE" sender:nil];
+}
+
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:PROFILE]) {
-        NSIndexPath* indxPath = [self.activitiesTable indexPathForSelectedRow];
-        if (indxPath.row == 0) {
+        if (self.showProfileForPost) {
             PFUser* fromUser = self.postedObject[POST_FROMUSER];
             TProfileViewController* profileVC = segue.destinationViewController;
             profileVC.userProfile = fromUser;
         } else {
-            PFObject* comment = self.activities[indxPath.row - 1];
+            PFObject* comment = self.activities[self.showActivityItem];
             PFUser* fromUser = comment[POST_FROMUSER];
             TProfileViewController* profileVC = segue.destinationViewController;
             profileVC.userProfile = fromUser;
         }
-    } else if ([segue.identifier isEqualToString:STICKER_POSTED_PROFILE]) {
+//        NSIndexPath* indxPath = [self.activitiesTable indexPathForSelectedRow];
+//        if (indxPath.row == 0) {
+//            PFUser* fromUser = self.postedObject[POST_FROMUSER];
+//            TProfileViewController* profileVC = segue.destinationViewController;
+//            profileVC.userProfile = fromUser;
+//        } else {
+//            PFObject* comment = self.activities[indxPath.row - 1];
+//            PFUser* fromUser = comment[POST_FROMUSER];
+//            TProfileViewController* profileVC = segue.destinationViewController;
+//            profileVC.userProfile = fromUser;
+//        }
+    } /*else if ([segue.identifier isEqualToString:STICKER_POSTED_PROFILE]) {
         PFUser* user = self.postedObject[POST_FROMUSER];
         TProfileViewController* profileVC = segue.destinationViewController;
         profileVC.userProfile = user;
-    } else if ([segue.identifier isEqualToString:CAMERA]) {
+    }*/ else if ([segue.identifier isEqualToString:CAMERA]) {
         TCameraViewController* cameraVC = segue.destinationViewController;
         [self.askText resignFirstResponder];
         cameraVC.activityName = CameraForComment;

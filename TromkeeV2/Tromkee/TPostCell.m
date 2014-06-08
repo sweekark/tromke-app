@@ -58,10 +58,12 @@
         [self.fromImage setFile:imageFile];
         [self.fromImage loadInBackground];
     }
-    self.fromName.text = [TUtility getDisplayNameForUser:user];//user[USER_DISPLAY_NAME];
+    self.fromName.text = [TUtility getDisplayNameForUser:user];
+    self.fromName.textColor = [TUtility colorFromHexString:USERNAME_COLOR];
+    
     self.fromPostedTime.text = [TUtility computePostedTime:postObj.updatedAt];
     self.fromPostedMessage.text = postObj[POST_DATA];
-    self.postedLocation.text = postObj[POST_USERLOCATION];
+    self.postedLocation.text = [NSString stringWithFormat:@"@ %@", postObj[POST_USERLOCATION]];
     
     NSString* stickerType = postObj[POST_TYPE];
     if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
@@ -100,4 +102,7 @@
     
 }
 
+- (IBAction)showProfileOfUser:(id)sender {
+    [self.delegate showProfileFromPost];
+}
 @end

@@ -45,6 +45,8 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 #define REGISTER_MIDDLEYELLOW @"#fdd17d"
 #define REGISTER_BOTTOMGREEN @"#2bfa8a"
 
+#define USERNAME_COLOR @"#138E85"
+
 //GENERAL
 #define POSTDATA_LENGTH 100
 #define STICKER_QUERY_RADIUS 2 //In miles

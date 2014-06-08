@@ -58,7 +58,7 @@
         [activityQuery includeKey:@"post.fromUser"];
         [activityQuery includeKey:@"post.sticker"];
         activityQuery.limit = 50;
-//        [activityQuery whereKeyDoesNotExist:@"notifyUser"];
+
         [activityQuery whereKey:@"notifyUser" equalTo:[PFUser currentUser]];
         [activityQuery orderByDescending:SORTBY];
         
@@ -91,16 +91,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 - (IBAction)goBack:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -113,9 +103,11 @@
     
     PFObject* notifyObj = self.postsArray[indexPath.row];
 
+    static NSString* cellIdentifier = @"USERPOST";
+    TUserActivityCell* cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    
     if (notifyObj[@"activity"]) {
-        static NSString* cellIdentifier = @"USERPOST";
-        TUserActivityCell* cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+        
         cell.delegate = self;
         cell.postedAt.text = [TUtility computePostedTime:notifyObj.updatedAt];
         
@@ -123,35 +115,34 @@
         
         NSString* comment;
         if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
-            comment = [NSString stringWithFormat:@"commented %@", activityObj[@"content"]];
+            comment = [NSString stringWithFormat:@"Commented %@", activityObj[@"content"]];
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
-            comment = @"conveyed Thanks";
+            comment = @"Conveyed Thanks";
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT]) {
-            comment = [NSString stringWithFormat:@"posted image with %@", activityObj[@"content"]];
+            comment = [NSString stringWithFormat:@"Posted image with %@", activityObj[@"content"]];
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_ONLY]) {
-            comment = @"posted image";
+            comment = @"Posted image";
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_FOLLOW]) {
             comment = @"is following you";
         }
         
         PFUser* fromUser = activityObj[POST_FROMUSER];
-        
-        NSString* str = [NSString stringWithFormat:@"%@ %@", /*fromUser[USER_DISPLAY_NAME]*/[TUtility getDisplayNameForUser:fromUser], comment];
-        NSMutableAttributedString* msgStr = [[NSMutableAttributedString alloc] initWithString:str];
+        cell.postedBy.text = [TUtility getDisplayNameForUser:fromUser];
+        cell.postedBy.textColor = [TUtility colorFromHexString:USERNAME_COLOR];
+        NSMutableAttributedString* msgStr = [[NSMutableAttributedString alloc] initWithString:comment];
         
         NSRange postedRange;
         if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
-            postedRange = [str rangeOfString:@"commented"];
+            postedRange = [comment rangeOfString:@"Commented"];
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
-            postedRange = [str rangeOfString:@"conveyed"];
+            postedRange = [comment rangeOfString:@"Conveyed"];
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT] || [activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_ONLY]) {
-            postedRange = [str rangeOfString:@"posted"];
+            postedRange = [comment rangeOfString:@"Posted"];
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_FOLLOW]) {
-            postedRange = [str rangeOfString:@"following"];
+            postedRange = [comment rangeOfString:@"following"];
         }
 
-        [msgStr addAttribute:NSFontAttributeName value:[UIFont italicSystemFontOfSize:14] range:postedRange];
-        [msgStr addAttribute:NSForegroundColorAttributeName value:[UIColor greenColor] range:postedRange];
+        [msgStr addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:postedRange];
 
         cell.notificationMessage.attributedText = msgStr;
         
@@ -164,30 +155,36 @@
         
         cell.rowNumber = indexPath.row;
         return cell;
-    } else {
-        static NSString* cellIdentifier = @"USERPOST";
-        TUserActivityCell* cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    } else if (notifyObj[@"post"]) {
         cell.delegate = self;
         cell.postedAt.text = [TUtility computePostedTime:notifyObj.updatedAt];
+
+        
         PFObject* postObj = notifyObj[@"post"];
+        
+        if (!postObj) {
+            NSLog(@"%@", notifyObj);
+        }
         PFObject* stickerObj = postObj[STICKER];
         
         PFUser* fromUser = postObj[POST_FROMUSER];
+        cell.postedBy.text = [TUtility getDisplayNameForUser:fromUser];
+        cell.postedBy.textColor = [TUtility colorFromHexString:USERNAME_COLOR];
         
         NSString* str;
         if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_IMAGE]) {
-            str = [NSString stringWithFormat:@"%@ posted an image @ %@", /*fromUser[USER_DISPLAY_NAME]*/ [TUtility getDisplayNameForUser:fromUser], postObj[POST_USERLOCATION]];
+            str = [NSString stringWithFormat:@"Posted an image @ %@", postObj[POST_USERLOCATION]];
         } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_ASK]) {
-            str = [NSString stringWithFormat:@"%@ posted a question @ %@", /*fromUser[USER_DISPLAY_NAME]*/[TUtility getDisplayNameForUser:fromUser], postObj[POST_USERLOCATION]];
+            str = [NSString stringWithFormat:@"Posted a question @ %@", postObj[POST_USERLOCATION]];
         } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
-            str = [NSString stringWithFormat:@"%@ posted sticker %@ @ %@", /*fromUser[USER_DISPLAY_NAME]*/[TUtility getDisplayNameForUser:fromUser], stickerObj[@"name"], postObj[POST_USERLOCATION]];
+            str = [NSString stringWithFormat:@"Posted sticker %@ @ %@", stickerObj[@"name"], postObj[POST_USERLOCATION]];
         }
         
+        NSLog(@"%@", postObj[POST_TYPE]);
         NSMutableAttributedString* msgString = [[NSMutableAttributedString alloc] initWithString:str];
-        NSRange postedRange = [str rangeOfString:@"posted"];
+        NSRange postedRange = [str rangeOfString:@"Posted"];
         
-        [msgString addAttribute:NSFontAttributeName value:[UIFont italicSystemFontOfSize:14] range:postedRange];
-        [msgString addAttribute:NSForegroundColorAttributeName value:[UIColor greenColor] range:postedRange];
+        [msgString addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:postedRange];
         
         cell.notificationMessage.attributedText = msgString;
         PFFile* imgFile = fromUser[FACEBOOK_SMALLPIC_KEY];
@@ -200,11 +197,20 @@
         cell.rowNumber = indexPath.row;        
         return cell;
     }
+    
+    cell.notificationMessage.attributedText = [[NSMutableAttributedString alloc] initWithString:@""];
+    cell.postedAt.text = @"";
+    cell.userImage.image = nil;
+    cell.postedBy.text = @"";
+    
+    return cell;
 }
 
 
 -(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    self.row = indexPath.row;
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [self performSegueWithIdentifier:@"ACTIVITY" sender:nil];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -223,22 +229,16 @@
         TProfileViewController* profileVC = segue.destinationViewController;
         profileVC.userProfile = fromUser;
     } else if ([segue.identifier isEqualToString:@"ACTIVITY"]) {
-        NSIndexPath* indxPath = [self.userActivityTable indexPathForSelectedRow];
-        PFObject* notifyObj = self.postsArray[indxPath.row];
+        PFObject* notifyObj = self.postsArray[self.row];
 
         TActivityViewController* activityVC = segue.destinationViewController;
-        
         PFObject* postObc = notifyObj[@"post"];
         if (!postObc) {
             PFObject* act = notifyObj[@"activity"];
-//            activityVC.postedObjectID = [act[@"post"] objectId];
             activityVC.postedObject = act[@"post"];
         } else {
-//            activityVC.postedObjectID = [notifyObj[@"post"] objectId];
             activityVC.postedObject = notifyObj[@"post"];
         }
-        
-
     }
 }
 

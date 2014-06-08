@@ -19,6 +19,7 @@
 @property (nonatomic, weak) IBOutlet PFImageView* userImage;
 @property (nonatomic, weak) IBOutlet UILabel* notificationMessage;
 @property (nonatomic, weak) IBOutlet UILabel* postedAt;
+@property (weak, nonatomic) IBOutlet UILabel *postedBy;
 
 @property (nonatomic) NSInteger rowNumber;
 @property (nonatomic, weak) id<TUserActivity> delegate;
