@@ -301,6 +301,10 @@
 #pragma mark - Button clicks
 
 -(void)goBack {
+    if (self.cameraMessage.length == 0) {
+        [TFlurryManager cancelledPhoto];
+    }
+    
     [session stopRunning];
     [self.postMessage resignFirstResponder];
     [self.navigationController popViewControllerAnimated:YES];
@@ -417,20 +421,6 @@
     if (![Reachability isReachable]) {
         return;
     }
-    
-//    UIImage* imgToPost = self.captureImage.image;
-//    UIImage *thumbnailImage = [imgToPost thumbnailImage:60.0f transparentBorder:0.0f cornerRadius:10.0f interpolationQuality:kCGInterpolationLow];
-//    NSData *imageData = UIImageJPEGRepresentation(imgToPost, 0.8f);
-//    NSData* thumbnailData = UIImagePNGRepresentation(thumbnailImage);
-//    
-//    PFFile* photoFile = [PFFile fileWithData:imageData];
-//    PFFile* thumbnailFile = [PFFile fileWithData:thumbnailData];
-//    
-//    [photoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-//        if (succeeded) {
-//            [thumbnailFile saveInBackground];
-//        }
-//    }];
 
     if ([self.postMessage.text isEqualToString:DEFAULT_TEXT]) {
         self.postMessage.text = @"";
@@ -453,24 +443,27 @@
         activiy[ACTIVITY_ORIGINAL_IMAGE] = self.photoFile;
         activiy[ACTIVITY_THUMBNAIL_IMAGE] = self.thumbnailFile;
 
-//        if ([activiy save]) {
-//            [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_COMMENTS object:nil];
-//        } else {
-//            NSLog(@"Failed to post activity");
-//        }
-        
-//        [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-//        self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
-        
+        if (self.cameraMessage.length == 0) {
+            NSString* descText = self.postMessage.text;
+            BOOL commentAvailable = descText ? YES : NO;
+            NSMutableDictionary* dict = [@{@"CommentAvailable" : [NSNumber numberWithBool:commentAvailable] } mutableCopy];
+            if (commentAvailable) {
+                [dict setObject:descText forKey:@"Comment"];
+            }
+            
+            [TFlurryManager tromPhoto:dict];
+        } else {
+            NSMutableDictionary* dict = [@{@"QuestionWithPhoto" : @YES, @"Question" : self.postMessage.text } mutableCopy];
+            
+            [TFlurryManager tromQuestion:dict];
+        }
+
         [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_COMMENTS object:nil];
             } else {
                 NSLog(@"Error while posting activity: %@", error.localizedDescription);
             }
-            
-            //            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-            //            self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
         }];
         
     } else {
@@ -486,29 +479,20 @@
         } else if (self.activityName == CameraForImage){
             stickerPost[POST_TYPE] = POST_TYPE_IMAGE;
         }
-
-//        if ([stickerPost save]) {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                NSString* msg;
-//                if (self.activityName == CameraForAsk) {
-//                    msg = @"Question is posted successfully. We will inform you if anyone on Tromke will respond to your question, thanks";
-//                } else {
-//                    msg = @"Image is posted successfully. We will inform you if anyoneon on Tromke will comment, thanks";
-//                }
-//                
-//                [[[UIAlertView alloc] initWithTitle:@"Successful" message:msg delegate:nil cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
-//                [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:@"Testing Notification"];
-//            });
-//        }
-//        
-//        [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-//        self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
-
+  
+        NSString* descText = self.postMessage.text;
+        BOOL commentAvailable = descText ? YES : NO;
+        NSMutableDictionary* dict = [@{@"CommentAvailable" : [NSNumber numberWithBool:commentAvailable] } mutableCopy];
+        if (commentAvailable) {
+            [dict setObject:descText forKey:@"Comment"];
+        }
         
-        NSDate* dt1 = [NSDate date];
+        [TFlurryManager tromPhoto:dict];
+
+//        NSDate* dt1 = [NSDate date];
         [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            NSDate* dt2 = [NSDate date];
-            NSLog(@"Image Posted: %f", [dt2 timeIntervalSinceDate:dt1]);
+//            NSDate* dt2 = [NSDate date];
+//            NSLog(@"Image Posted: %f", [dt2 timeIntervalSinceDate:dt1]);
             if (succeeded) {
                     NSString* msg;
                     if (self.activityName == CameraForAsk) {
@@ -518,16 +502,10 @@
                     }
                 
                 [self.delegate completedPosting:YES andMessage:msg];
-//                    [[[UIAlertView alloc] initWithTitle:@"Successful" message:msg delegate:nil cancelButtonTitle:@"OK, Got it" otherButtonTitles: nil] show];
-//                    [[NSNotificationCenter defaultCenter] postNotificationName:STOP_PROGRESS_ANIMATION object:nil];
-//                    [[NSNotificationCenter defaultCenter] postNotificationName:TROMKEE_UPDATE_STICKERS object:@"Testing Notification"];
             } else {
                 [self.delegate completedPosting:NO andMessage:@"Failed to post"];
                 NSLog(@"Failed with Comment to post");
             }
-            
-//            [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
-//            self.photoPostBackgroundTaskId = UIBackgroundTaskInvalid;
         }];
     }
     

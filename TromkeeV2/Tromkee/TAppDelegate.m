@@ -32,7 +32,9 @@
 {
     [[NSUserDefaults standardUserDefaults] registerDefaults:@{FIRST_TIME : @YES,
                                                               FIRST_TIME_HELP : @YES}];
-    [Crashlytics startWithAPIKey:@"2ae8a966d3e8305dd050a9dcfbd6466b468527fa"];
+    
+    [Crashlytics startWithAPIKey:CRASHLYTICS_ID];
+    
     //Sticker posted
     //    {
     //	    aps =     {

@@ -516,16 +516,19 @@ NS_ENUM(int, ProfileDisplay) {
 #pragma mark - Actions
 
 - (IBAction)showActivity:(id)sender {
+    [TFlurryManager tappedActivity];
     self.currentDisplay = ProfileDisplayActivity;
     [self updateActivity];
 }
 
 - (IBAction)showFollowers:(id)sender {
+    [TFlurryManager tappedFollow];
     self.currentDisplay = ProfileDisplayFollowers;
     [self updateFollowerUsers];
 }
 
 - (IBAction)showFollowing:(id)sender {
+    [TFlurryManager tappedFollowing];
     self.currentDisplay = ProfileDisplayFollowing;
     [self updateFollowingUsers];
 }

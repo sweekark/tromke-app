@@ -72,14 +72,6 @@
     }
     self.stickerName.text = self.postSticker[STICKER_NAME];
     
-//    [userImageFile getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
-//        if (!error) {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                self.stickerImage.image = [UIImage imageWithData:imageData];
-//            });
-//        }
-//    }];
-
     [super viewWillAppear:animated];
 }
 
@@ -121,10 +113,11 @@
 //        [[UIApplication sharedApplication] endBackgroundTask:self.photoPostBackgroundTaskId];
 //    }];
 
+    NSString* descText = self.stickerDescription.text;
     CLLocationCoordinate2D usrLocation = [[TLocationUtility sharedInstance] getUserCoordinate];
     
     PFObject *stickerPost = [PFObject objectWithClassName:POST];
-    stickerPost[POST_DATA] = self.stickerDescription.text;
+    stickerPost[POST_DATA] = descText ? descText : @"";
     stickerPost[POST_LOCATION] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
     stickerPost[POST_FROMUSER] = [PFUser currentUser];
     stickerPost[STICKER] = self.postSticker;
@@ -132,6 +125,19 @@
 //    stickerPost[@"points"] = self.postSticker[@"postPoints"];
     stickerPost[POST_USERLOCATION] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
     stickerPost[POST_TYPE] = @"STICKER";
+    
+    
+    BOOL commentAvailable = descText ? YES : NO;
+    NSMutableDictionary* dict = [@{@"CommentAvailable" : [NSNumber numberWithBool:commentAvailable],
+                                   @"StickerID" : self.postSticker.objectId,
+                                   @"Rating" : [NSNumber numberWithFloat:self.stickerSeverity.value]
+                                   } mutableCopy];
+    if (commentAvailable) {
+        [dict setObject:descText forKey:@"Comment"];
+    }
+    
+    [TFlurryManager tromSticker:dict];
+    
     
     [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {

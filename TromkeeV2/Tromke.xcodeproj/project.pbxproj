@@ -16,6 +16,7 @@
 		451C1B161910D181001E619D /* TCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 451C1B151910D181001E619D /* TCameraViewController.m */; };
 		451C522118C2418F00386C63 /* TProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 451C522018C2418F00386C63 /* TProfileViewController.m */; };
 		45309872187DBBD0005B3B5F /* TLogInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45309871187DBBD0005B3B5F /* TLogInViewController.m */; };
+		4533FE441946E98D003A87D6 /* libFlurry_5.0.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4533FE431946E98D003A87D6 /* libFlurry_5.0.0.a */; };
 		453AE94E188423F00099D8B0 /* TLocationUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 453AE94D188423F00099D8B0 /* TLocationUtility.m */; };
 		453CB8F01885B5BE00D7019D /* TCategoriesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 453CB8EF1885B5BE00D7019D /* TCategoriesViewController.m */; };
 		453CB8F31885B65100D7019D /* TCategoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 453CB8F21885B65100D7019D /* TCategoryCell.m */; };
@@ -59,6 +60,7 @@
 		45A2E8CB187650CE009A6171 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8BE187650CE009A6171 /* Security.framework */; };
 		45A2E8CC187650CE009A6171 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8BF187650CE009A6171 /* StoreKit.framework */; };
 		45A2E8CD187650CE009A6171 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8C0187650CE009A6171 /* SystemConfiguration.framework */; };
+		45A4527619483B5900E03CA5 /* TFlurryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 45A4527519483B5900E03CA5 /* TFlurryManager.m */; };
 		45A6AF7518B109B900D26563 /* TStickerAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 45A6AF7418B109B900D26563 /* TStickerAnnotationView.m */; };
 		45A8462C18F7EC0C00DA3627 /* TUserActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 45A8462B18F7EC0C00DA3627 /* TUserActivityCell.m */; };
 		45B95C8918F6AE6D004D7568 /* TUserActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45B95C8818F6AE6D004D7568 /* TUserActivityViewController.m */; };
@@ -106,6 +108,8 @@
 		451C522018C2418F00386C63 /* TProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TProfileViewController.m; sourceTree = "<group>"; };
 		45309870187DBBD0005B3B5F /* TLogInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLogInViewController.h; sourceTree = "<group>"; };
 		45309871187DBBD0005B3B5F /* TLogInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLogInViewController.m; sourceTree = "<group>"; };
+		4533FE421946E98D003A87D6 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
+		4533FE431946E98D003A87D6 /* libFlurry_5.0.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_5.0.0.a; sourceTree = "<group>"; };
 		453AE94C188423F00099D8B0 /* TLocationUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLocationUtility.h; sourceTree = "<group>"; };
 		453AE94D188423F00099D8B0 /* TLocationUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLocationUtility.m; sourceTree = "<group>"; };
 		453CB8EE1885B5BE00D7019D /* TCategoriesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCategoriesViewController.h; sourceTree = "<group>"; };
@@ -167,6 +171,8 @@
 		45A2E8BE187650CE009A6171 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		45A2E8BF187650CE009A6171 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		45A2E8C0187650CE009A6171 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		45A4527419483B5900E03CA5 /* TFlurryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFlurryManager.h; sourceTree = "<group>"; };
+		45A4527519483B5900E03CA5 /* TFlurryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFlurryManager.m; sourceTree = "<group>"; };
 		45A6AF7318B109B900D26563 /* TStickerAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TStickerAnnotationView.h; sourceTree = "<group>"; };
 		45A6AF7418B109B900D26563 /* TStickerAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TStickerAnnotationView.m; sourceTree = "<group>"; };
 		45A8462A18F7EC0C00DA3627 /* TUserActivityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUserActivityCell.h; sourceTree = "<group>"; };
@@ -214,6 +220,7 @@
 				456DAE5618CC9394009E4FEC /* FacebookSDK.framework in Frameworks */,
 				45A2E8C7187650CE009A6171 /* libsqlite3.dylib in Frameworks */,
 				45A2E88018764FF1009A6171 /* CoreGraphics.framework in Frameworks */,
+				4533FE441946E98D003A87D6 /* libFlurry_5.0.0.a in Frameworks */,
 				451AF9A61885314300811899 /* MapKit.framework in Frameworks */,
 				45A2E8C1187650CE009A6171 /* AdSupport.framework in Frameworks */,
 				45A2E8C4187650CE009A6171 /* AudioToolbox.framework in Frameworks */,
@@ -274,6 +281,15 @@
 			);
 			name = Profile;
 			sourceTree = "<group>";
+		};
+		4533FE411946E98D003A87D6 /* Flurry */ = {
+			isa = PBXGroup;
+			children = (
+				4533FE421946E98D003A87D6 /* Flurry.h */,
+				4533FE431946E98D003A87D6 /* libFlurry_5.0.0.a */,
+			);
+			path = Flurry;
+			sourceTree = SOURCE_ROOT;
 		};
 		453CB8F41885B65700D7019D /* Categories */ = {
 			isa = PBXGroup;
@@ -393,6 +409,7 @@
 		45A2E88318764FF1009A6171 /* Tromkee */ = {
 			isa = PBXGroup;
 			children = (
+				45A4527319483B4200E03CA5 /* Flurry */,
 				45F8D75C1935093B00EA16D5 /* TermsAndPolicy */,
 				45431D1A192F62B900D8D135 /* Login */,
 				45431D16192F250D00D8D135 /* Registration */,
@@ -452,6 +469,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		45A4527319483B4200E03CA5 /* Flurry */ = {
+			isa = PBXGroup;
+			children = (
+				45A4527419483B5900E03CA5 /* TFlurryManager.h */,
+				45A4527519483B5900E03CA5 /* TFlurryManager.m */,
+			);
+			name = Flurry;
+			sourceTree = "<group>";
+		};
 		45A6AF7618B117DA00D26563 /* HomeVIew */ = {
 			isa = PBXGroup;
 			children = (
@@ -493,6 +519,7 @@
 		45E54460188F934200FF8977 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				4533FE411946E98D003A87D6 /* Flurry */,
 				450C3973193259D900B2320F /* Progressbar */,
 				457A592B19067F1E007E63DD /* Toast */,
 				456DAE5418CC9394009E4FEC /* FacebookSDK.framework */,
@@ -666,6 +693,7 @@
 				451C522118C2418F00386C63 /* TProfileViewController.m in Sources */,
 				45431D1D192F62EC00D8D135 /* TCustomLoginViewController.m in Sources */,
 				450544B618B284A500529015 /* TActivityViewController.m in Sources */,
+				45A4527619483B5900E03CA5 /* TFlurryManager.m in Sources */,
 				456DAE5A18CCA869009E4FEC /* TProfileCell.m in Sources */,
 				45B95C8918F6AE6D004D7568 /* TUserActivityViewController.m in Sources */,
 				45F2E63E190CEAFB0014E034 /* SnappySlider.m in Sources */,
@@ -818,6 +846,12 @@
 				GCC_PREFIX_HEADER = "Tromkee/Tromke-Prefix.pch";
 				INFOPLIST_FILE = "Tromkee/Tromke-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flurry-iOS-5.0.0/Flurry",
+					"$(PROJECT_DIR)/Flurry-iOS-5.0.0/FlurryAds",
+					"$(PROJECT_DIR)/Flurry",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;
 				PROVISIONING_PROFILE = "4DF2C0BD-1A9B-4FD2-8ACE-2A61C82BC6D0";
@@ -841,6 +875,12 @@
 				GCC_PREFIX_HEADER = "Tromkee/Tromke-Prefix.pch";
 				INFOPLIST_FILE = "Tromkee/Tromke-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flurry-iOS-5.0.0/Flurry",
+					"$(PROJECT_DIR)/Flurry-iOS-5.0.0/FlurryAds",
+					"$(PROJECT_DIR)/Flurry",
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;

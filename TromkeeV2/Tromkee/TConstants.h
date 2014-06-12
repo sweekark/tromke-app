@@ -11,6 +11,10 @@
 static NSString* const kParseApplicationID = @"IgOuPSL7tE4lSUYDUoqeovRPalXs7PWV61xfsIKb";
 static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVNi1T";
 
+#define FLURRY_ID @"XJX4K6T3F6WG2MTQ3554"
+#define CRASHLYTICS_ID @"2ae8a966d3e8305dd050a9dcfbd6466b468527fa"
+
+
 #ifdef DEBUG
 #    define DLog(...) NSLog(@"TROMKE :: "__VA_ARGS__)
 #else

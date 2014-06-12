@@ -92,12 +92,16 @@
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [TFlurryManager startedMap];
     [self updateNotificationCount];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     self.progressBar.hidden = YES;
+    if ([PFUser currentUser]) {
+        [TFlurryManager stoppedMap];
+    }
 }
 
 -(void)updateNotificationCount {
@@ -187,6 +191,18 @@
         menuVC.delegate = self;
     } else if ([segue.identifier isEqualToString:ACTIVITY]) {
         TActivityViewController* activityVC = segue.destinationViewController;
+        PFObject* postedObject = (PFObject*)sender;
+        NSString* stickerType = postedObject[POST_TYPE];
+        if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
+            [TFlurryManager tappedSticker:postedObject.objectId];
+        } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
+            [TFlurryManager tappedSticker:postedObject.objectId];
+        } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
+            [TFlurryManager tappedSticker:postedObject.objectId];
+        }
+
+        
+        
         activityVC.postedObject = sender;
     } else if ([segue.identifier isEqualToString:PROFILE]) {
         TProfileViewController* profileVC = segue.destinationViewController;
@@ -207,11 +223,6 @@
 
 #pragma mark - MKMapViewDelegate
 
-//-(void)userTappedSticker:(id<MKAnnotation>)annotation {
-//    TStickerAnnotation* ann = (TStickerAnnotation*)annotation;
-//    [self performSegueWithIdentifier:ACTIVITY sender:ann.annotationObject];
-//}
-
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
     if ([view isKindOfClass:[MKPinAnnotationView class]]) {
         return;
@@ -221,11 +232,6 @@
     TStickerAnnotation* annotation = view.annotation;
     [self performSegueWithIdentifier:ACTIVITY sender:annotation.annotationObject];
     
-//    if ([view isKindOfClass:[TStickerAnnotationView class]]) {
-//        TStickerAnnotation* annotation = [(TStickerAnnotationView*)view annotation];
-//        [self performSegueWithIdentifier:ACTIVITY sender:annotation.annotationObject];
-//    }
-
     [mapView deselectAnnotation:view.annotation animated:NO];
 }
 
@@ -303,6 +309,9 @@
     CLLocation* oldCenter = [[CLLocation alloc] initWithLatitude:self.currentCenterLocation.latitude longitude:self.currentCenterLocation.longitude];
     DLog(@"Distance is: %f", [mapCenter distanceFromLocation:oldCenter]);
     if ([mapCenter distanceFromLocation:oldCenter] > 1000) {
+        
+        
+        
         CLLocationCoordinate2D center = mapView.centerCoordinate;
         self.currentCenterLocation = center;
         [self updatePostedStickersOnMapWithCenter:center.latitude andLongitude:center.longitude];
@@ -476,6 +485,7 @@
 //            [self updateUserLocation:nil];
 //            break;
         case MenuItemMyProfile:
+            [TFlurryManager viewingProfile];
             if ([[PFUser currentUser] isAuthenticated]) {
                 [self performSegueWithIdentifier:PROFILE sender:nil];
             } else {
@@ -502,6 +512,8 @@
 -(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (alertView.tag == 1000) {
         if (buttonIndex == 1) {
+            [TFlurryManager userLoggedOut];
+            [TFlurryManager stoppedMap];
             [PFUser logOut];
             [self.navigationController popViewControllerAnimated:YES];
         }
@@ -545,6 +557,9 @@
 }
 
 - (IBAction)hideAskQuestionView:(id)sender {
+    
+    [TFlurryManager cancelledQuestion];
+    
     [UIView animateWithDuration:0.2 animations:^{
         [self.askText resignFirstResponder];
         CGRect r = self.askQuestionView.frame;
@@ -576,6 +591,10 @@
     stickerPost[POST_FROMUSER] = [PFUser currentUser];
     stickerPost[POST_USERLOCATION] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
     stickerPost[POST_TYPE] = POST_TYPE_ASK;
+    
+    NSDictionary* dict = @{@"QuestionWithPhoto" : @NO, @"Question" : self.askText.text};
+    [TFlurryManager tromQuestion:dict];
+
     
     [stickerPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {

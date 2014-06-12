@@ -230,8 +230,10 @@
         profileVC.userProfile = fromUser;
     } else if ([segue.identifier isEqualToString:@"ACTIVITY"]) {
         PFObject* notifyObj = self.postsArray[self.row];
-
+        [TFlurryManager viewingNotification:notifyObj.objectId];
+        
         TActivityViewController* activityVC = segue.destinationViewController;
+        
         PFObject* postObc = notifyObj[@"post"];
         if (!postObc) {
             PFObject* act = notifyObj[@"activity"];
