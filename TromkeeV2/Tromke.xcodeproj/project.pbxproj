@@ -47,7 +47,6 @@
 		45A2E89F18764FF1009A6171 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E88118764FF1009A6171 /* UIKit.framework */; };
 		45A2E8A718764FF1009A6171 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 45A2E8A518764FF1009A6171 /* InfoPlist.strings */; };
 		45A2E8A918764FF1009A6171 /* TromkeeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 45A2E8A818764FF1009A6171 /* TromkeeTests.m */; };
-		45A2E8C1187650CE009A6171 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8B4187650CE009A6171 /* AdSupport.framework */; };
 		45A2E8C2187650CE009A6171 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8B5187650CE009A6171 /* Social.framework */; };
 		45A2E8C3187650CE009A6171 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8B6187650CE009A6171 /* Accounts.framework */; };
 		45A2E8C4187650CE009A6171 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A2E8B7187650CE009A6171 /* AudioToolbox.framework */; };
@@ -158,7 +157,6 @@
 		45A2E8A418764FF1009A6171 /* TromkeTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TromkeTests-Info.plist"; sourceTree = "<group>"; };
 		45A2E8A618764FF1009A6171 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		45A2E8A818764FF1009A6171 /* TromkeeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TromkeeTests.m; sourceTree = "<group>"; };
-		45A2E8B4187650CE009A6171 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		45A2E8B5187650CE009A6171 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		45A2E8B6187650CE009A6171 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		45A2E8B7187650CE009A6171 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -222,7 +220,6 @@
 				45A2E88018764FF1009A6171 /* CoreGraphics.framework in Frameworks */,
 				4533FE441946E98D003A87D6 /* libFlurry_5.0.0.a in Frameworks */,
 				451AF9A61885314300811899 /* MapKit.framework in Frameworks */,
-				45A2E8C1187650CE009A6171 /* AdSupport.framework in Frameworks */,
 				45A2E8C4187650CE009A6171 /* AudioToolbox.framework in Frameworks */,
 				45A2E88218764FF1009A6171 /* UIKit.framework in Frameworks */,
 				451C1B121910CF54001E619D /* Crashlytics.framework in Frameworks */,
@@ -385,7 +382,6 @@
 			children = (
 				451C1B111910CF54001E619D /* Crashlytics.framework */,
 				451AF9A51885314300811899 /* MapKit.framework */,
-				45A2E8B4187650CE009A6171 /* AdSupport.framework */,
 				45A2E8B5187650CE009A6171 /* Social.framework */,
 				45A2E8B6187650CE009A6171 /* Accounts.framework */,
 				45A2E8B7187650CE009A6171 /* AudioToolbox.framework */,
@@ -854,7 +850,7 @@
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;
-				PROVISIONING_PROFILE = "4DF2C0BD-1A9B-4FD2-8ACE-2A61C82BC6D0";
+				PROVISIONING_PROFILE = "4DA6CDF9-23FD-4885-BED9-B29FCE84A85C";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -884,7 +880,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;
-				PROVISIONING_PROFILE = "4DF2C0BD-1A9B-4FD2-8ACE-2A61C82BC6D0";
+				PROVISIONING_PROFILE = "4DA6CDF9-23FD-4885-BED9-B29FCE84A85C";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

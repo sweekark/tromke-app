@@ -15,7 +15,7 @@
 #import "TPostCell.h"
 #import "TCameraViewController.h"
 
-#define SORT_ACTIVITIES_KEY @"updatedAt"
+#define SORT_ACTIVITIES_KEY @"createdAt"
 
 @interface TActivityViewController () <UITableViewDataSource, UITableViewDelegate, TPostCellDelegate, TActivityDelegate>
 
@@ -255,7 +255,7 @@
     cell.personName.textColor = [TUtility colorFromHexString:USERNAME_COLOR];
     cell.personName.text = [TUtility getDisplayNameForUser:fromUser];//fromUser[USER_DISPLAY_NAME];
     cell.comment.text = comment[ACTIVITY_CONTENT];
-    cell.updatedTime.text = [TUtility computePostedTime:comment.updatedAt];
+    cell.updatedTime.text = [TUtility computePostedTime:comment.createdAt];
     
     PFFile* perImg = fromUser[FACEBOOK_SMALLPIC_KEY];
     if (perImg) {

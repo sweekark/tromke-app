@@ -11,7 +11,7 @@
 #import "TProfileViewController.h"
 #import "TActivityViewController.h"
 
-#define SORTBY @"updatedAt"
+#define SORTBY @"createdAt"
 
 @interface TUserActivityViewController () <TUserActivity>
 
@@ -109,7 +109,7 @@
     if (notifyObj[@"activity"]) {
         
         cell.delegate = self;
-        cell.postedAt.text = [TUtility computePostedTime:notifyObj.updatedAt];
+        cell.postedAt.text = [TUtility computePostedTime:notifyObj.createdAt];
         
         PFObject* activityObj = notifyObj[@"activity"];
         
@@ -157,7 +157,7 @@
         return cell;
     } else if (notifyObj[@"post"]) {
         cell.delegate = self;
-        cell.postedAt.text = [TUtility computePostedTime:notifyObj.updatedAt];
+        cell.postedAt.text = [TUtility computePostedTime:notifyObj.createdAt];
 
         
         PFObject* postObj = notifyObj[@"post"];

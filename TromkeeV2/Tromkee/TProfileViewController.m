@@ -10,7 +10,7 @@
 #import "TProfileCell.h"
 #import "TFollowCell.h"
 
-#define SORT_KEY @"updatedAt"
+#define SORT_KEY @"createdAt"
 
 
 NS_ENUM(int, ProfileDisplay) {
@@ -412,7 +412,7 @@ NS_ENUM(int, ProfileDisplay) {
         TProfileCell* cell = (TProfileCell*)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
         
         PFObject* post = self.postsArray[indexPath.row];
-        cell.postedTime.text = [TUtility computePostedTime:post.updatedAt];
+        cell.postedTime.text = [TUtility computePostedTime:post.createdAt];
         
         NSString* comment = @"";
         NSRange postedRange;

@@ -61,7 +61,7 @@
     self.fromName.text = [TUtility getDisplayNameForUser:user];
     self.fromName.textColor = [TUtility colorFromHexString:USERNAME_COLOR];
     
-    self.fromPostedTime.text = [TUtility computePostedTime:postObj.updatedAt];
+    self.fromPostedTime.text = [TUtility computePostedTime:postObj.createdAt];
     self.fromPostedMessage.text = postObj[POST_DATA];
     self.postedLocation.text = [NSString stringWithFormat:@"@ %@", postObj[POST_USERLOCATION]];
     
