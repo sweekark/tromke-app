@@ -44,10 +44,12 @@ static NSDate* mapviewStarttime;
 @implementation TFlurryManager
 
 +(void)initializeFlurry {
+    [Flurry setShowErrorInLogEnabled:YES];
+    [Flurry setDebugLogEnabled:YES];
+    [Flurry setLogLevel:FlurryLogLevelAll];
     [Flurry setCrashReportingEnabled:YES];
     [Flurry startSession:FLURRY_ID];   
 }
-
 
 +(void)tromSticker:(NSDictionary*)params {
     [Flurry logEvent:TROM_STICKER withParameters:params];

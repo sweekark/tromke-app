@@ -41,6 +41,8 @@
 @property (nonatomic) NSInteger showActivityItem;
 
 //- (IBAction)postActivityDescription:(id)sender;
+@property (nonatomic, weak) IBOutlet UIView* slidingView;
+@property (nonatomic) BOOL isShowingMenu;
 
 @end
 
@@ -60,6 +62,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.isShowingMenu = NO;
+    
+    UITapGestureRecognizer* hideSlidingViewGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showMenu:)];
+    [self.slidingView addGestureRecognizer:hideSlidingViewGesture];
     
     self.postCell = nil;
     self.activities = [@[] mutableCopy];
@@ -376,8 +382,18 @@
 //}
 
 -(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        [(TAppDelegate*)[[UIApplication sharedApplication] delegate] presentLoginViewControllerAnimated:NO];
+    if (alertView.tag == 1000) {
+        if (buttonIndex == 1) {
+            [(TAppDelegate*)[[UIApplication sharedApplication] delegate] presentLoginViewControllerAnimated:NO];
+        }
+    } else if (alertView.tag == 2000) {
+        if (buttonIndex == 1) {
+            PFObject* activiy = [PFObject objectWithClassName:CONTENT_FLAG];
+            activiy[CONTENT_FLAG_POST] = self.postedObject;
+            activiy[CONTENT_FLAG_POSTEDBYUSER] = [PFUser currentUser];
+            activiy[CONTENT_FLAG_TYPE] = CONTENT_FLAG_TYPE_POST;
+            [activiy saveInBackground];
+        }
     }
 }
 
@@ -398,6 +414,13 @@
     activiy[ACTIVITY_POST] = self.postedObject;
 
     [activiy saveInBackground];
+}
+
+-(IBAction)flagInAppropriate:(id)sender {
+    [self showMenu:nil];
+    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Confirm" message:@"Please confirm if you want to flag the content as inappropriate." delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    alert.tag = 2000;
+    [alert show];
 }
 
 -(void)showProfileFromPost {
@@ -462,13 +485,13 @@
 }
 
 - (IBAction)share:(id)sender {
+    [self showMenu:nil];
     NSMutableArray* actItems = [[NSMutableArray alloc] init];
     NSString* comment = self.postedObject[POST_DATA];
     if (comment && comment.length) {
         [actItems addObject:comment];
     }
     
-//    PFObject* stickerObj = self.postedObject[STICKER];
     PFFile* stickerImage = self.postedObject[POST_ORIGINAL_IMAGE];
     if (stickerImage) {
         UIImage* img = [UIImage imageWithData:[stickerImage getData]];
@@ -517,7 +540,8 @@
     [self hideAskQuestionView:nil];
     
     if (![PFUser currentUser]) {
-        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You must login in order to post a sticker !!!" delegate:self cancelButtonTitle:@"Not Now" otherButtonTitles: @"Login", nil] show];
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Warning" message:@"You must login in order to post a sticker !!!" delegate:self cancelButtonTitle:@"Not Now" otherButtonTitles: @"Login", nil];
+        alert.tag = 1000;
         return;
     }
     
@@ -580,6 +604,21 @@
     }];
 }
 
+-(IBAction)showMenu:(id)sender {
+    [UIView animateWithDuration:0.5 animations:^{
+        CGRect r = self.slidingView.frame;
+        if (self.isShowingMenu) {
+            //hide
+            r.origin.y = -568;
+        } else {
+            //show
+            r.origin.y = 0;
+        }
+        self.slidingView.frame = r;
+    }];
+    
+    self.isShowingMenu = !self.isShowingMenu;
+}
 
 @end
 

@@ -30,6 +30,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [TFlurryManager initializeFlurry];
     [[NSUserDefaults standardUserDefaults] registerDefaults:@{FIRST_TIME : @YES,
                                                               FIRST_TIME_HELP : @YES}];
     

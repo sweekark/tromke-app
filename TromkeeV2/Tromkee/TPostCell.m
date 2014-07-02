@@ -23,7 +23,7 @@
 @property (weak, nonatomic) IBOutlet UILabel* postedLocation;
 @property (weak, nonatomic) IBOutlet UILabel* postedByLabel;
 
-
+@property (weak, nonatomic) IBOutlet UIButton* flagButton;
 @end
 
 @implementation TPostCell
@@ -50,6 +50,16 @@
 }
 
 -(void)update:(PFObject*)postObj {
+    
+    BOOL flag = [postObj[ACTIVITY_INAPPROPRIATE] boolValue];
+    if (flag) {
+        self.flagButton.userInteractionEnabled = NO;
+        [self.flagButton setImage:[UIImage imageNamed:@"RedFlag"] forState:UIControlStateNormal];
+    } else {
+        self.flagButton.userInteractionEnabled = YES;
+        [self.flagButton setImage:[UIImage imageNamed:@"WhiteFlag"] forState:UIControlStateNormal];
+    }
+
     
     PFUser* user = postObj[POST_FROMUSER];
     PFFile *imageFile = [user objectForKey:FACEBOOK_SMALLPIC_KEY];
@@ -105,4 +115,5 @@
 - (IBAction)showProfileOfUser:(id)sender {
     [self.delegate showProfileFromPost];
 }
+
 @end
