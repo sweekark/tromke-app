@@ -12,6 +12,7 @@
 #import "TActivityViewController.h"
 
 #define SORTBY @"createdAt"
+#define TOTAL_ITEMS 50
 
 @interface TUserActivityViewController () <TUserActivity>
 
@@ -20,6 +21,8 @@
 @property (weak, nonatomic) IBOutlet UITableView* userActivityTable;
 
 @property (nonatomic) NSInteger row;
+@property (nonatomic) NSInteger fetchedRows;
+
 @end
 
 @implementation TUserActivityViewController
@@ -37,52 +40,9 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    if (currentInstallation.badge != 0) {
-        currentInstallation.badge = 0;
-        [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-        }];
-    }
-    
-    if ([Reachability isReachable]) {
-        self.postsArray = [[NSMutableArray alloc] init];
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        PFQuery* activityQuery = [PFQuery queryWithClassName:@"NotifyActivity"];
-        [activityQuery includeKey:@"activity"];
-        [activityQuery includeKey:@"activity.post"];
-        [activityQuery includeKey:@"activity.post.sticker"];
-        [activityQuery includeKey:@"activity.post.fromUser"];
-        [activityQuery includeKey:@"activity.fromUser"];
-        [activityQuery includeKey:@"post"];
-        [activityQuery includeKey:@"post.fromUser"];
-        [activityQuery includeKey:@"post.sticker"];
-        activityQuery.limit = 50;
-
-        [activityQuery whereKey:@"notifyUser" equalTo:[PFUser currentUser]];
-        [activityQuery orderByDescending:SORTBY];
-        
-        __weak TUserActivityViewController* weakSelf = self;
-        [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            DLog(@"Received activities in profile: %lu", (unsigned long)objects.count);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                if (error) {
-                    NSLog(@"Error in getting activities: %@", error.localizedDescription);
-                } else {
-                    weakSelf.postsArray = [objects mutableCopy];
-                    if ([weakSelf.postsArray count]) {
-                        weakSelf.noResultsLabel.hidden = YES;
-                        weakSelf.userActivityTable.hidden = NO;
-                        [weakSelf.userActivityTable reloadData];
-                    } else {
-                        weakSelf.noResultsLabel.hidden = NO;
-                        weakSelf.userActivityTable.hidden = YES;
-                    }
-                }
-            });
-        }];
-    }
+    self.postsArray = [NSMutableArray array];
+    self.fetchedRows = 0;
+    [self fetchItems];
 }
 
 - (void)didReceiveMemoryWarning
@@ -247,6 +207,59 @@
 -(void)showProfile:(NSInteger)rowNumber {
     self.row = rowNumber;
     [self performSegueWithIdentifier:@"PROFILE" sender:nil];
+}
+
+
+-(void)fetchItems {
+    if ([Reachability isReachable]) {
+        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+        if (currentInstallation.badge != 0) {
+            currentInstallation.badge = 0;
+            [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+            }];
+        }
+        
+        self.postsArray = [[NSMutableArray alloc] init];
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        PFQuery* activityQuery = [PFQuery queryWithClassName:NOTIFY];
+        [activityQuery includeKey:NOTIFY_ACTIVITY];
+        [activityQuery includeKey:NOTIFY_ACTIVITY_POST];
+        [activityQuery includeKey:NOTIFY_POST_STICKER];
+        [activityQuery includeKey:NOTIFY_POST_FROMUSER];
+        [activityQuery includeKey:NOTIFY_ACTIVITY_FROMUSER];
+        [activityQuery includeKey:NOTIFY_POST];
+        [activityQuery includeKey:NOTIFY_FROMUSER];
+        [activityQuery includeKey:NOTIFY_STICKER];
+                
+        activityQuery.limit = TOTAL_ITEMS;
+        activityQuery.skip = self.fetchedRows;
+        
+        [activityQuery whereKey:NOTIFY_USER equalTo:[PFUser currentUser]];
+        [activityQuery orderByDescending:SORTBY];
+        
+        __weak TUserActivityViewController* weakSelf = self;
+        [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            DLog(@"Received activities in profile: %lu", (unsigned long)objects.count);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                if (error) {
+                    NSLog(@"Error in getting activities: %@", error.localizedDescription);
+                } else {
+                    [weakSelf.postsArray addObjectsFromArray:[objects mutableCopy]];
+                    if ([weakSelf.postsArray count]) {
+                        weakSelf.fetchedRows = weakSelf.postsArray.count;
+                        weakSelf.noResultsLabel.hidden = YES;
+                        weakSelf.userActivityTable.hidden = NO;
+                        [weakSelf.userActivityTable reloadData];
+                    } else {
+                        weakSelf.noResultsLabel.hidden = NO;
+                        weakSelf.userActivityTable.hidden = YES;
+                    }
+                }
+            });
+        }];
+    }
 }
 
 @end

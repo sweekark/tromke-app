@@ -1824,7 +1824,7 @@
         <!--Activity View Controller-->
         <scene sceneID="9Pj-0U-ZgZ">
             <objects>
-                <viewController storyboardIdentifier="Activity" id="oKO-5Q-Eb5" customClass="TActivityViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Activity" automaticallyAdjustsScrollViewInsets="NO" id="oKO-5Q-Eb5" customClass="TActivityViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="JT6-bY-3Wz"/>
                         <viewControllerLayoutGuide type="bottom" id="1DZ-bU-7Zf"/>
@@ -2547,27 +2547,75 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dbL-YI-SwD">
-                                                <rect key="frame" x="90" y="10" width="50" height="50"/>
+                                                <rect key="frame" x="151" y="5" width="40" height="64"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <state key="normal" image="NewForward">
+                                                <state key="normal">
                                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="share:" destination="oKO-5Q-Eb5" eventType="touchUpInside" id="ufy-nw-Iw1"/>
                                                 </connections>
                                             </button>
-                                            <button appearanceType="aqua" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LW9-tm-P10">
-                                                <rect key="frame" x="20" y="10" width="50" height="50"/>
+                                            <button appearanceType="aqua" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LW9-tm-P10">
+                                                <rect key="frame" x="20" y="5" width="40" height="64"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <state key="normal" title="Button">
+                                                <state key="normal">
                                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="flagInAppropriate:" destination="oKO-5Q-Eb5" eventType="touchUpInside" id="biT-am-7h6"/>
                                                 </connections>
                                             </button>
+                                            <button appearanceType="aqua" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lGF-3z-PrL">
+                                                <rect key="frame" x="86" y="5" width="40" height="64"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <state key="normal">
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="blockUser:" destination="oKO-5Q-Eb5" eventType="touchUpInside" id="nMa-Px-S1A"/>
+                                                </connections>
+                                            </button>
+                                            <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Report Inappropriate" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="51" translatesAutoresizingMaskIntoConstraints="NO" id="yP7-CN-pUA">
+                                                <rect key="frame" x="15" y="49" width="51" height="20"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="8"/>
+                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Block User" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="41" translatesAutoresizingMaskIntoConstraints="NO" id="duc-SO-ywX">
+                                                <rect key="frame" x="85" y="49" width="41" height="20"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="8"/>
+                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Forward" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="41" translatesAutoresizingMaskIntoConstraints="NO" id="tKh-Zu-aNm">
+                                                <rect key="frame" x="150" y="50" width="41" height="20"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="8"/>
+                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <imageView appearanceType="aqua" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Report" translatesAutoresizingMaskIntoConstraints="NO" id="KyG-Y1-QMB">
+                                                <rect key="frame" x="20" y="5" width="40" height="40"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            </imageView>
+                                            <imageView appearanceType="aqua" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="BlockUser" translatesAutoresizingMaskIntoConstraints="NO" id="GhC-AW-MMC">
+                                                <rect key="frame" x="86" y="5" width="40" height="40"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            </imageView>
+                                            <imageView appearanceType="aqua" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Forward" translatesAutoresizingMaskIntoConstraints="NO" id="8pe-Ly-n12">
+                                                <rect key="frame" x="151" y="5" width="40" height="40"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            </imageView>
+                                            <view appearanceType="aqua" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ktw-ga-yEc">
+                                                <rect key="frame" x="0.0" y="0.0" width="320" height="1"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <color key="backgroundColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </view>
                                         </subviews>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2599,10 +2647,10 @@
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button appearanceType="aqua" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Idd-Mm-V2C">
-                                        <rect key="frame" x="267" y="24" width="46" height="30"/>
+                                    <button appearanceType="aqua" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Idd-Mm-V2C">
+                                        <rect key="frame" x="280" y="24" width="30" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" title="Menu">
+                                        <state key="normal" image="MenuDots">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
@@ -2616,7 +2664,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="q6p-6s-MmN" firstAttribute="leading" secondItem="fpL-u0-UNU" secondAttribute="leading" id="Bnl-QD-TD1"/>
                             <constraint firstItem="oQI-bq-ukl" firstAttribute="leading" secondItem="fpL-u0-UNU" secondAttribute="leading" id="CaT-GA-uGB"/>
@@ -2689,7 +2737,10 @@
         </scene>
     </scenes>
     <resources>
+        <image name="BlockUser" width="40" height="40"/>
         <image name="BottomHelp" width="320" height="86"/>
+        <image name="Forward" width="40" height="40"/>
+        <image name="MenuDots" width="30" height="30"/>
         <image name="MiddleHelp" width="320" height="74"/>
         <image name="NewActivityBtn" width="35" height="35"/>
         <image name="NewAsk" width="73" height="73"/>
@@ -2705,7 +2756,6 @@
         <image name="NewFB" width="280" height="52"/>
         <image name="NewFlash" width="25" height="25"/>
         <image name="NewFlashOff" width="25" height="25"/>
-        <image name="NewForward" width="57" height="29"/>
         <image name="NewFrontCamera" width="47" height="23"/>
         <image name="NewGrBuddySelected" width="31" height="31"/>
         <image name="NewLaughingFace" width="27" height="34"/>
@@ -2724,6 +2774,7 @@
         <image name="Personholder" width="50" height="50"/>
         <image name="Placeholder" width="50" height="50"/>
         <image name="ProfileRound" width="70" height="70"/>
+        <image name="Report" width="40" height="40"/>
         <image name="Send" width="60" height="60"/>
         <image name="Skip" width="57" height="47"/>
         <image name="TopBar" width="320" height="44"/>
@@ -2737,7 +2788,7 @@
     <inferredMetricsTieBreakers>
         <segue reference="Bnd-pd-Ltr"/>
         <segue reference="txq-dx-7tw"/>
-        <segue reference="l0l-lO-hqx"/>
         <segue reference="yux-Dm-G3t"/>
+        <segue reference="l0l-lO-hqx"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -62,6 +62,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+//    activitiesTable
+    
     self.isShowingMenu = NO;
     
     UITapGestureRecognizer* hideSlidingViewGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showMenu:)];
@@ -224,7 +227,6 @@
             } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
                 self.postCell = [tableView dequeueReusableCellWithIdentifier:VIEWQUESTION];
                 self.postCell.contentView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_PICTURE_COLOR];
-//                [self.postCell showLabelsForQuestion];
             } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
                 self.postCell = [tableView dequeueReusableCellWithIdentifier:VIEWIMAGE];
                 self.postCell.contentView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_STICKER_COLOR];
@@ -245,14 +247,13 @@
     
     if ([comment[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT] && imgFile) {
         cell = [tableView dequeueReusableCellWithIdentifier:@"COMMENT_IMAGE"];
-//        PFFile* imgFile = comment[@"commentImage"];
         cell.commentImage.image = [UIImage imageNamed:@"PlaceHolder"];
         if (imgFile) {
             [cell.commentImage setFile:imgFile];
             [cell.commentImage loadInBackground];
         }
     }
-    else { //if ([comment[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
+    else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"ONLY_COMMENT"];
     }
 
@@ -286,23 +287,12 @@
         }
     } else {
         if (self.activities && self.activities.count) {
-            
-            
             PFObject* comment = self.activities[indexPath.row - 1];
             PFFile* imgFile = comment[ACTIVITY_ORIGINAL_IMAGE];
             
             if ([comment[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT] && imgFile) {
                 height = 405;
             }
-//            else { //if ([comment[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
-//                
-//            }
-
-            
-//            PFObject* comment = self.activities[indexPath.row - 1];
-//            if ([comment[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT]) {
-//                height = 300;
-//            }
         }
     }
     
@@ -310,76 +300,9 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    [self performSegueWithIdentifier:@"PROFILE" sender:nil];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-#pragma mark - TextView methods
-
-//- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
-//{
-//    if([text isEqualToString:@"\n"])
-//    {
-//        [textView resignFirstResponder];
-//        return YES;
-//    }
-//    
-//    return textView.text.length + (text.length - range.length) <= POSTDATA_LENGTH;
-//}
-
-//- (void)textViewDidBeginEditing:(UITextView *)textView {
-//    self.isCommentEditing = YES;
-//    [UIView animateWithDuration:0.35 animations:^{
-//        CGRect r = self.bottomView.frame;
-//        r.origin.y -= 216;
-//        self.bottomView.frame = r;
-//    }];
-//}
-//
-//- (void)textViewDidEndEditing:(UITextView *)textView {
-//    self.isCommentEditing = NO;
-//    [UIView animateWithDuration:0.1 animations:^{
-//        CGRect r = self.bottomView.frame;
-//        r.origin.y += 216;
-//        self.bottomView.frame = r;
-//    }];
-//}
-
-//- (IBAction)postActivityDescription:(id)sender {
-//    if ([self.stickerImages count]) {
-//        UIImage *resizedImage = [self.stickerImages[0] resizedImageWithContentMode:UIViewContentModeScaleAspectFit bounds:CGSizeMake(560.0f, 560.0f) interpolationQuality:kCGInterpolationHigh];
-//        NSData *imageData = UIImageJPEGRepresentation(resizedImage, 0.8f);
-//        
-//        __block PFFile* imageFile = [PFFile fileWithData:imageData];
-//        [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-//            if (succeeded) {
-//                NSLog(@"Saved image file");
-//                PFObject* activiy = [PFObject objectWithClassName:@"Activity"];
-//                activiy[POST_FROMUSER] = [PFUser currentUser];
-//                activiy[@"commentImage"] = imageFile;
-//                activiy[@"toUser"] = self.stickerObject[POST_FROMUSER];
-//                activiy[POST_TYPE] = IMAGE_COMMENT;
-//                activiy[@"content"] = self.activityDescription.text;
-//                activiy[@"post"] = self.stickerObject;
-//                
-//                [activiy saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-//                    if (succeeded) {
-//                        dispatch_async(dispatch_get_main_queue(), ^{
-//                            [[[UIAlertView alloc] initWithTitle:@"Successful" message:@"Comment posted successfully" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-//                            [self update];
-//                        });
-//                    } else {
-//                        NSLog(@"Failed to post comment");
-//                    }
-//                }];
-//            } else {
-//                NSLog(@"Failed to upload image");
-//            }
-//        }];
-//    }
-    
-
-//}
 
 -(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (alertView.tag == 1000) {
@@ -392,6 +315,15 @@
             activiy[CONTENT_FLAG_POST] = self.postedObject;
             activiy[CONTENT_FLAG_POSTEDBYUSER] = [PFUser currentUser];
             activiy[CONTENT_FLAG_TYPE] = CONTENT_FLAG_TYPE_POST;
+            [activiy saveInBackground];
+        }
+    } else if (alertView.tag == 3000) {
+        if (buttonIndex == 1) {
+            PFObject* activiy = [PFObject objectWithClassName:CONTENT_FLAG];
+            activiy[CONTENT_FLAG_POST] = self.postedObject;
+            activiy[CONTENT_FLAG_POSTEDBYUSER] = [PFUser currentUser];
+            activiy[CONTENT_FLAG_USER] = self.postedObject[POST_FROMUSER];
+            activiy[CONTENT_FLAG_TYPE] = CONTENT_FLAG_TYPE_USER;
             [activiy saveInBackground];
         }
     }
@@ -423,6 +355,14 @@
     [alert show];
 }
 
+-(IBAction)blockUser:(id)sender {
+    [self showMenu:nil];
+    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Confirm" message:@"Please confirm if you want to block the user." delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    alert.tag = 3000;
+    [alert show];
+    
+}
+
 -(void)showProfileFromPost {
     self.showProfileForPost = YES;
     [self performSegueWithIdentifier:@"PROFILE" sender:nil];
@@ -446,22 +386,7 @@
             TProfileViewController* profileVC = segue.destinationViewController;
             profileVC.userProfile = fromUser;
         }
-//        NSIndexPath* indxPath = [self.activitiesTable indexPathForSelectedRow];
-//        if (indxPath.row == 0) {
-//            PFUser* fromUser = self.postedObject[POST_FROMUSER];
-//            TProfileViewController* profileVC = segue.destinationViewController;
-//            profileVC.userProfile = fromUser;
-//        } else {
-//            PFObject* comment = self.activities[indxPath.row - 1];
-//            PFUser* fromUser = comment[POST_FROMUSER];
-//            TProfileViewController* profileVC = segue.destinationViewController;
-//            profileVC.userProfile = fromUser;
-//        }
-    } /*else if ([segue.identifier isEqualToString:STICKER_POSTED_PROFILE]) {
-        PFUser* user = self.postedObject[POST_FROMUSER];
-        TProfileViewController* profileVC = segue.destinationViewController;
-        profileVC.userProfile = user;
-    }*/ else if ([segue.identifier isEqualToString:CAMERA]) {
+    } else if ([segue.identifier isEqualToString:CAMERA]) {
         TCameraViewController* cameraVC = segue.destinationViewController;
         [self.askText resignFirstResponder];
         cameraVC.activityName = CameraForComment;
@@ -476,16 +401,10 @@
         return NO;
     }
     
-//    if ([identifier isEqualToString:PROFILE]) {
-//    } else {
-//        
-//    }
-    
     return YES;
 }
 
 - (IBAction)share:(id)sender {
-    [self showMenu:nil];
     NSMutableArray* actItems = [[NSMutableArray alloc] init];
     NSString* comment = self.postedObject[POST_DATA];
     if (comment && comment.length) {
@@ -500,16 +419,11 @@
     
     UIActivityViewController* actController = [[UIActivityViewController alloc] initWithActivityItems:actItems applicationActivities:nil];
     [self presentViewController:actController animated:YES completion:nil];
+    [self showMenu:nil];    
 }
 
 
 #pragma mark - Ask question delegate
-
-//- (void)textViewDidBeginEditing:(UITextView *)textView {
-//    if ([textView.text isEqualToString:@"Type your comment here"] || [textView.text isEqualToString:@"Type your answer here"]) {
-//        textView.text = @"";
-//    }
-//}
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
@@ -536,7 +450,6 @@
 }
 
 - (IBAction)postAskQuestion:(id)sender {
-//    [self.askText resignFirstResponder];
     [self hideAskQuestionView:nil];
     
     if (![PFUser currentUser]) {
@@ -571,19 +484,6 @@
         return;
     }
     
-//    self.askText.text = @"Type your question here";
-//    self.onlyCameraButton.enabled = NO;
-//    self.textCount.text = @"0";
-//    
-//    NSString* stickerType = self.postedObject[POST_TYPE];
-//    if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
-//        self.askText.text = @"Type your comment here";
-//    } else if ([stickerType isEqualToString:POST_TYPE_ASK]) {
-//        self.askText.text = @"Type your answer here";
-//    } else if ([stickerType isEqualToString:POST_TYPE_IMAGE]) {
-//        self.askText.text = @"Type your comment here";
-//    }
-    
     self.askText.text = @"";
     self.onlyCameraButton.enabled = NO;
     self.textCount.text = @"0";
@@ -613,6 +513,7 @@
         } else {
             //show
             r.origin.y = 0;
+            [self hideAskQuestionView:nil];
         }
         self.slidingView.frame = r;
     }];

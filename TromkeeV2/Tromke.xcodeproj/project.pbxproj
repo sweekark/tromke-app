@@ -844,13 +844,11 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Flurry-iOS-5.0.0/Flurry",
-					"$(PROJECT_DIR)/Flurry-iOS-5.0.0/FlurryAds",
 					"$(PROJECT_DIR)/Flurry",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;
-				PROVISIONING_PROFILE = "A4A93EA2-004B-4382-A17D-D994241232FB";
+				PROVISIONING_PROFILE = "4DA6CDF9-23FD-4885-BED9-B29FCE84A85C";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -873,14 +871,12 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Flurry-iOS-5.0.0/Flurry",
-					"$(PROJECT_DIR)/Flurry-iOS-5.0.0/FlurryAds",
 					"$(PROJECT_DIR)/Flurry",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Tromke;
-				PROVISIONING_PROFILE = "A4A93EA2-004B-4382-A17D-D994241232FB";
+				PROVISIONING_PROFILE = "4DA6CDF9-23FD-4885-BED9-B29FCE84A85C";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -152,11 +152,25 @@ typedef NS_ENUM(NSInteger, Camera) {
 #define USER_DISPLAY_NAME @"displayName"
 #define USER_USER_NAME @"username"
 
+//Notifiy object
+#define NOTIFY @"NotifyActivity"
+#define NOTIFY_ACTIVITY @"activity"
+#define NOTIFY_ACTIVITY_POST @"activity.post"
+#define NOTIFY_POST_STICKER @"activity.post.sticker"
+#define NOTIFY_POST_FROMUSER @"activity.post.fromUser"
+#define NOTIFY_ACTIVITY_FROMUSER @"activity.fromUser"
+#define NOTIFY_POST @"post"
+#define NOTIFY_FROMUSER @"post.fromUser"
+#define NOTIFY_STICKER @"post.sticker"
+#define NOTIFY_USER @"notifyUser"
+
+
 //Flag object
 #define CONTENT_FLAG @"ContentFlag"
 #define CONTENT_FLAG_POSTEDBYUSER @"fromUser"
+#define CONTENT_FLAG_USER @"toUser"
 #define CONTENT_FLAG_POST @"post"
 #define CONTENT_FLAG_TYPE @"type"
 #define CONTENT_FLAG_TYPE_POST @"Post"
-#define CONTENT_FLAG_TYPE_User @"User"
+#define CONTENT_FLAG_TYPE_USER @"User"
 

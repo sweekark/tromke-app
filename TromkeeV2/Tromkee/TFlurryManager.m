@@ -44,9 +44,9 @@ static NSDate* mapviewStarttime;
 @implementation TFlurryManager
 
 +(void)initializeFlurry {
-    [Flurry setShowErrorInLogEnabled:YES];
-    [Flurry setDebugLogEnabled:YES];
-    [Flurry setLogLevel:FlurryLogLevelAll];
+//    [Flurry setShowErrorInLogEnabled:YES];
+//    [Flurry setDebugLogEnabled:YES];
+//    [Flurry setLogLevel:FlurryLogLevelAll];
     [Flurry setCrashReportingEnabled:YES];
     [Flurry startSession:FLURRY_ID];   
 }
