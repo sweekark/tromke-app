@@ -43,11 +43,11 @@
     if ([[NSUserDefaults standardUserDefaults] boolForKey:FIRST_TIME]) {
         [self performSegueWithIdentifier:HELP sender:nil];
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:FIRST_TIME];
-    } else {
+    } /*else {
         if ([PFUser currentUser] && [[PFUser currentUser] isAuthenticated]) {
             [self performSegueWithIdentifier:MAIN sender:nil];
         }
-    }
+    }*/
     
     [super viewDidAppear:animated];
 }
@@ -125,6 +125,17 @@
         return;
     }
 
+    [[[UIAlertView alloc] initWithTitle:@"Accept" message:@"By signing in to  Tromke Account you acknowledge that you have read, understood and agree to the Terms & Conditions and Policies"
+                               delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil] show];
+}
+
+-(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        [self initiateActualFBAuthentication];
+    }
+}
+
+-(void)initiateActualFBAuthentication {
     NSArray* permissions = @[@"publish_actions", @"read_friendlists", @"email"];
     
     PF_MBProgressHUD* progress = [PF_MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -165,7 +176,6 @@
         });
     }];
 }
-
 
 #pragma mark - Facebook Methods
 

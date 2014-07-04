@@ -105,7 +105,7 @@
     NSString* usr = self.userName.text;
     NSString* pwd = self.passWord.text;
     NSString* em = self.email.text;
-//    __block NSString* fn = self.fullName.text;
+
     
     if (!usr || !usr.length) {
         [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Please enter username" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
@@ -121,17 +121,28 @@
         [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Please enter email" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
         return;
     }
-    
-//    if (!fn || !fn.length) {
-//        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Please enter full name" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-//        return;
-//    }
-    
+
+    [[[UIAlertView alloc] initWithTitle:@"Accept" message:@"By creating a Tromke Account you acknowledge that you have read, understood and agree to the Terms & Conditions and Policies"
+                              delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil] show];
+}
+
+-(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        [self initiateActualRegistration];
+    }
+}
+
+
+-(void)initiateActualRegistration {
+    NSString* usr = self.userName.text;
+    NSString* pwd = self.passWord.text;
+    NSString* em = self.email.text;
+
     __block PFUser* registerUser = [PFUser user];
     registerUser.username = usr;
     registerUser.password = pwd;
     registerUser.email = em;
-
+    
     PF_MBProgressHUD* progress = [PF_MBProgressHUD showHUDAddedTo:self.view animated:YES];
     progress.labelText = @"Registering";
     
@@ -139,8 +150,6 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [PF_MBProgressHUD hideHUDForView:self.view animated:YES];
             if (succeeded) {
-//                registerUser[USER_DISPLAY_NAME] = fn;
-//                [registerUser saveEventually];
                 [self.navigationController popViewControllerAnimated:YES];
             } else if (error) {
                 NSLog(@"Registration error: %@", error.localizedDescription);
