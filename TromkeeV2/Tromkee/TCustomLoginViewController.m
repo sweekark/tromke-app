@@ -125,8 +125,8 @@
         return;
     }
 
-    [[[UIAlertView alloc] initWithTitle:@"Accept" message:@"By signing in to  Tromke Account you acknowledge that you have read, understood and agree to the Terms & Conditions and Policies"
-                               delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil] show];
+    [[[UIAlertView alloc] initWithTitle:@"Accept" message:@"By signing in to Tromke Account you acknowledge that you have read, understood and agree to the Terms & Conditions and Policies"
+                            delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil] show];
 }
 
 -(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
