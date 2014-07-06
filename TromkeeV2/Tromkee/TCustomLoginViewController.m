@@ -39,15 +39,28 @@
     }
 }
 
--(void)viewDidAppear:(BOOL)animated {
+-(void)viewWillAppear:(BOOL)animated {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:FIRST_TIME]) {
         [self performSegueWithIdentifier:HELP sender:nil];
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:FIRST_TIME];
-    } /*else {
+    } else {
         if ([PFUser currentUser] && [[PFUser currentUser] isAuthenticated]) {
             [self performSegueWithIdentifier:MAIN sender:nil];
         }
-    }*/
+    }
+    
+    [super viewWillAppear:animated];    
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+//    if ([[NSUserDefaults standardUserDefaults] boolForKey:FIRST_TIME]) {
+//        [self performSegueWithIdentifier:HELP sender:nil];
+//        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:FIRST_TIME];
+//    } else {
+//        if ([PFUser currentUser] && [[PFUser currentUser] isAuthenticated]) {
+//            [self performSegueWithIdentifier:MAIN sender:nil];
+//        }
+//    }
     
     [super viewDidAppear:animated];
 }

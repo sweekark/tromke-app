@@ -487,11 +487,11 @@
     
     [UIView animateWithDuration:0.2 animations:^{
         CGRect r = self.askQuestionView.frame;
-        self.askQuestionView.frame = CGRectMake(0, 0, r.size.width, r.size.height);
-        [self.view bringSubviewToFront:self.askQuestionView];
-    }];
-    
-    [self.askText becomeFirstResponder];    
+        r.origin.y = 0;
+        self.askQuestionView.frame = r;
+    } completion:^(BOOL finished) {
+        [self.askText becomeFirstResponder];
+    }];    
 }
 
 - (IBAction)hideAskQuestionView:(id)sender {
@@ -510,8 +510,8 @@
             r.origin.y = -568;
         } else {
             //show
+            [self hideAskQuestionView:nil];                
             r.origin.y = 0;
-            [self hideAskQuestionView:nil];
         }
         self.slidingView.frame = r;
     }];
