@@ -34,9 +34,6 @@
                                         <state key="normal" title="Trokme Terms of Use">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
-                                        <connections>
-                                            <segue destination="VHP-df-S3c" kind="push" identifier="Terms" id="6yp-H7-fEc"/>
-                                        </connections>
                                     </button>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="and" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tbt-64-lAG">
                                         <rect key="frame" x="160" y="47" width="20" height="14"/>
@@ -52,9 +49,6 @@
                                         <state key="normal" title="Privacy Policy">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
-                                        <connections>
-                                            <segue destination="VHP-df-S3c" kind="push" identifier="Policy" id="Bnd-pd-Ltr"/>
-                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -74,6 +68,9 @@
                                 <state key="normal" title="Trokme Terms of Use">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <segue destination="VHP-df-S3c" kind="push" identifier="Terms" id="dvr-ok-jCp"/>
+                                </connections>
                             </button>
                             <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="and" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="thv-Kq-xqv">
                                 <rect key="frame" x="169" y="548" width="20" height="14"/>
@@ -97,6 +94,9 @@
                                 <state key="normal" title="Privacy Policy">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <segue destination="VHP-df-S3c" kind="push" identifier="Policy" id="jSb-6W-Ej1"/>
+                                </connections>
                             </button>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jFN-fg-lAv">
                                 <rect key="frame" x="20" y="144" width="280" height="90"/>
@@ -1056,7 +1056,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <segue destination="VHP-df-S3c" kind="push" identifier="Push" id="vAF-kn-mA0"/>
+                                            <segue destination="VHP-df-S3c" kind="push" identifier="Policy" id="vAF-kn-mA0"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -2860,9 +2860,9 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="Bnd-pd-Ltr"/>
+        <segue reference="dvr-ok-jCp"/>
         <segue reference="TWm-KL-P30"/>
-        <segue reference="dV4-on-W57"/>
         <segue reference="IGv-YH-97g"/>
+        <segue reference="dV4-on-W57"/>
     </inferredMetricsTieBreakers>
 </document>
