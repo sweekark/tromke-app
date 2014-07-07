@@ -319,6 +319,7 @@
 }
 
 - (IBAction)retakePhoto:(id)sender{
+    [self.postMessage resignFirstResponder];
     [self.photoCaptureButton setEnabled:YES];
     self.captureImage.image = nil;
     [self showControllers];

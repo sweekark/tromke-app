@@ -138,7 +138,7 @@
         return;
     }
 
-    [[[UIAlertView alloc] initWithTitle:@"Accept" message:@"By signing in to Tromke Account you acknowledge that you have read, understood and agree to the Terms & Conditions and Policies"
+    [[[UIAlertView alloc] initWithTitle:@"Accept" message:@"By signing in to Tromke Account you acknowledge that you have read, understood and agree to the Terms and Privacy Policy"
                             delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil] show];
 }
 
