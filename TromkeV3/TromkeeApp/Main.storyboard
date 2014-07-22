@@ -1147,6 +1147,7 @@
                         <outlet property="passWord" destination="QEI-sx-aen" id="4zc-BA-NBO"/>
                         <outlet property="topView" destination="TE0-be-f4c" id="GeN-Vc-lSi"/>
                         <outlet property="userName" destination="hDh-fa-EVp" id="g48-KA-m9J"/>
+                        <segue destination="vXZ-lx-hvc" kind="push" identifier="Main" id="kq2-mO-O5c"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hax-Zp-q8S" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2842,9 +2843,10 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="dvr-ok-jCp"/>
+        <segue reference="kq2-mO-O5c"/>
+        <segue reference="vAF-kn-mA0"/>
         <segue reference="dV4-on-W57"/>
-        <segue reference="IGv-YH-97g"/>
         <segue reference="TWm-KL-P30"/>
+        <segue reference="IGv-YH-97g"/>
     </inferredMetricsTieBreakers>
 </document>

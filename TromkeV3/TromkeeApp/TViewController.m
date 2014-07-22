@@ -23,6 +23,7 @@
 #import <Crashlytics/Crashlytics.h>
 #import "TCameraViewController.h"
 #import "ITProgressBar.h"
+#import "TCustomLoginViewController.h"
 
 #define USER_LOCATION_TEXT @"User Location"
 
@@ -446,7 +447,7 @@
 
             break;
         case MenuInviteFriends:{
-            UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:[NSArray arrayWithObjects: @"I recommend you to use Tromke which stays us connected with the events happening around us.", [UIImage imageNamed:@"Logo"], nil] applicationActivities:nil];
+            UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:[NSArray arrayWithObjects: @"I recommend you to use Tromke which stays us connected with the events happening around us. Get the app from the URL: http://tinyurl.com/tinyapp", [UIImage imageNamed:@"Logo"], nil] applicationActivities:nil];
             [activityVC setValue:@"Join Tromke!!!" forKey:@"subject"];
             activityVC.excludedActivityTypes = @[ UIActivityTypeMessage ,UIActivityTypeAssignToContact,UIActivityTypeSaveToCameraRoll];
             [self presentViewController:activityVC animated:YES completion:nil];
@@ -471,7 +472,15 @@
             [TFlurryManager stoppedMap];
             [PFQuery clearAllCachedResults];            
             [PFUser logOut];
-            [self.navigationController popViewControllerAnimated:YES];
+            NSArray* allViewControllers = [self.navigationController viewControllers];
+            for (UIViewController* vc in allViewControllers) {
+                if ([vc isKindOfClass:[TCustomLoginViewController class]]) {
+                    [self.navigationController popToViewController:vc animated:YES];
+                    break;
+                }
+            }
+//            [self.navigationController popViewControllerAnimated:YES];
+//            [self.navigationController popToRootViewControllerAnimated:YES];
         }
     } else if (alertView.tag == 2000) {
         [self updatePostedStickers];

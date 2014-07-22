@@ -148,10 +148,28 @@
     
     [registerUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [PF_MBProgressHUD hideHUDForView:self.view animated:YES];
+       
             if (succeeded) {
-                [self.navigationController popViewControllerAnimated:YES];
+//                [self.navigationController popViewControllerAnimated:YES];
+                progress.labelText = @"Authenticating";
+                [PFUser logInWithUsernameInBackground:self.userName.text password:self.passWord.text block:^(PFUser *user, NSError *error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [PF_MBProgressHUD hideHUDForView:self.view animated:YES];
+                        if (error) {
+                            NSLog(@"Failed to authenticate: %@", error.localizedDescription);
+                            if ([error.domain isEqualToString:@"Parse"]) {
+                                NSDictionary* usrinfo = error.userInfo;
+                                [[[UIAlertView alloc] initWithTitle:@"Warning" message:usrinfo[@"error"] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+                            } else {
+                                [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Failed to authenticate. Try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                            }
+                        } else {
+                            [self performSegueWithIdentifier:MAIN sender:nil];
+                        }
+                    });
+                }];
             } else if (error) {
+                [PF_MBProgressHUD hideHUDForView:self.view animated:YES];
                 NSLog(@"Registration error: %@", error.localizedDescription);
                 if ([error.domain isEqualToString:@"Parse"]) {
                     NSDictionary* usrinfo = error.userInfo;
