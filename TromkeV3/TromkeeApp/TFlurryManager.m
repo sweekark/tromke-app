@@ -37,7 +37,7 @@
 //Menu
 #define MENU_SELECTED_PROFILE @"MenuProfile"
 #define MENU_SELECTED_LOGOUT @"MenuLogout"
-
+#define MENU_SELECTED_INVITEFRIENDS @"MenuInviteFriends"
 
 static NSDate* mapviewStarttime;
 
@@ -133,5 +133,7 @@ static NSDate* mapviewStarttime;
     [Flurry logEvent:MENU_SELECTED_LOGOUT];
 }
 
-
++(void)inviteFriends {
+    [Flurry logEvent:MENU_SELECTED_INVITEFRIENDS];
+}
 @end

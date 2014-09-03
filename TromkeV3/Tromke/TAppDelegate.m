@@ -167,19 +167,12 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    //    UIApplicationState state = [application applicationState];
-    //    if (state == UIApplicationStateBackground) {
-    //        NSLog(@"Inside didReceiveRemoteNotification");
-    //        [self showActivityForPushNotification:userInfo];
-    //    }
-    
     if (!self.applicationIsActive) {
         NSLog(@"Inside didReceiveRemoteNotification");
         [self showActivityForPushNotification:userInfo];
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:UPDATE_NOTIFICATION_COUNT object:nil];
-    //    [PFPush handlePush:userInfo];
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {

@@ -345,6 +345,12 @@
     [activiy saveInBackground];
 }
 
+-(void)showLocationOfActivity:(PFGeoPoint*)location {
+    [self.navigationController popViewControllerAnimated:YES];
+    [self.delegate showActivityLocation:location];    
+}
+
+
 -(IBAction)flagInAppropriate:(id)sender {
     [self showMenu:nil];
     UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Confirm" message:@"Please confirm if you want to flag the content as inappropriate." delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];

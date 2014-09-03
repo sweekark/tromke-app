@@ -12,6 +12,7 @@
 
 -(void)showProfileFromPost;
 -(void)conveyThanks;
+-(void)showLocationOfActivity:(PFGeoPoint*)location;;
 
 @end
 

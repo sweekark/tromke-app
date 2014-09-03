@@ -94,6 +94,7 @@ typedef NS_ENUM(NSInteger, Camera) {
 #define HELP @"Help"
 #define ASKCAMERA @"ASKCAMERA"
 #define MAIN @"Main"
+#define INVITE_FRIENDS @"InviteFriends"
 
 //VIEW or Segue Identifiers
 #define CAMERA @"CAMERA"
@@ -175,3 +176,8 @@ typedef NS_ENUM(NSInteger, Camera) {
 #define CONTENT_FLAG_TYPE_POST @"Post"
 #define CONTENT_FLAG_TYPE_USER @"User"
 
+
+//Contacts
+#define CONTACT_PHONE @"phone"
+#define CONTACT_FIRSTNAME @"first_name"
+#define CONTACT_LASTNAME @"last_name"

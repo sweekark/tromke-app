@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4507205119A654D700BFADAE /* APAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = 4507204919A654D700BFADAE /* APAddress.m */; };
+		4507205219A654D700BFADAE /* APAddressBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 4507204B19A654D700BFADAE /* APAddressBook.m */; };
+		4507205319A654D700BFADAE /* APContact.m in Sources */ = {isa = PBXBuildFile; fileRef = 4507204D19A654D700BFADAE /* APContact.m */; };
+		4507205419A654D700BFADAE /* APPhoneWithLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4507204F19A654D700BFADAE /* APPhoneWithLabel.m */; };
 		450A1257197CD3B700384B88 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 450A1256197CD3B700384B88 /* Foundation.framework */; };
 		450A1259197CD3B700384B88 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 450A1258197CD3B700384B88 /* CoreGraphics.framework */; };
 		450A125B197CD3B700384B88 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 450A125A197CD3B700384B88 /* UIKit.framework */; };
@@ -76,6 +80,8 @@
 		450A1322197CD88800384B88 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 450A131B197CD88800384B88 /* StoreKit.framework */; };
 		450A1323197CD88800384B88 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 450A131C197CD88800384B88 /* SystemConfiguration.framework */; };
 		450A1326197CDB3800384B88 /* TWelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 450A1325197CDB3800384B88 /* TWelcomeViewController.m */; };
+		451742821999385D0028C1B1 /* TFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 451742811999385D0028C1B1 /* TFriendsViewController.m */; };
+		4517428519993E250028C1B1 /* TFriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4517428419993E250028C1B1 /* TFriendCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +95,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4507204819A654D700BFADAE /* APAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APAddress.h; sourceTree = "<group>"; };
+		4507204919A654D700BFADAE /* APAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APAddress.m; sourceTree = "<group>"; };
+		4507204A19A654D700BFADAE /* APAddressBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APAddressBook.h; sourceTree = "<group>"; };
+		4507204B19A654D700BFADAE /* APAddressBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APAddressBook.m; sourceTree = "<group>"; };
+		4507204C19A654D700BFADAE /* APContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APContact.h; sourceTree = "<group>"; };
+		4507204D19A654D700BFADAE /* APContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APContact.m; sourceTree = "<group>"; };
+		4507204E19A654D700BFADAE /* APPhoneWithLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPhoneWithLabel.h; sourceTree = "<group>"; };
+		4507204F19A654D700BFADAE /* APPhoneWithLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPhoneWithLabel.m; sourceTree = "<group>"; };
+		4507205019A654D700BFADAE /* APTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTypes.h; sourceTree = "<group>"; };
 		450A1253197CD3B700384B88 /* Tromke.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tromke.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		450A1256197CD3B700384B88 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		450A1258197CD3B700384B88 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -202,6 +217,10 @@
 		450A131C197CD88800384B88 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		450A1324197CDB3800384B88 /* TWelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWelcomeViewController.h; sourceTree = "<group>"; };
 		450A1325197CDB3800384B88 /* TWelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWelcomeViewController.m; sourceTree = "<group>"; };
+		451742801999385D0028C1B1 /* TFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFriendsViewController.h; sourceTree = "<group>"; };
+		451742811999385D0028C1B1 /* TFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFriendsViewController.m; sourceTree = "<group>"; };
+		4517428319993E250028C1B1 /* TFriendCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFriendCell.h; sourceTree = "<group>"; };
+		4517428419993E250028C1B1 /* TFriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFriendCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -243,6 +262,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4507204719A654D700BFADAE /* AddressBook */ = {
+			isa = PBXGroup;
+			children = (
+				4507204819A654D700BFADAE /* APAddress.h */,
+				4507204919A654D700BFADAE /* APAddress.m */,
+				4507204A19A654D700BFADAE /* APAddressBook.h */,
+				4507204B19A654D700BFADAE /* APAddressBook.m */,
+				4507204C19A654D700BFADAE /* APContact.h */,
+				4507204D19A654D700BFADAE /* APContact.m */,
+				4507204E19A654D700BFADAE /* APPhoneWithLabel.h */,
+				4507204F19A654D700BFADAE /* APPhoneWithLabel.m */,
+				4507205019A654D700BFADAE /* APTypes.h */,
+			);
+			path = AddressBook;
+			sourceTree = "<group>";
+		};
 		450A124A197CD3B700384B88 = {
 			isa = PBXGroup;
 			children = (
@@ -396,6 +431,10 @@
 				450A12C5197CD6C400384B88 /* TUtility.m */,
 				450A12C6197CD6C400384B88 /* TViewController.h */,
 				450A12C7197CD6C400384B88 /* TViewController.m */,
+				451742801999385D0028C1B1 /* TFriendsViewController.h */,
+				451742811999385D0028C1B1 /* TFriendsViewController.m */,
+				4517428319993E250028C1B1 /* TFriendCell.h */,
+				4517428419993E250028C1B1 /* TFriendCell.m */,
 				450A12C8197CD6C400384B88 /* UIImage */,
 				450A1324197CDB3800384B88 /* TWelcomeViewController.h */,
 				450A1325197CDB3800384B88 /* TWelcomeViewController.m */,
@@ -419,6 +458,7 @@
 		450A12F7197CD79E00384B88 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				4507204719A654D700BFADAE /* AddressBook */,
 				450A12F8197CD79E00384B88 /* FacebookSDK.framework */,
 				450A12F9197CD79E00384B88 /* Parse.framework */,
 				450A12FA197CD79E00384B88 /* Progressbar */,
@@ -586,14 +626,20 @@
 				450A12EE197CD6C400384B88 /* TUserActivityCell.m in Sources */,
 				450A12DA197CD6C400384B88 /* TCategoryCell.m in Sources */,
 				450A12D5197CD6C400384B88 /* SnappySlider.m in Sources */,
+				4517428519993E250028C1B1 /* TFriendCell.m in Sources */,
 				450A12F2197CD6C400384B88 /* UIImage+AlphaAdditions.m in Sources */,
+				4507205119A654D700BFADAE /* APAddress.m in Sources */,
 				450A12E8197CD6C400384B88 /* TProfileCell.m in Sources */,
+				4507205219A654D700BFADAE /* APAddressBook.m in Sources */,
+				4507205319A654D700BFADAE /* APContact.m in Sources */,
 				450A12E4197CD6C400384B88 /* TLogInViewController.m in Sources */,
 				450A12E1197CD6C400384B88 /* TFollowCell.m in Sources */,
+				4507205419A654D700BFADAE /* APPhoneWithLabel.m in Sources */,
 				450A12E9197CD6C400384B88 /* TProfileViewController.m in Sources */,
 				450A12EB197CD6C400384B88 /* TStickerAnnotation.m in Sources */,
 				450A12F4197CD6C400384B88 /* UIImage+RoundedCornerAdditions.m in Sources */,
 				450A12ED197CD6C400384B88 /* TTermsAndPolicyViewController.m in Sources */,
+				451742821999385D0028C1B1 /* TFriendsViewController.m in Sources */,
 				450A12F3197CD6C400384B88 /* UIImage+ResizeAdditions.m in Sources */,
 				450A1309197CD79E00384B88 /* ITProgressBar.m in Sources */,
 				450A12EF197CD6C400384B88 /* TUserActivityViewController.m in Sources */,
@@ -728,7 +774,7 @@
 					"$(PROJECT_DIR)/Flurry",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "A4A93EA2-004B-4382-A17D-D994241232FB";
+				PROVISIONING_PROFILE = "4DA6CDF9-23FD-4885-BED9-B29FCE84A85C";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -752,7 +798,7 @@
 					"$(PROJECT_DIR)/Flurry",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "A4A93EA2-004B-4382-A17D-D994241232FB";
+				PROVISIONING_PROFILE = "4DA6CDF9-23FD-4885-BED9-B29FCE84A85C";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -150,7 +150,7 @@
 }
 
 -(void)initiateActualFBAuthentication {
-    NSArray* permissions = @[@"publish_actions", @"read_friendlists", @"email"];
+    NSArray* permissions = @[@"publish_actions", @"read_friendlists", @"email", @"user_friends"];
     
     PF_MBProgressHUD* progress = [PF_MBProgressHUD showHUDAddedTo:self.view animated:YES];
     progress.labelText = @"Authenticating";

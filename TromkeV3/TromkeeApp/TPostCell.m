@@ -15,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet PFImageView *fromStickerImage;
 @property (weak, nonatomic) IBOutlet TCircleView *fromStickerIntensity;
 @property (weak, nonatomic) IBOutlet PFImageView* postImage;
+@property (nonatomic, strong) PFGeoPoint* postLocation;
 
 @property (weak, nonatomic) IBOutlet UILabel *stickerName;
 @property (weak, nonatomic) IBOutlet UILabel *fromName;
@@ -75,6 +76,8 @@
     self.fromPostedMessage.text = postObj[POST_DATA];
     self.postedLocation.text = [NSString stringWithFormat:@"@ %@", postObj[POST_USERLOCATION]];
     
+    self.postLocation = postObj[POST_LOCATION];
+    
     NSString* stickerType = postObj[POST_TYPE];
     if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
         PFObject* stickerObj = postObj[STICKER];
@@ -105,6 +108,10 @@
     int totalThanks = [self.totalThanks.text intValue];
     self.totalThanks.text = [NSString stringWithFormat:@"%d", ++totalThanks];
     [self.delegate conveyThanks];
+}
+
+- (IBAction)showLocation:(id)sender {
+    [self.delegate showLocationOfActivity:self.postLocation];
 }
 
 -(void)showLabelsForQuestion {

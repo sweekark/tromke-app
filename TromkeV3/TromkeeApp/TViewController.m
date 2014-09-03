@@ -6,10 +6,11 @@
 //  Copyright (c) 2014 Tromkee. All rights reserved.
 //
 
+#import <MapKit/MapKit.h>
+#import <Crashlytics/Crashlytics.h>
 #import "TViewController.h"
 #import "TLogInViewController.h"
 #import "TLocationUtility.h"
-#import <MapKit/MapKit.h>
 #import "TCategoriesViewController.h"
 #import "TAppDelegate.h"
 #import "TStickerAnnotation.h"
@@ -20,15 +21,15 @@
 #import "TProfileViewController.h"
 #import "CustomViewMV.h"
 #import "CustomPin.h"
-#import <Crashlytics/Crashlytics.h>
 #import "TCameraViewController.h"
 #import "ITProgressBar.h"
 #import "TCustomLoginViewController.h"
 
 #define USER_LOCATION_TEXT @"User Location"
 
-@interface TViewController () <TCameraDelegate, PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate/*, TStickerAnnotationDelegate*/>
+@interface TViewController () <TCameraDelegate, PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate, TActivityDelegate/*, TStickerAnnotationDelegate*/>
 
+@property (nonatomic) BOOL allowMapUpdate;
 @property (weak, nonatomic) IBOutlet UILabel *notificationsCount;
 @property (weak, nonatomic) IBOutlet MKMapView *map;
 @property (weak, nonatomic) IBOutlet UIView *categoryContainer;
@@ -78,6 +79,7 @@
     [[TLocationUtility sharedInstance] initiateLocationCapture];
     
 //    self.isFirstTime = YES;
+    self.allowMapUpdate = YES;
     self.isAskViewVisible = NO;
     self.firstTimeLogin = YES;
     self.isMenuExpanded = NO;
@@ -103,7 +105,9 @@
     }
     
 //    if (!self.isFirstTime) {
+    if (self.allowMapUpdate) {
         [self updatePostedStickersOnMapWithCenter:self.currentCenterLocation.latitude andLongitude:self.currentCenterLocation.longitude];
+    }
 //    }
 //    self.isFirstTime = NO;
     
@@ -116,6 +120,7 @@
     if ([PFUser currentUser]) {
         [TFlurryManager stoppedMap];
     }
+    self.allowMapUpdate = YES;
 }
 
 -(void)updateNotificationCount {
@@ -173,6 +178,7 @@
         menuVC.delegate = self;
     } else if ([segue.identifier isEqualToString:ACTIVITY]) {
         TActivityViewController* activityVC = segue.destinationViewController;
+        activityVC.delegate = self;
         PFObject* postedObject = (PFObject*)sender;
         NSString* stickerType = postedObject[POST_TYPE];
         if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
@@ -447,10 +453,16 @@
 
             break;
         case MenuInviteFriends:{
-            UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:[NSArray arrayWithObjects: @"I recommend you to use Tromke which stays us connected with the events happening around us. Get the app from the URL: http://tinyurl.com/tinyapp", [UIImage imageNamed:@"Logo"], nil] applicationActivities:nil];
-            [activityVC setValue:@"Join Tromke!!!" forKey:@"subject"];
-            activityVC.excludedActivityTypes = @[ UIActivityTypeMessage ,UIActivityTypeAssignToContact,UIActivityTypeSaveToCameraRoll];
-            [self presentViewController:activityVC animated:YES completion:nil];
+//            UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:[NSArray arrayWithObjects: @"I recommend you to use Tromke which stays us connected with the events happening around us. Get the app from the URL: http://tinyurl.com/tinyapp", [UIImage imageNamed:@"Logo"], nil] applicationActivities:nil];
+//            [activityVC setValue:@"Join Tromke!!!" forKey:@"subject"];
+//            activityVC.excludedActivityTypes = @[ UIActivityTypeMessage ,UIActivityTypeAssignToContact,UIActivityTypeSaveToCameraRoll];
+//            [self presentViewController:activityVC animated:YES completion:nil];
+            [TFlurryManager inviteFriends];
+            if ([[PFUser currentUser] isAuthenticated]) {
+                [self performSegueWithIdentifier:INVITE_FRIENDS sender:nil];
+            } else {
+                [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You need to login first" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+            }
         }
             break;
         case MenuItemLogout:
@@ -624,6 +636,21 @@
     }
 
     [[[UIAlertView alloc] initWithTitle:statusTitle message:msg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+}
+
+-(void)showActivityLocation:(PFGeoPoint*)location {
+    NSLog(@"%@", location);
+    self.allowMapUpdate = NO;
+
+    MKCoordinateRegion region;
+    region.center = CLLocationCoordinate2DMake(location.latitude, location.longitude);
+    MKCoordinateSpan span;
+    span.latitudeDelta = 0.0144927536 * STICKER_QUERY_RADIUS; //1 mile
+    span.longitudeDelta = 0.0144927536 * STICKER_QUERY_RADIUS; //1 mile
+    region.span = span;
+    [self.map setRegion:region animated:NO];
+
+    [self updatePostedStickersOnMapWithCenter:location.latitude andLongitude:location.longitude];
 }
 
 @end

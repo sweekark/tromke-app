@@ -20,7 +20,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.menuItems = @[@"My Profile", @"Invite Friends", @"Logout"];
+    self.menuItems = @[@"My Profile", @"People you may like", @"Logout"];
 }
 
 

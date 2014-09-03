@@ -41,5 +41,6 @@
 //Menu
 +(void)viewingProfile;
 +(void)userLoggedOut;
++(void)inviteFriends;
 
 @end
