@@ -109,7 +109,7 @@ void APAddressBookExternalChangeCallback(ABAddressBookRef addressBookRef, CFDict
                  completion:(void (^)(NSArray *contacts, NSError *error))completionBlock
 {
     APContactField fieldMask = self.fieldsMask;
-    NSArray *descriptors = self.sortDescriptors;
+    //NSArray *descriptors = self.sortDescriptors;
     APContactFilterBlock filterBlock = self.filterBlock;
 
 	ABAddressBookRequestAccessWithCompletion(self.addressBook, ^(bool granted, CFErrorRef errorRef)

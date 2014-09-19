@@ -11,6 +11,8 @@
 #import "APContact.h"
 #import "APPhoneWithLabel.h"
 #import "APAddressBook.h"
+#import "TProfileViewController.h"
+
 @import MessageUI;
 
 @interface TFriendsViewController () <TFriendDelegate, UISearchBarDelegate, MFMessageComposeViewControllerDelegate>
@@ -116,18 +118,31 @@
 }
 
 -(void)followTomers {
-//    NSDictionary* dict = self.displayData[indexPath.row];
-//    [dict[@"Selected"] boolValue];
-    
     NSIndexSet* indexes = [self.displayData indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
         return [obj[@"Selected"] boolValue] == YES;
     }];
     
     if (indexes.count) {
         
+        NSArray* tromkeIDs = [[self.displayData objectsAtIndexes:indexes] valueForKeyPath:@"User.objectId"];
+
+        [PFCloud callFunctionInBackground:@"followTrommers" withParameters:@{@"users" : tromkeIDs}
+                                    block:^(id result, NSError *error) {
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            if (!error) {
+                                                [[[UIAlertView alloc] initWithTitle:@"Succesful" message:@"You are following new tromers successfully" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+                                            }
+                                        });
+                                    }];
+
+        
     } else {
         [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Please select Tromers before following them" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
     }
+}
+
+-(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    [self loadTromers];
 }
 
 -(void)inviteContacts {
@@ -140,7 +155,8 @@
         
         MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
         if([MFMessageComposeViewController canSendText]) {
-            controller.body = [NSString stringWithFormat:@"%@ invites you to use Tromke application. ", [TUtility getDisplayNameForUser:[PFUser currentUser]]];
+            controller.body = @"Hey I really liked this new fun neighborhood ap Tromke and am sure you will like it too. You can download it at http://bit.ly/1qrvxdD. See you soon on Tromke!";
+            //[NSString stringWithFormat:@"%@ invites you to use Tromke application. ", [TUtility getDisplayNameForUser:[PFUser currentUser]]];
             controller.recipients = phoneNumbers;
             controller.messageComposeDelegate = self;
             [self presentViewController:controller animated:YES completion:nil];
@@ -181,8 +197,21 @@
     UIButton* btn = (UIButton*)sender;
     self.option = btn.tag;
     if (self.option == 0) {
+//        [self.tromersButton setImage:[UIImage imageNamed:@"NewTromakeSelected"] forState:UIControlStateNormal];
+//        [self.contactsButton setImage:[UIImage imageNamed:@"NewContactsUnSelected"] forState:UIControlStateNormal];
+
+        [self.tromersButton setTitleColor:[TUtility colorFromHexString:@"#2DC2EE"] forState:UIControlStateNormal];
+        [self.contactsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        
+        
         self.displayData = [self.tromers mutableCopy];
     } else if (self.option == 1) {
+//        [self.tromersButton setImage:[UIImage imageNamed:@"NewTromakeUnSelected"] forState:UIControlStateNormal];
+//        [self.contactsButton setImage:[UIImage imageNamed:@"NewContactsSelected"] forState:UIControlStateNormal];
+
+        [self.tromersButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [self.contactsButton setTitleColor:[TUtility colorFromHexString:@"#2DC2EE"] forState:UIControlStateNormal];
+        
         self.displayData = [self.contacts mutableCopy];
     }
     
@@ -248,6 +277,29 @@
     }
     
     return cell;
+}
+
+-(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+//    if (self.option == 0) {
+//        NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithDictionary:self.displayData[indexPath.row]];
+//        if ([dict[@"Selected"] boolValue]) {
+//            dict[@"Selected"] = @NO;
+//        } else {
+//            dict[@"Selected"] = @YES;
+//        }
+//        [self.displayData replaceObjectAtIndex:indexPath.row withObject:dict];
+//    } else if (self.option == 1) {
+//        NSMutableDictionary* person = [NSMutableDictionary dictionaryWithDictionary:self.displayData[indexPath.row]];
+//        if ([person[@"IsSelected"] boolValue]) {
+//            person[@"IsSelected"] = @NO;
+//        } else {
+//            person[@"IsSelected"] = @YES;
+//        }
+//        [self.displayData replaceObjectAtIndex:indexPath.row withObject:person];
+//    }
+//    
+//    [self.tablView reloadData];
 }
 
 -(UIImage*)makeRoundImage:(UIImage*)squareImage {
@@ -384,4 +436,12 @@
     }
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"TROMPROFILE"]) {
+        NSIndexPath* indxPath = [self.tablView indexPathForSelectedRow];
+        
+        TProfileViewController* profileVC = segue.destinationViewController;
+        profileVC.userProfile = self.displayData[indxPath.row][@"User"];
+    }
+}
 @end

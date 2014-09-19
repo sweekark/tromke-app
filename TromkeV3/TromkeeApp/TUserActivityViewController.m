@@ -76,14 +76,16 @@
         NSString* comment;
         if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
             comment = [NSString stringWithFormat:@"Commented %@", activityObj[@"content"]];
-        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
-            comment = @"Conveyed Thanks";
+        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_LIKE]) {
+            comment = @"Liked";
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT]) {
             comment = [NSString stringWithFormat:@"Posted image with %@", activityObj[@"content"]];
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_ONLY]) {
             comment = @"Posted image";
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_FOLLOW]) {
             comment = @"is following you";
+        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
+            comment = @"Conveyed Thanks";
         }
         
         PFUser* fromUser = activityObj[POST_FROMUSER];
@@ -94,12 +96,14 @@
         NSRange postedRange;
         if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
             postedRange = [comment rangeOfString:@"Commented"];
-        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
+        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_LIKE]) {
             postedRange = [comment rangeOfString:@"Conveyed"];
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT] || [activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_ONLY]) {
             postedRange = [comment rangeOfString:@"Posted"];
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_FOLLOW]) {
             postedRange = [comment rangeOfString:@"following"];
+        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
+            postedRange = [comment rangeOfString:@"Conveyed"];
         }
 
         [msgStr addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:postedRange];

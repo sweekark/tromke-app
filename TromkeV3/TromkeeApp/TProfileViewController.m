@@ -419,9 +419,9 @@ NS_ENUM(int, ProfileDisplay) {
         if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
             comment = [NSString stringWithFormat:@"Commented %@", post[@"content"]];
             postedRange = [comment rangeOfString:@"Commented"];
-        } else if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
-            comment = @"Conveyed Thanks";
-            postedRange = [comment rangeOfString:@"Conveyed"];
+        } else if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_LIKE]) {
+            comment = @"Liked";
+            postedRange = [comment rangeOfString:@"Liked"];
         } else if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT]) {
             comment = [NSString stringWithFormat:@"Posted image with %@", post[@"content"]];
             postedRange = [comment rangeOfString:@"Posted"];

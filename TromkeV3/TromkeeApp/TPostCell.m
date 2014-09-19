@@ -104,7 +104,7 @@
 
 - (IBAction)tellThanks:(id)sender {
     self.thanksButton.userInteractionEnabled = NO;
-    [self.thanksButton setTitle:@"Thanked" forState:UIControlStateNormal];
+    [self.thanksButton setTitle:@"Liked" forState:UIControlStateNormal];
     int totalThanks = [self.totalThanks.text intValue];
     self.totalThanks.text = [NSString stringWithFormat:@"%d", ++totalThanks];
     [self.delegate conveyThanks];

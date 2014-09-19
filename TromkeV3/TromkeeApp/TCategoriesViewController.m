@@ -46,7 +46,7 @@
     if ([Reachability isReachable]) {
         PFQuery* categoriesQuery = [PFQuery queryWithClassName:CATEGORY];
         categoriesQuery.cachePolicy = kPFCachePolicyCacheElseNetwork;
-        categoriesQuery.maxCacheAge = 86400;
+        categoriesQuery.maxCacheAge = 1209600;
         [categoriesQuery orderByAscending:CATEGORY_SORTBY];
         [categoriesQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             DLog(@"Categories received: %lu", (unsigned long)objects.count);

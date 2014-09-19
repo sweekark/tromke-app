@@ -27,7 +27,7 @@
 
 #define USER_LOCATION_TEXT @"User Location"
 
-@interface TViewController () <TCameraDelegate, PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate, TActivityDelegate/*, TStickerAnnotationDelegate*/>
+@interface TViewController () <TCameraDelegate, PFLogInViewControllerDelegate, MKMapViewDelegate, TCategoriesVCDelegate, TMenuDelegate/*, TActivityDelegate, */ /*TStickerAnnotationDelegate*/>
 
 @property (nonatomic) BOOL allowMapUpdate;
 @property (weak, nonatomic) IBOutlet UILabel *notificationsCount;
@@ -89,7 +89,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadLatestStickers:) name:TROMKEE_UPDATE_STICKERS object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startShowingAnimation) name:START_PROGRESS_ANIMATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopShowingAnimation) name:STOP_PROGRESS_ANIMATION object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showActivityLocation:) name:SHOW_STICKER_LOCATION object:nil];
     self.askBackgroundView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_QUESTION_COLOR];
 }
 
@@ -178,7 +178,7 @@
         menuVC.delegate = self;
     } else if ([segue.identifier isEqualToString:ACTIVITY]) {
         TActivityViewController* activityVC = segue.destinationViewController;
-        activityVC.delegate = self;
+//        activityVC.delegate = self;
         PFObject* postedObject = (PFObject*)sender;
         NSString* stickerType = postedObject[POST_TYPE];
         if ([stickerType isEqualToString:POST_TYPE_STICKER]) {
@@ -638,7 +638,8 @@
     [[[UIAlertView alloc] initWithTitle:statusTitle message:msg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
 }
 
--(void)showActivityLocation:(PFGeoPoint*)location {
+-(void)showActivityLocation:(NSNotification*)tempLocation {
+    PFGeoPoint* location = tempLocation.object;
     NSLog(@"%@", location);
     self.allowMapUpdate = NO;
 

@@ -38,7 +38,7 @@
             PFRelation* stickers = [self.category relationforKey:@"Stickers"];
             PFQuery* stickersQuery = [stickers query];
             stickersQuery.cachePolicy = kPFCachePolicyCacheElseNetwork;
-            stickersQuery.maxCacheAge = 86400;
+            stickersQuery.maxCacheAge = 1209600;
             [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 dispatch_async(dispatch_get_main_queue(), ^{

@@ -14,6 +14,7 @@
 #import "TProfileViewController.h"
 #import "TPostCell.h"
 #import "TCameraViewController.h"
+#import "TViewController.h"
 
 #define SORT_ACTIVITIES_KEY @"createdAt"
 
@@ -142,11 +143,11 @@
     }
     
     if ([Reachability isReachable]) {
-        [self updateThanksButton];
+        [self updateLikeButton];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         PFQuery* activityQuery = [PFQuery queryWithClassName:ACTIVITY];
         [activityQuery whereKey:ACTIVITY_POST equalTo:self.postedObject];
-        [activityQuery whereKey:ACTIVITY_TYPE containedIn:@[ACTIVITY_TYPE_IMAGE_COMMENT, ACTIVITY_TYPE_COMMENT, ACTIVITY_TYPE_THANKS]];
+        [activityQuery whereKey:ACTIVITY_TYPE containedIn:@[ACTIVITY_TYPE_IMAGE_COMMENT, ACTIVITY_TYPE_COMMENT, ACTIVITY_TYPE_LIKE, ACTIVITY_TYPE_THANKS]];
         [activityQuery includeKey:ACTIVITY_FROMUSER];
         [activityQuery orderByDescending:SORT_ACTIVITIES_KEY];
         
@@ -157,7 +158,7 @@
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             
             NSIndexSet* indexes = [objects indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-                return [[(PFObject*)obj valueForKey:POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS];
+                return [[(PFObject*)obj valueForKey:POST_TYPE] isEqualToString:ACTIVITY_TYPE_LIKE] || [[(PFObject*)obj valueForKey:POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS];
             }];
             
             weakSelf.postCell.totalThanks.text = [NSString stringWithFormat:@"%lu", (unsigned long)(indexes ? indexes.count : 0)];
@@ -175,14 +176,15 @@
     }
 }
 
--(void)updateThanksButton {
-    PFQuery* thanksQuery = [PFQuery queryWithClassName:ACTIVITY];
-    [thanksQuery whereKey:ACTIVITY_POST equalTo:self.postedObject];
-    [thanksQuery whereKey:POST_FROMUSER equalTo:[PFUser currentUser]];
-    [thanksQuery whereKey:POST_TYPE equalTo:@"THANKS"];
-    [thanksQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+-(void)updateLikeButton {
+    PFQuery* likesQuery = [PFQuery queryWithClassName:ACTIVITY];
+    [likesQuery whereKey:ACTIVITY_POST equalTo:self.postedObject];
+    [likesQuery whereKey:POST_FROMUSER equalTo:[PFUser currentUser]];
+    [likesQuery whereKey:POST_TYPE equalTo:@"LIKE"];
+    [likesQuery whereKey:POST_TYPE equalTo:@"THANKS"];
+    [likesQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         if (!error && object) {
-            [self.postCell.thanksButton setTitle:@"Thanked" forState:UIControlStateNormal];
+            [self.postCell.thanksButton setTitle:@"Liked" forState:UIControlStateNormal];
             self.postCell.thanksButton.userInteractionEnabled = NO;
         }
     }];
@@ -338,7 +340,7 @@
     PFObject* activiy = [PFObject objectWithClassName:ACTIVITY];
     activiy[ACTIVITY_FROMUSER] = [PFUser currentUser];
     activiy[ACTIVITY_TOUSER] = self.postedObject[POST_FROMUSER];
-    activiy[ACTIVITY_TYPE] = @"THANKS";
+    activiy[ACTIVITY_TYPE] = @"LIKE";
     activiy[ACTIVITY_CONTENT] = self.askText.text;
     activiy[ACTIVITY_POST] = self.postedObject;
 
@@ -346,8 +348,14 @@
 }
 
 -(void)showLocationOfActivity:(PFGeoPoint*)location {
-    [self.navigationController popViewControllerAnimated:YES];
-    [self.delegate showActivityLocation:location];    
+    
+    NSArray* viewcontrollers = self.navigationController.viewControllers;
+    NSInteger loc = [viewcontrollers indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        return [obj isKindOfClass:[TViewController class]];
+    }];
+    
+    [self.navigationController popToViewController:viewcontrollers[loc] animated:YES];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SHOW_STICKER_LOCATION object:location]; 
 }
 
 
