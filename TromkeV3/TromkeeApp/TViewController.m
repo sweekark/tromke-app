@@ -59,6 +59,11 @@
 
 @property (nonatomic, strong) IBOutlet UILabel* notificationCountValue;
 
+@property (strong, nonatomic) UIView *alertPostsView;
+@property (nonatomic) BOOL isAlertsPostsViewVisible;
+@property (weak, nonatomic) IBOutlet UILabel *askAnythingLabel;
+
+
 - (IBAction)menuClicked:(id)sender;
 - (IBAction)searchClicked:(id)sender;
 - (IBAction)hideFirstTimeHelpView:(id)sender;
@@ -76,9 +81,10 @@
         [self.firstTimeHelpView removeFromSuperview];
     }
     
-    [[TLocationUtility sharedInstance] initiateLocationCapture];
+//    [[TLocationUtility sharedInstance] initiateLocationCapture];
     
 //    self.isFirstTime = YES;
+    self.isAlertsPostsViewVisible = NO;
     self.allowMapUpdate = YES;
     self.isAskViewVisible = NO;
     self.firstTimeLogin = YES;
@@ -110,7 +116,6 @@
     }
 //    }
 //    self.isFirstTime = NO;
-    
     [super viewDidAppear:animated];
 }
 
@@ -324,6 +329,10 @@
 }
 
 -(void)updatePostedStickersOnMapWithCenter:(CGFloat)latitude andLongitude:(CGFloat)longitude {
+    if (latitude == 0.0 && longitude == 0.0) {
+        return;
+    }
+    
     if ([Reachability isReachable]) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         PFQuery* stickersQuery = [PFQuery queryWithClassName:POST];
@@ -337,12 +346,15 @@
         }
 
         [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            DLog(@"Stickers received: %lu", (unsigned long)objects.count);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             dispatch_async(dispatch_get_main_queue(), ^{
-                if (!error) {
+                if (!error && objects.count) {
                     [self updateMapWithStickers:objects];
                 } else {
+                    if (self.isAlertsPostsViewVisible == NO) {
+                        [self showNoPostsView];
+                    }
+                    DLog(@"Stickers received: %lu", (unsigned long)objects.count);
                     NSLog(@"No stickers Found");
                 }
             });
@@ -519,8 +531,9 @@
     if (![Reachability isReachable]) {
         return;
     }
-    
+
     self.askText.text = @"";
+    self.askAnythingLabel.hidden = NO;
     self.onlyCameraButton.enabled = NO;
     self.textCount.text = @"0";
     [self.askText becomeFirstResponder];
@@ -601,12 +614,15 @@
         return YES;
     }
     
+    
     unsigned long charCount = textView.text.length + (text.length - range.length);
     
     if (charCount == 0) {
         self.onlyCameraButton.enabled = NO;
+        self.askAnythingLabel.hidden = NO;
     } else {
         self.onlyCameraButton.enabled = YES;
+        self.askAnythingLabel.hidden = YES;
     }
     
     if (charCount <= POSTDATA_LENGTH) {
@@ -652,6 +668,43 @@
     [self.map setRegion:region animated:NO];
 
     [self updatePostedStickersOnMapWithCenter:location.latitude andLongitude:location.longitude];
+}
+
+- (IBAction)closeAlertPostsView {
+    self.alertPostsView.hidden = YES;
+    self.isAlertsPostsViewVisible = NO;
+}
+
+
+-(void)showNoPostsView {
+    self.alertPostsView = [[UIView alloc] initWithFrame:self.view.frame];
+    self.alertPostsView.backgroundColor = [UIColor clearColor];
+    
+    UIImageView* imgView = [[UIImageView alloc] initWithFrame:CGRectMake(5, (self.view.frame.size.height - 150) / 2.0, self.view.frame.size.width - 10.0, 150)];
+    imgView.image = [UIImage imageNamed:@"BlackTransparent"];
+    imgView.userInteractionEnabled = YES;
+    [self.alertPostsView addSubview:imgView];
+
+    UILabel* lbl = [[UILabel alloc] initWithFrame:CGRectMake(20, 25, imgView.frame.size.width - 40, 50)];
+    lbl.text = @"There are no posts in this region. Start posting now!!!";
+    lbl.numberOfLines = 2;
+    lbl.textColor = [UIColor whiteColor];
+    lbl.textAlignment = NSTextAlignmentCenter;
+    [imgView addSubview:lbl];
+    
+    UIButton* closeBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+    [closeBtn setTitle:@"Close" forState:UIControlStateNormal];
+    [closeBtn addTarget:self action:@selector(closeAlertPostsView) forControlEvents:UIControlEventTouchUpInside];
+    [closeBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    closeBtn.frame = CGRectMake(70, lbl.frame.origin.y + 50, 180, 50);
+    closeBtn.titleLabel.font = [UIFont boldSystemFontOfSize:16];
+    [imgView addSubview:closeBtn];
+    
+    [self.view addSubview:self.alertPostsView];
+    [self.view bringSubviewToFront:self.alertPostsView];
+    
+    self.isAlertsPostsViewVisible = YES;
+    
 }
 
 @end

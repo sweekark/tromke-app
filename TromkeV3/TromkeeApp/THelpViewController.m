@@ -29,23 +29,25 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.signupBtn.backgroundColor = [TUtility colorFromHexString:REGISTER_BOTTOMGREEN];
+//    self.signupBtn.backgroundColor = [TUtility colorFromHexString:REGISTER_BOTTOMGREEN];
     // Do any additional setup after loading the view.
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    
     UIImageView* img1 = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
     
     UIImageView* img2 = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, 320, self.view.frame.size.height)];
 
     UIButton* btn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [btn setImage:[UIImage imageNamed:@"PinkArrow"] forState:UIControlStateNormal];
+//    [btn setImage:[UIImage imageNamed:@"PinkArrow"] forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(scrollDown:) forControlEvents:UIControlEventTouchUpInside];
     btn.frame = CGRectMake(0, self.view.frame.size.height - 194, 320, 194);
     
     if (IS_IPHONE_5) {
-        img1.image = [UIImage imageNamed:@"Green5"];
-        img2.image = [UIImage imageNamed:@"What5"];
+        img1.image = [UIImage imageNamed:@"Tromke15"];
+        img2.image = [UIImage imageNamed:@"Tromke25"];
     } else {
-        img1.image = [UIImage imageNamed:@"Green4"];
-        img2.image = [UIImage imageNamed:@"What4"];
+        img1.image = [UIImage imageNamed:@"Tromke14"];
+        img2.image = [UIImage imageNamed:@"Tromke24"];
     }
     
     [self.scrlView addSubview:img1];
@@ -64,15 +66,6 @@
 
 
 #pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    NSLog(@"%@", segue.identifier);
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-
 
 -(void)scrollDown:(id)sender {
     [self.scrlView scrollRectToVisible:CGRectMake(0, self.view.frame.size.height, 320, self.view.frame.size.height) animated:YES];

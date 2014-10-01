@@ -185,20 +185,13 @@
 
 - (NSString *)contactName
 {
-    if (self.compositeName)
-    {
+    if (self.compositeName) {
         return self.compositeName;
-    }
-    else if (self.firstName && self.lastName)
-    {
+    } else if (self.firstName && self.lastName) {
         return [NSString stringWithFormat:@"%@ %@", self.firstName, self.lastName];
-    }
-    else if (self.firstName || self.lastName)
-    {
+    } else if (self.firstName || self.lastName) {
         return self.firstName ?: self.lastName;
-    }
-    else
-    {
+    } else {
         return @"Untitled contact";
     }
 }

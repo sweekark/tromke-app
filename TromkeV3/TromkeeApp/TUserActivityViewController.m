@@ -77,7 +77,21 @@
         if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
             comment = [NSString stringWithFormat:@"Commented %@", activityObj[@"content"]];
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_LIKE]) {
-            comment = @"Liked";
+            PFObject* postObj = activityObj[@"post"];
+            if (postObj) {
+                NSString* str;
+                if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_IMAGE]) {
+                    str = [NSString stringWithFormat:@"Likes your image @ %@", postObj[POST_USERLOCATION]];
+                } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_ASK]) {
+                    str = [NSString stringWithFormat:@"Likes your question @ %@", postObj[POST_USERLOCATION]];
+                } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
+                    PFObject* stickerObj = postObj[STICKER];
+                    str = [NSString stringWithFormat:@"Likes sticker %@ @ %@", stickerObj[@"name"], postObj[POST_USERLOCATION]];
+                }
+                
+                comment = str;
+            }
+
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT]) {
             comment = [NSString stringWithFormat:@"Posted image with %@", activityObj[@"content"]];
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_ONLY]) {
@@ -97,7 +111,7 @@
         if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
             postedRange = [comment rangeOfString:@"Commented"];
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_LIKE]) {
-            postedRange = [comment rangeOfString:@"Conveyed"];
+            postedRange = [comment rangeOfString:@"Likes"];
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT] || [activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_ONLY]) {
             postedRange = [comment rangeOfString:@"Posted"];
         } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_FOLLOW]) {
@@ -144,7 +158,6 @@
             str = [NSString stringWithFormat:@"Posted sticker %@ @ %@", stickerObj[@"name"], postObj[POST_USERLOCATION]];
         }
         
-        NSLog(@"%@", postObj[POST_TYPE]);
         NSMutableAttributedString* msgString = [[NSMutableAttributedString alloc] initWithString:str];
         NSRange postedRange = [str rangeOfString:@"Posted"];
         

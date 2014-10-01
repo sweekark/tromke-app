@@ -82,6 +82,7 @@
 		450A1326197CDB3800384B88 /* TWelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 450A1325197CDB3800384B88 /* TWelcomeViewController.m */; };
 		451742821999385D0028C1B1 /* TFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 451742811999385D0028C1B1 /* TFriendsViewController.m */; };
 		4517428519993E250028C1B1 /* TFriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4517428419993E250028C1B1 /* TFriendCell.m */; };
+		45F32B6119D487C000345008 /* BlackTransparent.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F32B6019D487C000345008 /* BlackTransparent.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -221,6 +222,7 @@
 		451742811999385D0028C1B1 /* TFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFriendsViewController.m; sourceTree = "<group>"; };
 		4517428319993E250028C1B1 /* TFriendCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFriendCell.h; sourceTree = "<group>"; };
 		4517428419993E250028C1B1 /* TFriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFriendCell.m; sourceTree = "<group>"; };
+		45F32B6019D487C000345008 /* BlackTransparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BlackTransparent.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -336,6 +338,7 @@
 		450A125D197CD3B700384B88 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				45F32B6019D487C000345008 /* BlackTransparent.png */,
 				450A125E197CD3B700384B88 /* Tromke-Info.plist */,
 				450A125F197CD3B700384B88 /* InfoPlist.strings */,
 				450A1262197CD3B700384B88 /* main.m */,
@@ -578,6 +581,7 @@
 				450A1261197CD3B700384B88 /* InfoPlist.strings in Resources */,
 				450A12D3197CD6C400384B88 /* Main.storyboard in Resources */,
 				450A12D2197CD6C400384B88 /* Images.xcassets in Resources */,
+				45F32B6119D487C000345008 /* BlackTransparent.png in Resources */,
 				450A12D4197CD6C400384B88 /* Policy.html in Resources */,
 				450A12D0197CD6C400384B88 /* CustomPin.xib in Resources */,
 			);
@@ -760,7 +764,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -769,12 +774,13 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tromke/Tromke-Prefix.pch";
 				INFOPLIST_FILE = "Tromke/Tromke-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flurry",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "d2a10367-b44e-4a3d-a881-fb146f339759";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -784,7 +790,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -793,12 +800,13 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tromke/Tromke-Prefix.pch";
 				INFOPLIST_FILE = "Tromke/Tromke-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flurry",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "d2a10367-b44e-4a3d-a881-fb146f339759";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

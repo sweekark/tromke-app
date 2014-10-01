@@ -342,7 +342,7 @@
 - (void)loadContacts
 {
     __weak __typeof(self) weakSelf = self;
-    _addressBook.fieldsMask = APContactFieldFirstName | APContactFieldPhones | APContactFieldPhonesWithLabels | APContactFieldThumbnail;
+    _addressBook.fieldsMask = APContactFieldFirstName | APContactFieldLastName | APContactFieldPhones | APContactFieldPhonesWithLabels | APContactFieldThumbnail;
     _addressBook.sortDescriptors = @[
                                      [NSSortDescriptor sortDescriptorWithKey:@"firstName" ascending:YES],
                                      [NSSortDescriptor sortDescriptorWithKey:@"lastName" ascending:YES]];
