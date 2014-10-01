@@ -32,6 +32,7 @@
 
 @property (nonatomic) BOOL isCommentEditing;
 @property (nonatomic, assign) UIBackgroundTaskIdentifier photoPostBackgroundTaskId;
+@property (weak, nonatomic) IBOutlet UILabel *whatLable;
 
 - (IBAction)postSticker:(id)sender;
 
@@ -173,6 +174,14 @@
         return YES;
     }
     
+    unsigned long charCount = textView.text.length + (text.length - range.length);
+    
+    if (charCount == 0) {
+        self.whatLable.hidden = NO;
+    } else {
+        self.whatLable.hidden = YES;
+    }
+
     return textView.text.length + (text.length - range.length) <= POSTDATA_LENGTH;
 }
 
