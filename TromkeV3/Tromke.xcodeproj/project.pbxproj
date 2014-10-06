@@ -549,6 +549,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = tromke;
 				TargetAttributes = {
+					450A1252197CD3B700384B88 = {
+						DevelopmentTeam = 2PE9428D45;
+					};
 					450A126D197CD3B700384B88 = {
 						TestTargetID = 450A1252197CD3B700384B88;
 					};
