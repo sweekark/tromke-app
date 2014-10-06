@@ -78,7 +78,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNotificationCount) name:UPDATE_NOTIFICATION_COUNT object:nil];
 
     if ([[NSUserDefaults standardUserDefaults] boolForKey:FIRST_TIME_HELP] == NO) {
-        [self.firstTimeHelpView removeFromSuperview];
+//        [self.firstTimeHelpView removeFromSuperview];
+        [self.firstTimeHelpView setHidden:YES];
     }
     
 //    [[TLocationUtility sharedInstance] initiateLocationCapture];
@@ -351,8 +352,8 @@
                 if (!error && objects.count) {
                     [self updateMapWithStickers:objects];
                 } else {
-                    if (self.isAlertsPostsViewVisible == NO) {
-                        [self showNoPostsView];
+                    if (self.isAlertsPostsViewVisible == NO && [[NSUserDefaults standardUserDefaults] boolForKey:FIRST_TIME_ALERT]) {
+//                        [self showNoPostsView];
                     }
                     DLog(@"Stickers received: %lu", (unsigned long)objects.count);
                     NSLog(@"No stickers Found");
@@ -437,12 +438,13 @@
 }
 
 - (IBAction)hideFirstTimeHelpView:(id)sender {
-    [UIView animateWithDuration:0.2 animations:^{
-        self.firstTimeHelpView.alpha = 0.0;
-    } completion:^(BOOL finished) {
-        [self.firstTimeHelpView removeFromSuperview];
-    }];
-    
+//    [UIView animateWithDuration:0.2 animations:^{
+//        self.firstTimeHelpView.alpha = 0.0;
+//    } completion:^(BOOL finished) {
+//        [self.firstTimeHelpView removeFromSuperview];
+//    }];
+
+    [self.firstTimeHelpView setHidden:YES];
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:FIRST_TIME_HELP];
 }
 
@@ -476,6 +478,9 @@
                 [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"You need to login first" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
             }
         }
+            break;
+        case MenuItemHelp:
+            [self.firstTimeHelpView setHidden:NO];
             break;
         case MenuItemLogout:
         {
@@ -704,7 +709,7 @@
     [self.view bringSubviewToFront:self.alertPostsView];
     
     self.isAlertsPostsViewVisible = YES;
-    
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:FIRST_TIME_ALERT];
 }
 
 @end

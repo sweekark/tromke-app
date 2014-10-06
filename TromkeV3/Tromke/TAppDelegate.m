@@ -43,7 +43,8 @@
     [PFImageView class];
     [TFlurryManager initializeFlurry];
     [[NSUserDefaults standardUserDefaults] registerDefaults:@{FIRST_TIME : @YES,
-                                                              FIRST_TIME_HELP : @YES}];
+                                                              FIRST_TIME_HELP : @YES,
+                                                              FIRST_TIME_ALERT : @YES}];
     
     [Crashlytics startWithAPIKey:CRASHLYTICS_ID];
 
@@ -112,7 +113,7 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    [[TLocationUtility sharedInstance] initiateLocationCapture];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:FIRST_TIME_ALERT];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -121,6 +122,7 @@
     //    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorized) {
     //        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Tromkee can't find your location. Please visit settings on your iOS device and allow the app to detect your settings" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
     //    }
+    [[TLocationUtility sharedInstance] initiateLocationCapture];    
     self.applicationIsActive = YES;
 }
 

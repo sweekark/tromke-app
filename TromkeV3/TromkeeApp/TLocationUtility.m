@@ -48,7 +48,7 @@
 - (void)locationManager:(CLLocationManager *)manager
 	didUpdateToLocation:(CLLocation *)newLocation
 		   fromLocation:(CLLocation *)oldLocation {
-    NSLog(@"Lat: %f Long: %f", newLocation.coordinate.latitude, newLocation.coordinate.longitude);
+    DLog(@"Lat: %f Long: %f", newLocation.coordinate.latitude, newLocation.coordinate.longitude);
     self.userLocation = newLocation.coordinate;
     [[NSNotificationCenter defaultCenter] postNotificationName:TROMKE_USER_LOCATION_UPDATED object:nil];
     
@@ -98,6 +98,7 @@
 
 - (void)locationManager:(CLLocationManager *)manager
        didFailWithError:(NSError *)error {
+    NSLog(@"Failed to get location: %@", error);
     [manager stopUpdatingLocation];
 //    [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Failed to fetch user's location. You cannot continue using the app" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
 }

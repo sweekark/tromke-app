@@ -25,6 +25,7 @@ static NSString* const kParseClientKey = @"QPokBBeDc8I1uMHDuOIgRHBq52kzB5sup2zVN
 #define USER_LOCATION @"USER_LOCATION"
 #define FIRST_TIME @"FIRST_TIME"
 #define FIRST_TIME_HELP @"FIRST_TIME_HELP"
+#define FIRST_TIME_ALERT @"FIRST_TIME_ALERT"
 
 //Notifications
 #define TROMKE_USER_LOCATION_UPDATED @"TROMKE_USER_LOCATION_UPDATED"
@@ -74,6 +75,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 //    MenuItemNearMe = 0,
     MenuItemMyProfile,
     MenuInviteFriends,
+    MenuItemHelp,
 //    MenuItemMyActivity,
 //    MenuItemSettings,
     MenuItemLogout
