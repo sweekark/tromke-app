@@ -339,6 +339,17 @@
     [self.tablView reloadData];
 }
 
+-(void)setContacts:(NSArray *)contactsReceived {
+    _contacts = contactsReceived;
+    
+    if (self.option == 1) {
+        self.displayData = [_contacts mutableCopy];
+        [self.tablView reloadData];
+        [self.tablView setContentOffset:CGPointZero animated:YES];
+    }
+}
+
+
 - (void)loadContacts
 {
     __weak __typeof(self) weakSelf = self;
@@ -354,7 +365,8 @@
     [_addressBook loadContacts:^(NSArray *contacts, NSError *error)
      {
          if (!error) {
-             weakSelf.contacts = contacts;
+             [weakSelf setContacts:contacts];
+//             weakSelf.contacts = contacts;
          }
          else
          {

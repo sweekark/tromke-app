@@ -49,7 +49,11 @@
     [Crashlytics startWithAPIKey:CRASHLYTICS_ID];
 
     // Register for push notifications
-    [application registerForRemoteNotificationTypes: UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound];
+    if ([application respondsToSelector:@selector(registerForRemoteNotifications)]) {
+        [application registerForRemoteNotifications];
+    } else {
+        [application registerForRemoteNotificationTypes: UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound];
+    }
     
     //Following are Tromkee's credentials
     [Parse setApplicationId:kParseApplicationID clientKey:kParseClientKey];

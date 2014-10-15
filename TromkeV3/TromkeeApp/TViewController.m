@@ -82,8 +82,6 @@
         [self.firstTimeHelpView setHidden:YES];
     }
     
-//    [[TLocationUtility sharedInstance] initiateLocationCapture];
-    
 //    self.isFirstTime = YES;
     self.isAlertsPostsViewVisible = NO;
     self.allowMapUpdate = YES;
@@ -98,6 +96,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopShowingAnimation) name:STOP_PROGRESS_ANIMATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showActivityLocation:) name:SHOW_STICKER_LOCATION object:nil];
     self.askBackgroundView.backgroundColor = [TUtility colorFromHexString:ACTIVITY_QUESTION_COLOR];
+    
+    CLLocationCoordinate2D temp = [[TLocationUtility sharedInstance] getUserCoordinate];
+    if (temp.latitude != 0 && temp.longitude != 0) {
+        [self updateUserLocation:nil];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated {

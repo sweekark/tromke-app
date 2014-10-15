@@ -31,6 +31,7 @@
 -(id)init {
     self = [super init];
     if (self) {
+        self.userLocation = CLLocationCoordinate2DMake(0.0, 0.0);
         [self initiateLocationCapture];
     }
     
@@ -48,7 +49,7 @@
 - (void)locationManager:(CLLocationManager *)manager
 	didUpdateToLocation:(CLLocation *)newLocation
 		   fromLocation:(CLLocation *)oldLocation {
-    DLog(@"Lat: %f Long: %f", newLocation.coordinate.latitude, newLocation.coordinate.longitude);
+    NSLog(@"Lat: %f Long: %f", newLocation.coordinate.latitude, newLocation.coordinate.longitude);
     self.userLocation = newLocation.coordinate;
     [[NSNotificationCenter defaultCenter] postNotificationName:TROMKE_USER_LOCATION_UPDATED object:nil];
     
@@ -100,7 +101,10 @@
        didFailWithError:(NSError *)error {
     NSLog(@"Failed to get location: %@", error);
     [manager stopUpdatingLocation];
-//    [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Failed to fetch user's location. You cannot continue using the app" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+    
+    if (error.code == kCLErrorDenied) {
+        [[[UIAlertView alloc] initWithTitle:@"Location Service Disabled" message:@"You must allow location services to use this app. Go to Settings, Privacy, Location Services and enable it for Tromke" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    }
 }
 
 -(CLLocationCoordinate2D)getUserCoordinate {
