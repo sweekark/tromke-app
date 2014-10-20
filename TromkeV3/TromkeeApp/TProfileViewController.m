@@ -216,7 +216,7 @@ NS_ENUM(int, ProfileDisplay) {
                     if ([objects count]) {
                         weakSelf.noResultsLabel.hidden = YES;
                         weakSelf.collectionView.hidden = NO;
-                        weakSelf.postsArray = [[objects valueForKeyPath:POST_FROMUSER] mutableCopy];
+                        weakSelf.postsArray = [[objects valueForKeyPath:@"fromUser"] mutableCopy];
                         [weakSelf.collectionView reloadData];
                     } else {
                         [weakSelf.postsArray removeAllObjects];
@@ -406,6 +406,7 @@ NS_ENUM(int, ProfileDisplay) {
 
 // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+
     if (self.currentDisplay == ProfileDisplayActivity) {
         static NSString* cellIdentifier = @"POSTCELL";
         
@@ -432,6 +433,10 @@ NS_ENUM(int, ProfileDisplay) {
             PFUser* touser = post[@"toUser"];
             comment = [NSString stringWithFormat:@"Following %@", [TUtility getDisplayNameForUser:touser]];
             postedRange = [comment rangeOfString:@"Following"];
+        } else if ([post[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
+            PFUser* touser = post[@"toUser"];
+            comment = [NSString stringWithFormat:@"Thanked %@", [TUtility getDisplayNameForUser:touser]];
+            postedRange = [comment rangeOfString:@"Thanked"];
         }
 
         NSMutableAttributedString* msgStr = [[NSMutableAttributedString alloc] initWithString:comment];
