@@ -153,7 +153,7 @@
         
         __weak TActivityViewController* weakSelf = self;
         [activityQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            NSLog(@"Received objects for sticker : %lu", (unsigned long)objects.count);
+            DLog(@"Received objects for sticker : %lu", (unsigned long)objects.count);
             
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             

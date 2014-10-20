@@ -80,7 +80,7 @@
             [placeStr appendString:placemarkLocality];
         }
         
-        NSLog(@"%@", placeStr);
+        DLog(@"%@", placeStr);
         [[NSUserDefaults standardUserDefaults] setValue:placeStr forKeyPath:USER_LOCATION];
         
 //        for (CLPlacemark * placemark in placemarks) {

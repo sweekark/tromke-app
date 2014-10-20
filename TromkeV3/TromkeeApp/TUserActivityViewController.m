@@ -140,9 +140,9 @@
         
         PFObject* postObj = notifyObj[@"post"];
         
-        if (!postObj) {
-            NSLog(@"%@", notifyObj);
-        }
+//        if (!postObj) {
+//            NSLog(@"%@", notifyObj);
+//        }
         PFObject* stickerObj = postObj[STICKER];
         
         PFUser* fromUser = postObj[POST_FROMUSER];

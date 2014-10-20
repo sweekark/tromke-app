@@ -138,7 +138,7 @@
     
     // check if device available
     if (devices.count==0) {
-        NSLog(@"No Camera Available");
+        DLog(@"No Camera Available");
         [self disableCameraDeviceControls];
         return;
     }
@@ -278,14 +278,9 @@
     self.photoFile = [PFFile fileWithData:imageData];
     self.thumbnailFile = [PFFile fileWithData:thumbnailData];
     
-    NSDate* strt = [NSDate date];
     [self.thumbnailFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        NSDate* strt1 = [NSDate date];
-        NSLog(@"Thumbnail Uploaded: %f", [strt1 timeIntervalSinceDate:strt]);
         if (succeeded) {
             [self.photoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                NSDate* strt2 = [NSDate date];
-                NSLog(@"Image Uploaded: %f", [strt2 timeIntervalSinceDate:strt1]);
             }];
         }
     }];

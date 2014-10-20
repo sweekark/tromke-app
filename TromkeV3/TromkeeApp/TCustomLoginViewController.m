@@ -161,7 +161,7 @@
                 //Failed to login
                 NSString* msg;
                 if (!error) {
-                    NSLog(@"The user cancelled the Facebook login.");
+                    DLog(@"The user cancelled the Facebook login.");
                     msg = @"User cancelled Facebook Login";
                 } else {
                     NSLog(@"An error occurred: %@", error.localizedDescription);
@@ -171,9 +171,9 @@
                 [[[UIAlertView alloc] initWithTitle:@"Warning" message:msg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
             } else {
                 if (user.isNew) {
-                    NSLog(@"User signed up and logged in through Facebook!");
+                    DLog(@"User signed up and logged in through Facebook!");
                     if ([PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-                        [FBRequestConnection startWithGraphPath:@"me" parameters:[NSDictionary dictionaryWithObject:@"picture,id,birthday,email,name,gender,username" forKey:@"fields"] HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                        [FBRequestConnection startWithGraphPath:@"me" parameters:[NSDictionary dictionaryWithObject:@"picture,id,birthday,email,name,gender,first_name,last_name" forKey:@"fields"] HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                             if (!error) {
                                 [self facebookRequestDidLoad:result];
                             } else {
@@ -182,7 +182,7 @@
                         }];
                     }
                 } else {
-                    NSLog(@"User logged in through Facebook!");
+                    DLog(@"User logged in through Facebook!");
                 }
                 //successfully logged in
                 [self performSegueWithIdentifier:MAIN sender:nil];
@@ -198,19 +198,26 @@
     PFUser *user = [PFUser currentUser];
     
     if (user) {
-        //        picture,id,birthday,email,name,gender,username
-        
         NSString *facebookName = result[@"name"];
+        NSString* firstName = result[@"first_name"];
+        NSString* lastName = result[@"last_name"];
+        
         if (facebookName && [facebookName length] != 0) {
             [user setObject:facebookName forKey:FACEBOOK_DISPLAYNAME];
-            NSLog(@"FB Name: %@", facebookName);
+            DLog(@"FB Name: %@", facebookName);
+        } else if ( firstName && firstName.length && lastName && lastName.length ){
+            user[FACEBOOK_DISPLAYNAME] = [NSString stringWithFormat:@"%@ %@", firstName, lastName];
+        } else if (firstName && firstName.length) {
+            user[FACEBOOK_DISPLAYNAME] = firstName;
+        } else if (lastName && lastName.length) {
+            user[FACEBOOK_DISPLAYNAME] = lastName;
         } else {
             [user setObject:@"TromkeeUser" forKey:FACEBOOK_DISPLAYNAME];
         }
         
         NSString *facebookId = result[@"id"];
         if (facebookId && [facebookId length] != 0) {
-            NSLog(@"FB ID: %@", facebookId);
+            DLog(@"FB ID: %@", facebookId);
             [user setObject:facebookId forKey:FACEBOOK_ID_KEY];
         }
         
@@ -228,11 +235,6 @@
         NSString* email = result [@"email"];
         if (email) {
             dict[@"email"] = email;
-        }
-        
-        NSString* username = result[@"username"];
-        if (username) {
-            dict[@"username"] = username;
         }
         
         NSString* gender = result[@"gender"];

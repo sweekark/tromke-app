@@ -81,7 +81,7 @@ NS_ENUM(int, ProfileDisplay) {
         [self.userImage setFile:imageFile];
         [self.userImage loadInBackground];
     } else {
-        NSLog(@"No image found");
+        DLog(@"No image found");
     }
     self.userName.text = [TUtility getDisplayNameForUser:self.userProfile]; //self.userProfile[USER_DISPLAY_NAME];
     self.postsArray = [[NSMutableArray alloc] init];

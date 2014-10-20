@@ -70,9 +70,9 @@
     self.window.rootViewController = self.navController;
     [self.window makeKeyAndVisible];
     
-    NSLog(@"Launch options is %@", launchOptions);
+    DLog(@"Launch options is %@", launchOptions);
     if (launchOptions != nil) {
-        NSLog(@"Received remote notification");
+        DLog(@"Received remote notification");
         NSDictionary *userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
         [self performSelector:@selector(showActivityForPushNotification:) withObject:userInfo afterDelay:3.0];
     }
@@ -145,7 +145,7 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     if (!self.applicationIsActive) {
-        NSLog(@"Inside didReceiveRemoteNotification");
+        DLog(@"Inside didReceiveRemoteNotification");
         [self showActivityForPushNotification:userInfo];
     }
     
@@ -199,14 +199,14 @@
         NSString *facebookName = result[@"name"];
         if (facebookName && [facebookName length] != 0) {
             [user setObject:facebookName forKey:FACEBOOK_DISPLAYNAME];
-            NSLog(@"FB Name: %@", facebookName);
+            DLog(@"FB Name: %@", facebookName);
         } else {
             [user setObject:@"TromkeeUser" forKey:FACEBOOK_DISPLAYNAME];
         }
         
         NSString *facebookId = result[@"id"];
         if (facebookId && [facebookId length] != 0) {
-            NSLog(@"FB ID: %@", facebookId);
+            DLog(@"FB ID: %@", facebookId);
             [user setObject:facebookId forKey:FACEBOOK_ID_KEY];
         }
         

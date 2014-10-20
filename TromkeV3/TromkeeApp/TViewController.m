@@ -409,7 +409,7 @@
 
     [self.stickerLocations addObjectsFromArray:newPosts];
     [self.stickerLocations removeObjectsInArray:postsToRemove];
-    NSLog(@"Total stickers in memory are: %lu", (unsigned long)self.stickerLocations.count);
+    DLog(@"Total stickers in memory are: %lu", (unsigned long)self.stickerLocations.count);
 }
 
 - (IBAction)menuClicked:(id)sender {
@@ -664,7 +664,6 @@
 
 -(void)showActivityLocation:(NSNotification*)tempLocation {
     PFGeoPoint* location = tempLocation.object;
-    NSLog(@"%@", location);
     self.allowMapUpdate = NO;
 
     MKCoordinateRegion region;

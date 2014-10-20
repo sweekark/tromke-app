@@ -74,7 +74,7 @@
     [[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
             [[PFUser currentUser] refresh];
-            NSLog(@"User photo uploaded successfully");
+            DLog(@"User photo uploaded successfully");
             handler(YES, smallRoundedImage);
         } else {
             handler(NO, nil);

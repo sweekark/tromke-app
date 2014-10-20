@@ -60,13 +60,5 @@
     [_circleView setNeedsDisplay];
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    NSLog(@"Selected");
-//    [self.delegate userTappedSticker:self.annotation];
-}
-//
-//- (void)didAddSubview:(UIView *)subview {
-//}
-
 
 @end
