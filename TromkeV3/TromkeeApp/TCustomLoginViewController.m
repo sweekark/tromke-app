@@ -10,9 +10,11 @@
 #import "TTermsAndPolicyViewController.h"
 
 @interface TCustomLoginViewController ()
+
 @property (weak, nonatomic) IBOutlet UITextField *userName;
 @property (weak, nonatomic) IBOutlet UITextField *passWord;
 @property (weak, nonatomic) IBOutlet UIImageView *bgImageView;
+@property (strong, nonatomic) NSMutableData* data;
 
 @end
 
@@ -39,29 +41,11 @@
     }
 }
 
-//-(void)viewWillAppear:(BOOL)animated {
-//    if ([[NSUserDefaults standardUserDefaults] boolForKey:FIRST_TIME]) {
-//        [self performSegueWithIdentifier:HELP sender:nil];
-//        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:FIRST_TIME];
-//    } else {
-//        if ([PFUser currentUser] && [[PFUser currentUser] isAuthenticated]) {
-//            [self performSegueWithIdentifier:MAIN sender:nil];
-//        }
-//    }
-//    
-//    [super viewWillAppear:animated];    
-//}
-
 -(void)viewDidAppear:(BOOL)animated {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:FIRST_TIME]) {
         [self performSegueWithIdentifier:HELP sender:nil];
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:FIRST_TIME];
     }
-//    else {
-//        if ([PFUser currentUser] && [[PFUser currentUser] isAuthenticated]) {
-//            [self performSegueWithIdentifier:MAIN sender:nil];
-//        }
-//    }
     
     [super viewDidAppear:animated];
 }
@@ -266,6 +250,21 @@
         }
     }
 }
+
+#pragma mark - NSURLConnectionDataDelegate
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    _data = [[NSMutableData alloc] init];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    [_data appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    [TUtility processFacebookProfilePictureData:_data];
+}
+
 
 #pragma mark - Textfield Delegates
 

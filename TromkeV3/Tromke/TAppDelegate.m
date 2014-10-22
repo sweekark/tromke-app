@@ -9,6 +9,7 @@
 #import "TAppDelegate.h"
 
 #import <CoreLocation/CoreLocation.h>
+#import <Instabug/Instabug.h>
 #import "TLocationUtility.h"
 #import "TLogInViewController.h"
 #import "TActivityViewController.h"
@@ -87,7 +88,8 @@
     //    [defaultACL setPublicReadAccess:YES];
     //    [PFACL setDefaultACL:defaultACL withAccessForCurrentUser:YES];
     
-
+    //Inistantiate Instabug SDK
+    [Instabug startWithToken:@"0af23994f211348b9a16731d9aaa7682" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventShake];
     return YES;
 }
 
