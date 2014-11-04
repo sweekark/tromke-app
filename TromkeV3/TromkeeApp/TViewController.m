@@ -24,6 +24,7 @@
 #import "TCameraViewController.h"
 #import "ITProgressBar.h"
 #import "TCustomLoginViewController.h"
+#import "TUserActivityViewController.h"
 
 #define USER_LOCATION_TEXT @"User Location"
 
@@ -211,6 +212,12 @@
         TCameraViewController* cameraVC = segue.destinationViewController;
         cameraVC.activityName = CameraForImage;
         cameraVC.delegate = self;
+    } else if ([segue.identifier isEqualToString:USER_ACTIVITY]) {
+        TUserActivityViewController* notifications = segue.destinationViewController;
+        notifications.showNotifications = YES;
+    } else if ([segue.identifier isEqualToString:RECENT_POSTS]) {
+        TUserActivityViewController* notifications = segue.destinationViewController;
+        notifications.showNotifications = NO;
     }
 }
 

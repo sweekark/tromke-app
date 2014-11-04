@@ -10,4 +10,6 @@
 
 @interface TUserActivityViewController : UIViewController
 
+@property(nonatomic) BOOL showNotifications;
+
 @end

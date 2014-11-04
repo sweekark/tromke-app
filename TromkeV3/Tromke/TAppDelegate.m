@@ -88,19 +88,21 @@
     //    [defaultACL setPublicReadAccess:YES];
     //    [PFACL setDefaultACL:defaultACL withAccessForCurrentUser:YES];
     
+#ifndef DEBUG
     //Inistantiate Instabug SDK
     [Instabug startWithToken:@"0af23994f211348b9a16731d9aaa7682" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventShake];
+#endif
     return YES;
 }
 
 -(void)showActivityForPushNotification:(NSDictionary*)userInfo {
-    //    if ([userInfo[@"p"] isEqualToString:@"p"]) {
-    UIStoryboard *mainstoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    TActivityViewController* pvc = [mainstoryboard instantiateViewControllerWithIdentifier:@"Activity"];
-    pvc.postedObjectID = userInfo[@"pid"];
-    UINavigationController* navController = (UINavigationController*)self.window.rootViewController;
-    [navController pushViewController:pvc animated:YES];
-    //    }
+    if ([PFUser currentUser]) {
+        UIStoryboard *mainstoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        TActivityViewController* pvc = [mainstoryboard instantiateViewControllerWithIdentifier:@"Activity"];
+        pvc.postedObjectID = userInfo[@"pid"];
+        UINavigationController* navController = (UINavigationController*)self.window.rootViewController;
+        [navController pushViewController:pvc animated:YES];
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

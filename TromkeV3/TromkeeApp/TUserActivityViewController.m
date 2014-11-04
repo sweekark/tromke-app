@@ -19,6 +19,7 @@
 @property (strong, nonatomic) NSMutableArray* postsArray;
 @property (weak, nonatomic) IBOutlet UILabel *noResultsLabel;
 @property (weak, nonatomic) IBOutlet UITableView* userActivityTable;
+@property (weak, nonatomic) IBOutlet UILabel *topTitle;
 
 @property (nonatomic) NSInteger row;
 @property (nonatomic) NSInteger fetchedRows;
@@ -42,7 +43,20 @@
     // Do any additional setup after loading the view.
     self.postsArray = [NSMutableArray array];
     self.fetchedRows = 0;
-    [self fetchItems];
+    if (self.showNotifications) {
+        [self fetchNotificationItems];        
+    } else {
+        [self fetchPosts];
+    }
+}
+
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if (self.showNotifications) {
+        self.topTitle.text = @"Notifications";
+    } else {
+        self.topTitle.text = @"Timeline";
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -65,86 +79,107 @@
 
     static NSString* cellIdentifier = @"USERPOST";
     TUserActivityCell* cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    
-    if (notifyObj[@"activity"]) {
-        
-        cell.delegate = self;
-        cell.postedAt.text = [TUtility computePostedTime:notifyObj.createdAt];
-        
-        PFObject* activityObj = notifyObj[@"activity"];
-        
-        NSString* comment;
-        if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
-            comment = [NSString stringWithFormat:@"Commented %@", activityObj[@"content"]];
-        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_LIKE]) {
-            PFObject* postObj = activityObj[@"post"];
-            if (postObj) {
-                NSString* str;
-                if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_IMAGE]) {
-                    str = [NSString stringWithFormat:@"Likes your image @ %@", postObj[POST_USERLOCATION]];
-                } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_ASK]) {
-                    str = [NSString stringWithFormat:@"Likes your question @ %@", postObj[POST_USERLOCATION]];
-                } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
-                    PFObject* stickerObj = postObj[STICKER];
-                    str = [NSString stringWithFormat:@"Likes sticker %@ @ %@", stickerObj[@"name"], postObj[POST_USERLOCATION]];
+    cell.delegate = self;
+    cell.postedAt.text = [TUtility computePostedTime:notifyObj.createdAt];
+    cell.rowNumber = indexPath.row;
+
+    if (self.showNotifications) {
+        if (notifyObj[@"activity"]) {
+            PFObject* activityObj = notifyObj[@"activity"];
+            
+            NSString* comment;
+            if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
+                comment = [NSString stringWithFormat:@"Commented %@", activityObj[@"content"]];
+            } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_LIKE]) {
+                PFObject* postObj = activityObj[@"post"];
+                if (postObj) {
+                    NSString* str;
+                    if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_IMAGE]) {
+                        str = [NSString stringWithFormat:@"Likes your image @ %@", postObj[POST_USERLOCATION]];
+                    } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_ASK]) {
+                        str = [NSString stringWithFormat:@"Likes your question @ %@", postObj[POST_USERLOCATION]];
+                    } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
+                        PFObject* stickerObj = postObj[STICKER];
+                        str = [NSString stringWithFormat:@"Likes sticker %@ @ %@", stickerObj[@"name"], postObj[POST_USERLOCATION]];
+                    }
+                    
+                    comment = str;
                 }
                 
-                comment = str;
+            } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT]) {
+                comment = [NSString stringWithFormat:@"Posted image with %@", activityObj[@"content"]];
+            } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_ONLY]) {
+                comment = @"Posted image";
+            } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_FOLLOW]) {
+                comment = @"is following you";
+            } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
+                comment = @"Conveyed Thanks";
+            }
+            
+            PFUser* fromUser = activityObj[POST_FROMUSER];
+            cell.postedBy.text = [TUtility getDisplayNameForUser:fromUser];
+            cell.postedBy.textColor = [TUtility colorFromHexString:USERNAME_COLOR];
+            NSMutableAttributedString* msgStr = [[NSMutableAttributedString alloc] initWithString:comment];
+            
+            NSRange postedRange;
+            if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
+                postedRange = [comment rangeOfString:@"Commented"];
+            } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_LIKE]) {
+                postedRange = [comment rangeOfString:@"Likes"];
+            } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT] || [activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_ONLY]) {
+                postedRange = [comment rangeOfString:@"Posted"];
+            } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_FOLLOW]) {
+                postedRange = [comment rangeOfString:@"following"];
+            } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
+                postedRange = [comment rangeOfString:@"Conveyed"];
+            }
+            
+            [msgStr addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:postedRange];
+            
+            cell.notificationMessage.attributedText = msgStr;
+            
+            PFFile* imgFile = fromUser[FACEBOOK_SMALLPIC_KEY];
+            cell.userImage.image = [UIImage imageNamed:@"Personholder"];
+            if (imgFile) {
+                [cell.userImage setFile:imgFile];
+                [cell.userImage loadInBackground];
             }
 
-        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT]) {
-            comment = [NSString stringWithFormat:@"Posted image with %@", activityObj[@"content"]];
-        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_ONLY]) {
-            comment = @"Posted image";
-        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_FOLLOW]) {
-            comment = @"is following you";
-        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
-            comment = @"Conveyed Thanks";
-        }
-        
-        PFUser* fromUser = activityObj[POST_FROMUSER];
-        cell.postedBy.text = [TUtility getDisplayNameForUser:fromUser];
-        cell.postedBy.textColor = [TUtility colorFromHexString:USERNAME_COLOR];
-        NSMutableAttributedString* msgStr = [[NSMutableAttributedString alloc] initWithString:comment];
-        
-        NSRange postedRange;
-        if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_COMMENT]) {
-            postedRange = [comment rangeOfString:@"Commented"];
-        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_LIKE]) {
-            postedRange = [comment rangeOfString:@"Likes"];
-        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_COMMENT] || [activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_IMAGE_ONLY]) {
-            postedRange = [comment rangeOfString:@"Posted"];
-        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_FOLLOW]) {
-            postedRange = [comment rangeOfString:@"following"];
-        } else if ([activityObj[POST_TYPE] isEqualToString:ACTIVITY_TYPE_THANKS]) {
-            postedRange = [comment rangeOfString:@"Conveyed"];
-        }
+            return cell;
+        } else if (notifyObj[@"post"]) {
+            PFObject* postObj = notifyObj[@"post"];
+            PFObject* stickerObj = postObj[STICKER];
+            
+            PFUser* fromUser = postObj[POST_FROMUSER];
+            cell.postedBy.text = [TUtility getDisplayNameForUser:fromUser];
+            cell.postedBy.textColor = [TUtility colorFromHexString:USERNAME_COLOR];
+            
+            NSString* str;
+            if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_IMAGE]) {
+                str = [NSString stringWithFormat:@"Posted an image @ %@", postObj[POST_USERLOCATION]];
+            } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_ASK]) {
+                str = [NSString stringWithFormat:@"Posted a question @ %@", postObj[POST_USERLOCATION]];
+            } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
+                str = [NSString stringWithFormat:@"Posted sticker %@ @ %@", stickerObj[@"name"], postObj[POST_USERLOCATION]];
+            }
+            
+            NSMutableAttributedString* msgString = [[NSMutableAttributedString alloc] initWithString:str];
+            NSRange postedRange = [str rangeOfString:@"Posted"];
+            
+            [msgString addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:postedRange];
+            
+            cell.notificationMessage.attributedText = msgString;
+            PFFile* imgFile = fromUser[FACEBOOK_SMALLPIC_KEY];
+            cell.userImage.image = [UIImage imageNamed:@"Personholder"];
+            if (imgFile) {
+                [cell.userImage setFile:imgFile];
+                [cell.userImage loadInBackground];
+            }
 
-        [msgStr addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14] range:postedRange];
-
-        cell.notificationMessage.attributedText = msgStr;
-        
-        PFFile* imgFile = fromUser[FACEBOOK_SMALLPIC_KEY];
-        cell.userImage.image = [UIImage imageNamed:@"Personholder"];
-        if (imgFile) {
-            [cell.userImage setFile:imgFile];
-            [cell.userImage loadInBackground];
+            return cell;
         }
-        
-        cell.rowNumber = indexPath.row;
-        return cell;
-    } else if (notifyObj[@"post"]) {
-        cell.delegate = self;
-        cell.postedAt.text = [TUtility computePostedTime:notifyObj.createdAt];
-
-        
-        PFObject* postObj = notifyObj[@"post"];
-        
-//        if (!postObj) {
-//            NSLog(@"%@", notifyObj);
-//        }
-        PFObject* stickerObj = postObj[STICKER];
-        
+    } else {
+        PFObject* postObj = notifyObj;
         PFUser* fromUser = postObj[POST_FROMUSER];
         cell.postedBy.text = [TUtility getDisplayNameForUser:fromUser];
         cell.postedBy.textColor = [TUtility colorFromHexString:USERNAME_COLOR];
@@ -155,6 +190,7 @@
         } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_ASK]) {
             str = [NSString stringWithFormat:@"Posted a question @ %@", postObj[POST_USERLOCATION]];
         } else if ([postObj[POST_TYPE] isEqualToString:POST_TYPE_STICKER]) {
+            PFObject* stickerObj = postObj[STICKER];            
             str = [NSString stringWithFormat:@"Posted sticker %@ @ %@", stickerObj[@"name"], postObj[POST_USERLOCATION]];
         }
         
@@ -170,10 +206,10 @@
             [cell.userImage setFile:imgFile];
             [cell.userImage loadInBackground];
         }
-
-        cell.rowNumber = indexPath.row;        
+        
         return cell;
     }
+
     
     cell.notificationMessage.attributedText = [[NSMutableAttributedString alloc] initWithString:@""];
     cell.postedAt.text = @"";
@@ -182,7 +218,6 @@
     
     return cell;
 }
-
 
 -(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.row = indexPath.row;
@@ -211,12 +246,16 @@
         
         TActivityViewController* activityVC = segue.destinationViewController;
         
-        PFObject* postObc = notifyObj[@"post"];
-        if (!postObc) {
-            PFObject* act = notifyObj[@"activity"];
-            activityVC.postedObject = act[@"post"];
+        if (self.showNotifications) {
+            PFObject* postObc = notifyObj[@"post"];
+            if (!postObc) {
+                PFObject* act = notifyObj[@"activity"];
+                activityVC.postedObject = act[@"post"];
+            } else {
+                activityVC.postedObject = notifyObj[@"post"];
+            }
         } else {
-            activityVC.postedObject = notifyObj[@"post"];
+            activityVC.postedObject = notifyObj;
         }
     }
 }
@@ -227,7 +266,7 @@
 }
 
 
--(void)fetchItems {
+-(void)fetchNotificationItems {
     if ([Reachability isReachable]) {
         PFInstallation *currentInstallation = [PFInstallation currentInstallation];
         if (currentInstallation.badge != 0) {
@@ -263,7 +302,11 @@
                 if (error) {
                     NSLog(@"Error in getting activities: %@", error.localizedDescription);
                 } else {
-                    [weakSelf.postsArray addObjectsFromArray:[objects mutableCopy]];
+                    NSSortDescriptor* sort = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
+                    NSArray* temp = [objects sortedArrayUsingDescriptors:@[sort]];
+                    
+                    [weakSelf.postsArray addObjectsFromArray:[temp mutableCopy]];
+
                     if ([weakSelf.postsArray count]) {
                         weakSelf.fetchedRows = weakSelf.postsArray.count;
                         weakSelf.noResultsLabel.hidden = YES;
@@ -279,4 +322,40 @@
     }
 }
 
+
+-(void)fetchPosts {
+    if ([Reachability isReachable]) {
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        PFQuery* stickersQuery = [PFQuery queryWithClassName:POST];
+        [stickersQuery includeKey:@"fromUser"];
+        [stickersQuery includeKey:@"sticker"];
+        [stickersQuery orderByDescending:@"createdAt"];
+        stickersQuery.limit = 50;
+        
+        __weak TUserActivityViewController* weakSelf = self;
+        [stickersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                if (error) {
+                    NSLog(@"Error in getting activities: %@", error.localizedDescription);
+                } else {
+                    NSSortDescriptor* sort = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
+                    NSArray* temp = [objects sortedArrayUsingDescriptors:@[sort]];
+                    
+                    [weakSelf.postsArray addObjectsFromArray:[temp mutableCopy]];
+                    if ([weakSelf.postsArray count]) {
+                        weakSelf.fetchedRows = weakSelf.postsArray.count;
+                        weakSelf.noResultsLabel.hidden = YES;
+                        weakSelf.userActivityTable.hidden = NO;
+                        [weakSelf.userActivityTable reloadData];
+                    } else {
+                        weakSelf.noResultsLabel.hidden = NO;
+                        weakSelf.userActivityTable.hidden = YES;
+                    }
+                }
+            });
+        }];
+    }
+}
 @end

@@ -98,6 +98,8 @@ typedef NS_ENUM(NSInteger, Camera) {
 #define ASKCAMERA @"ASKCAMERA"
 #define MAIN @"Main"
 #define INVITE_FRIENDS @"InviteFriends"
+#define RECENT_POSTS @"RecentPosts"
+#define USER_ACTIVITY @"UserActivity"
 
 //VIEW or Segue Identifiers
 #define CAMERA @"CAMERA"

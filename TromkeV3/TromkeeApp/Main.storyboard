@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="14A388a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="bFj-kg-Ojn">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A388a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="bFj-kg-Ojn">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <scenes>
         <!--Custom Login View Controller-->
@@ -351,13 +352,22 @@
                                 <rect key="frame" x="0.0" y="62" width="320" height="2"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hyY-HC-dF0">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hyY-HC-dF0" userLabel="Notifications">
                                 <rect key="frame" x="217" y="22" width="44" height="44"/>
                                 <state key="normal" image="NewBox">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="hDj-nt-GQ3" kind="push" identifier="USERACTIVITY" id="XcU-YC-bBP"/>
+                                    <segue destination="hDj-nt-GQ3" kind="push" identifier="UserActivity" id="XcU-YC-bBP"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a7h-bW-F0l" userLabel="Posts">
+                                <rect key="frame" x="65" y="21" width="44" height="44"/>
+                                <state key="normal" image="Alarm">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="hDj-nt-GQ3" kind="push" identifier="RecentPosts" id="K1r-U1-PYG"/>
                                 </connections>
                             </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eiY-uA-Bqb">
@@ -1751,6 +1761,7 @@
                     <navigationItem key="navigationItem" id="3U9-Gg-AEs"/>
                     <connections>
                         <outlet property="noResultsLabel" destination="nP9-WI-xM5" id="jck-Z1-hWc"/>
+                        <outlet property="topTitle" destination="ar9-s9-p21" id="gRk-hu-Ym3"/>
                         <outlet property="userActivityTable" destination="D9c-Sr-nDa" id="dwl-74-Eos"/>
                         <segue destination="XTB-9t-TTs" kind="push" identifier="PROFILE" id="COV-JJ-dRE"/>
                         <segue destination="oKO-5Q-Eb5" kind="push" identifier="ACTIVITY" id="txq-dx-7tw"/>
@@ -2793,6 +2804,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Alarm" width="38" height="38"/>
         <image name="BlockUser" width="40" height="40"/>
         <image name="Forward" width="40" height="40"/>
         <image name="Help" width="250" height="380"/>
@@ -2847,8 +2859,9 @@
     <inferredMetricsTieBreakers>
         <segue reference="kq2-mO-O5c"/>
         <segue reference="vAF-kn-mA0"/>
-        <segue reference="TWm-KL-P30"/>
+        <segue reference="XcU-YC-bBP"/>
         <segue reference="dV4-on-W57"/>
+        <segue reference="TWm-KL-P30"/>
         <segue reference="IGv-YH-97g"/>
     </inferredMetricsTieBreakers>
 </document>

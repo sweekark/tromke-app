@@ -180,8 +180,7 @@
     PFQuery* likesQuery = [PFQuery queryWithClassName:ACTIVITY];
     [likesQuery whereKey:ACTIVITY_POST equalTo:self.postedObject];
     [likesQuery whereKey:POST_FROMUSER equalTo:[PFUser currentUser]];
-    [likesQuery whereKey:POST_TYPE equalTo:@"LIKE"];
-    [likesQuery whereKey:POST_TYPE equalTo:@"THANKS"];
+    [likesQuery whereKey:POST_TYPE containedIn:@[@"LIKE", @"THANKS"]];
     [likesQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         if (!error && object) {
             [self.postCell.thanksButton setTitle:@"Liked" forState:UIControlStateNormal];
