@@ -228,13 +228,17 @@
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"PROFILE"]) {
         PFObject* notifyObj = self.postsArray[self.row];
-        PFObject* postObj = notifyObj[@"post"];
         PFUser* fromUser;
-        if (!postObj) {
-            postObj = notifyObj[@"activity"];
-            fromUser = postObj[ACTIVITY_FROMUSER];
+        if (self.showNotifications) {
+            PFObject* postObj = notifyObj[@"post"];
+            if (!postObj) {
+                postObj = notifyObj[@"activity"];
+                fromUser = postObj[ACTIVITY_FROMUSER];
+            } else {
+                fromUser = postObj[POST_FROMUSER];
+            }
         } else {
-             fromUser = postObj[POST_FROMUSER];
+            fromUser = notifyObj[@"fromUser"];
         }
 
         

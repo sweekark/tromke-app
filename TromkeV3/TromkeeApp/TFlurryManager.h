@@ -37,6 +37,9 @@
 //Notification
 +(void)viewingNotification:(NSString*)notificationID;
 
+//Viewing
++(void)viewingNotificationScreen;
++(void)viewingTimelineScreen;
 
 //Menu
 +(void)viewingProfile;

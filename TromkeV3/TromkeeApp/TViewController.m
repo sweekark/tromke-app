@@ -213,9 +213,11 @@
         cameraVC.activityName = CameraForImage;
         cameraVC.delegate = self;
     } else if ([segue.identifier isEqualToString:USER_ACTIVITY]) {
+        [TFlurryManager viewingNotificationScreen];
         TUserActivityViewController* notifications = segue.destinationViewController;
         notifications.showNotifications = YES;
     } else if ([segue.identifier isEqualToString:RECENT_POSTS]) {
+        [TFlurryManager viewingTimelineScreen];
         TUserActivityViewController* notifications = segue.destinationViewController;
         notifications.showNotifications = NO;
     }

@@ -2804,7 +2804,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Alarm" width="38" height="38"/>
+        <image name="Alarm" width="35" height="35"/>
         <image name="BlockUser" width="40" height="40"/>
         <image name="Forward" width="40" height="40"/>
         <image name="Help" width="250" height="380"/>
@@ -2857,11 +2857,11 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="kq2-mO-O5c"/>
         <segue reference="vAF-kn-mA0"/>
+        <segue reference="kq2-mO-O5c"/>
+        <segue reference="TWm-KL-P30"/>
         <segue reference="XcU-YC-bBP"/>
         <segue reference="dV4-on-W57"/>
-        <segue reference="TWm-KL-P30"/>
         <segue reference="IGv-YH-97g"/>
     </inferredMetricsTieBreakers>
 </document>

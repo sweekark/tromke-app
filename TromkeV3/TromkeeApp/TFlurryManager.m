@@ -34,6 +34,9 @@
 //Notification
 #define VIEWING_NOTIFICATOIN @"ViewingNotificaton"
 
+//Viewing
+#define VIEWING_NOTIFICATIONS_SCREEN @"ViewingNotificationsScreen"
+#define VIEWING_TIMELINE_SCREEN @"ViewingTimelineScreen"
 //Menu
 #define MENU_SELECTED_PROFILE @"MenuProfile"
 #define MENU_SELECTED_LOGOUT @"MenuLogout"
@@ -123,6 +126,13 @@ static NSDate* mapviewStarttime;
     [Flurry logEvent:VIEWING_NOTIFICATOIN withParameters:@{@"NotificatonID" : notificationID}];
 }
 
++(void)viewingNotificationScreen {
+    [Flurry logEvent:VIEWING_NOTIFICATIONS_SCREEN];
+}
+
++(void)viewingTimelineScreen {
+    [Flurry logEvent:VIEWING_TIMELINE_SCREEN];
+}
 
 //Menu
 +(void)viewingProfile {
