@@ -124,7 +124,11 @@
     stickerPost[STICKER] = self.postSticker;
     stickerPost[STICKER_SEVERITY] = [NSNumber numberWithFloat:self.stickerSeverity.value];
 //    stickerPost[@"points"] = self.postSticker[@"postPoints"];
-    stickerPost[POST_USERLOCATION] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
+    NSString* usrLoc = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
+    if (usrLoc && usrLoc.length) {
+        stickerPost[POST_USERLOCATION] = usrLoc;
+    }
+
     stickerPost[POST_TYPE] = @"STICKER";
     
     

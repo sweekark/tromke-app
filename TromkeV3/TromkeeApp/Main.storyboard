@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A388a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="bFj-kg-Ojn">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="bFj-kg-Ojn">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
     </dependencies>
     <scenes>
         <!--Custom Login View Controller-->
@@ -2857,11 +2857,11 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="vAF-kn-mA0"/>
-        <segue reference="kq2-mO-O5c"/>
+        <segue reference="KJH-sX-rPI"/>
+        <segue reference="jSb-6W-Ej1"/>
+        <segue reference="IGv-YH-97g"/>
+        <segue reference="dV4-on-W57"/>
         <segue reference="TWm-KL-P30"/>
         <segue reference="XcU-YC-bBP"/>
-        <segue reference="dV4-on-W57"/>
-        <segue reference="IGv-YH-97g"/>
     </inferredMetricsTieBreakers>
 </document>

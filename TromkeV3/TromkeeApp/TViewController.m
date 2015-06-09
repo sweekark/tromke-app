@@ -596,7 +596,11 @@
     stickerPost[POST_DATA] = self.askText.text;
     stickerPost[POST_LOCATION] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
     stickerPost[POST_FROMUSER] = [PFUser currentUser];
-    stickerPost[POST_USERLOCATION] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
+    NSString* usrLoc = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
+    if (usrLoc && usrLoc.length) {
+        stickerPost[POST_USERLOCATION] = usrLoc;
+    }
+
     stickerPost[POST_TYPE] = POST_TYPE_ASK;
     
     NSDictionary* dict = @{@"QuestionWithPhoto" : @NO, @"Question" : self.askText.text};

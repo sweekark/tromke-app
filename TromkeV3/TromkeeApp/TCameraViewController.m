@@ -467,7 +467,12 @@
         stickerPost[POST_DATA] = self.postMessage.text;
         stickerPost[POST_LOCATION] = [PFGeoPoint geoPointWithLatitude:usrLocation.latitude longitude:usrLocation.longitude];
         stickerPost[POST_FROMUSER] = [PFUser currentUser];
-        stickerPost[POST_USERLOCATION] = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
+
+        NSString* usrLoc = [[NSUserDefaults standardUserDefaults] valueForKey:USER_LOCATION];
+        if (usrLoc && usrLoc.length) {
+            stickerPost[POST_USERLOCATION] = usrLoc;
+        }
+
         stickerPost[POST_ORIGINAL_IMAGE] = self.photoFile;
         stickerPost[POST_THUMBNAIL_IMAGE] = self.thumbnailFile;
         if (self.activityName == CameraForAsk) {
